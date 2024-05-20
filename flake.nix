@@ -76,13 +76,13 @@
           ];
 
           shellHook = ''
-             ${self.checks.${system}.pre-commit-check.shellHook}
+            ${self.checks.${system}.pre-commit-check.shellHook}
           '';
         };
 
         packages =
           let
-            build-myteams = { name, bins }:
+            build-zappy = { name, bins }:
               pkgs.stdenv.mkDerivation {
                 inherit name;
                 src = self;
@@ -123,7 +123,7 @@
 
             zappy_ai = build-zappy rec {
               name = "zappy_ai";
-              bins = [name];
+              bins = [ name ];
             };
           };
       });
