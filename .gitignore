@@ -1,0 +1,113 @@
+#project specific
+zappy_server
+zappy_ai
+zappy_gui
+!zappy_server/
+!zappy_ai/
+!zappy_gui/
+
+
+# environment
+*.env
+
+# Compiled
+*.out
+
+# Coding style
+*.log
+*.temp
+
+# Nix
+.direnv
+.envrc
+.pre-commit-config.yaml
+result
+!result/
+
+# Documentation
+generated-docs/
+gcovr/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+compile_commands.json
+
+# coverage
+coverage.info
+coverage.xml
+coverage/
+unit-tests
+
+# gprof
+gmon.out
+gprof.txt
+
+# Prerequisites
+*.d
+
+build/
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# code coverage
+*.gcno
+*.gcda
+*.gcov
+*.gcovr
+
+# IDE
+.idea/
+.vscode/*
+.cache/
+
+!.vscode/launch.json

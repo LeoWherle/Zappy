@@ -27,7 +27,7 @@
 
         cs = cs-flake.packages.${system}.report;
         cs-wrapped = (pkgs.writeShellScriptBin "cs" ''
-          ${cs}/bin/cs .
+          ${cs}/bin/cs . --ignore-folders=bins
         '');
 
       in
@@ -62,7 +62,6 @@
           packages = with pkgs; [
             criterion
             gcc13
-            libuuid
             gnumake
             # compile_commands.json
             python3Packages.compiledb
@@ -88,7 +87,6 @@
                 src = self;
 
                 buildInputs = with pkgs; [
-                  libuuid
                   gnumake
                 ];
 

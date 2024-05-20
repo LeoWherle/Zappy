@@ -3,6 +3,9 @@
   - [Léo Wehrle - Rentmeister](https://github.com/leoWherle)
   - [Théodore Magna](https://github.com/TheodoreEpitech)
   - [Raphaël Castres](https://github.com/castres-raphael)
+  - [Lucien Pineau](https://github.com/mathematisse)
+  - [Martin Sabatier](https://github.com/Nevi1)
+  - [Nathanael Kimbembe-Croissant](https://github.com/Nathanael-Kimbembe)
 
 ## Description
 The goal of this project is to create a network game where several teams confront on a tiles map
