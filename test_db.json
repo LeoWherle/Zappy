@@ -1,0 +1,79 @@
+{
+    "last_save": 1712670472,
+    "users": [
+        {
+            "created_at": 1712670472,
+            "uuid": "df12c51a-cf23-4323-94a6-9e15d800fc3c",
+            "username": "theodore"
+        },
+        {
+            "created_at": 1712670472,
+            "uuid": "da8ca1f1-339f-45aa-b301-aa87dff3aeaf",
+            "username": "raphael"
+        },
+        {
+            "created_at": 1712932969,
+            "uuid": "926ea57e-f069-4e8d-a8b5-5d53a2a4aa70",
+            "username": ""
+        }
+    ],
+    "teams": [
+        {
+            "created_at": 1712670472,
+            "uuid": "b1874284-2281-42ce-a384-79afede2e5ab",
+            "name": "team1",
+            "description": "team1 description",
+            "members": [
+                "df12c51a-cf23-4323-94a6-9e15d800fc3c",
+                "da8ca1f1-339f-45aa-b301-aa87dff3aeaf"
+            ],
+            "channels": [
+                {
+                    "created_at": 1712670472,
+                    "uuid": "f1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+                    "name": "channel1",
+                    "description": "channel1 description",
+                    "threads": [
+                        {
+                            "created_at": 1712670472,
+                            "uuid": "89497c8c-f551-46ab-aaea-d13be0e017e4",
+                            "sender_uuid": "da8ca1f1-339f-45aa-b301-aa87dff3aeaf",
+                            "title": "thread1",
+                            "message": "thread1 body",
+                            "replies": [
+                                {
+                                    "created_at": 1712670472,
+                                    "uuid": "983585ff-b71d-48e0-8cd7-2f164ef538fa",
+                                    "sender_uuid": "df12c51a-cf23-4323-94a6-9e15d800fc3c",
+                                    "body": "reply1"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "discussions": [
+        {
+            "members": [
+                "df12c51a-cf23-4323-94a6-9e15d800fc3c",
+                "da8ca1f1-339f-45aa-b301-aa87dff3aeaf"
+            ],
+            "messages": [
+                {
+                    "created_at": 0,
+                    "uuid": "89497c8c-f551-46ab-aaea-d13be0e017e4",
+                    "sender_uuid": "df12c51a-cf23-4323-94a6-9e15d800fc3c",
+                    "body": "salut ca va ?"
+                },
+                {
+                    "created_at": 0,
+                    "uuid": "89497c8c-f551-46ab-aaea-d13be0e017e4",
+                    "sender_uuid": "da8ca1f1-339f-45aa-b301-aa87dff3aeaf",
+                    "body": "oui et toi ?"
+                }
+            ]
+        }
+    ]
+}
