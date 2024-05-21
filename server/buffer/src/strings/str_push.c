@@ -29,3 +29,10 @@ buf_error_t str_push_str(string_t *str, const string_t *other)
 
     return vec_append_array(vec, other->items, other->nmemb, sizeof(char));
 }
+
+buf_error_t str_push_bytes(string_t *str, const void *bytes, size_t n)
+{
+    vector_t *vec = (vector_t *) str;
+
+    return vec_append_array(vec, bytes, n, sizeof(char));
+}
