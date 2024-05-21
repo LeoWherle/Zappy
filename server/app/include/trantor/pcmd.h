@@ -9,11 +9,6 @@
 
 #include "trantor/common.h"
 
-#include <string.h>
-
-#define SAY_OK(res) (res = strdup("ok"))
-#define SAY_KO(res) (res = strdup("ko"))
-
 #define PCMD_COUNT 13
 
 typedef enum pcommand_e {
