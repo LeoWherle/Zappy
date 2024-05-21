@@ -11,6 +11,8 @@
 
 #define USES_N(cmd) (cmd == PPO_GCMD || cmd == PLV_GCMD || cmd == PIN_GCMD)
 
+#define GCMD_COUNT 10
+
 typedef enum gcommand_e {
     NONE_GCMD = 0,
     MSZ_GCMD = 1,

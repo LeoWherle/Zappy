@@ -19,6 +19,7 @@ gcmd_func_t GCOMMAND_FUNCS[10] = {
     gui_ppo, gui_plv, gui_pin, gui_sgt, gui_sst
 };
 
+// WRONG (2nd atoi for bct)
 gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
 {
     for (int i = 1; i < 10; i++) {
@@ -26,7 +27,7 @@ gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
             continue;
         if (i == BCT_GCMD) {
             args->pos[0] = atoi(gcmd + strlen(GCOMMAND_LINES[i]) + 1);
-            args->pos[1] = atoi(gcmd + strlen(GCOMMAND_LINES[i]) + 3); // WRONG
+            args->pos[1] = atoi(gcmd + strlen(GCOMMAND_LINES[i]) + 3);
         }
         if (USES_N(i))
             args->n = atoi(gcmd + strlen(GCOMMAND_LINES[i]) + 1);

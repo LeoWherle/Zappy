@@ -33,10 +33,11 @@ void init_egg(player_t *player, team_t team, len_t x, len_t y)
     player->y = y;
 }
 
+// MAKE RANDOM DIRECTION
 void hatch_egg(player_t *player)
 {
     player->is_egg = false;
-    player->direction = UP; // MAKE RANDOM
+    player->direction = UP;
     player->elevation = 1;
     player->pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
     player->response_buffer = vec_new(sizeof(char *), NULL, NULL);
@@ -47,4 +48,3 @@ void destroy_player(void *player)
 {
     vec_delete(((player_t *)player)->pcmd_buffer);
 }
-

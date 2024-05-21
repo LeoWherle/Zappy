@@ -15,6 +15,8 @@
 #define SAY_OK(res) (res = strdup("ok"))
 #define SAY_KO(res) (res = strdup("ko"))
 
+#define PCMD_COUNT 13
+
 typedef enum pcommand_e {
     NONE_PCMD = 0,
     FORWARD_PCMD = 1,
@@ -26,7 +28,6 @@ typedef enum pcommand_e {
     CONNECT_PCMD = 7,
     FORK_PCMD = 8,
     EJECT_PCMD = 9,
-    DEATH_PCMD = 10, // gneh
     TAKE_PCMD = 11,
     SET_PCMD = 12,
     INCANTATION_PCMD = 13
@@ -64,9 +65,9 @@ void player_broadcast(pcmd_args_t *args, char **response);
 void player_co_num(pcmd_args_t *args, char **response);
 void player_fork(pcmd_args_t *args, char **response);
 void player_eject(pcmd_args_t *args, char **response);
-void player_death(pcmd_args_t *args, char **response);
 void player_take(pcmd_args_t *args, char **response);
 void player_set(pcmd_args_t *args, char **response);
 void player_incantation(pcmd_args_t *args, char **response);
 pcommand_t parse_pcmd(const char *pcmd, char **arg);
-pcmd_executor_t *create_pcmd_executor(player_t *player, const char *pcmd, float f);
+pcmd_executor_t *create_pcmd_executor(
+    player_t *player, const char *pcmd, float f);

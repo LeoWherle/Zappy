@@ -47,7 +47,6 @@ void free_map(map_t *map)
     free(map->tiles);
 }
 
-
 void player_move(player_t *player, map_t *map, direction_t direction)
 {
     int new_x = ((int)player->x) + DIRECTIONS[direction][0];

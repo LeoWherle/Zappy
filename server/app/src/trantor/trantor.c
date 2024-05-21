@@ -8,12 +8,6 @@
 #include "trantor.h"
 #include "trantor/pcmd.h"
 
-bool parse_args(int ac, char **av, trantor_params_t *params)
-{
-    // not implemented
-    return true;
-}
-
 void init_trantor(trantor_t *trantor, trantor_params_t *params)
 {
     trantor->params = *params;
@@ -31,21 +25,23 @@ void free_trantor(trantor_t *trantor)
 
 player_t *get_team_egg(vector_t *players, team_t team)
 {
-    for (unsigned int i = 0; i < players->nmemb; i++) {
-        player_t *player = vec_at(players, i);
+    player_t *temp;
 
-        if (player->is_egg && player->team == team)
-            return player;
+    for (unsigned int i = 0; i < players->nmemb; i++) {
+        temp = vec_at(players, i);
+        if (temp->is_egg && temp->team == team)
+            return temp;
     }
     return NULL;
 }
 
-void player_feed_trantor_line(player_t *player, trantor_t *trantor, const char *line)
+// not implemented
+void player_feed_trantor_line(
+    player_t *player, trantor_t *trantor, const char *line)
 {
-    // not implemented
 }
 
+// not implemented
 void gui_feed_trantor_line(trantor_t *trantor, const char *line)
 {
-    // not implemented
 }
