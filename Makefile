@@ -5,28 +5,43 @@
 ## Makefile
 ##
 
+BIN_AI=zappy_ai
+BIN_SERVER=zappy_server
+BIN_GUI=zappy_gui
 
-all: zappy_ai zappy_server zappy_gui
+FOLDER_AI=ai/
+FOLDER_SERVER=server/
+FOLDER_GUI=gui/
 
-zappy_ai:
-	@$(MAKE) -C zappy_ai/
 
-zappy_server:
-	@$(MAKE) -C zappy_server/
+MAKE  = make --no-print-directory
 
-zappy_gui:
-	@$(MAKE) -C zappy_gui/
+
+all: $(BIN_SERVER) $(BIN_AI)  $(BIN_GUI)
+
+$(BIN_AI):
+	@$(MAKE) -C $(FOLDER_AI)
+	mv $(FOLDER_AI)$(BIN_AI) .
+
+$(BIN_SERVER):
+	@$(MAKE) -C $(FOLDER_SERVER)
+	mv $(FOLDER_SERVER)$(BIN_SERVER) .
+
+$(BIN_GUI):
+	@$(MAKE) -C $(FOLDER_GUI)
+	mv $(FOLDER_GUI)$(BIN_GUI) .
 
 clean:
-	@$(MAKE) -C zappy_ai/ clean
-	@$(MAKE) -C zappy_server/ clean
-	@$(MAKE) -C zappy_gui/ clean
+	@$(MAKE) -C $(FOLDER_AI) clean
+	@$(MAKE) -C $(FOLDER_SERVER) clean
+	@$(MAKE) -C $(FOLDER_GUI) clean
 
 fclean:
-	@$(MAKE) -C zappy_ai/ fclean
-	@$(MAKE) -C zappy_server/ fclean
-	@$(MAKE) -C zappy_gui/ fclean
+	@$(MAKE) -C $(FOLDER_AI) fclean
+	@$(MAKE) -C $(FOLDER_SERVER) fclean
+	@$(MAKE) -C $(FOLDER_GUI) fclean
 
 re: fclean all
 
 .PHONY: all zappy_ai zappy_server zappy_gui clean fclean re
+.NOTPARALLEL: re
