@@ -38,8 +38,11 @@ clean:
 
 fclean:
 	@$(MAKE) -C $(FOLDER_AI) fclean
+	rm -f $(BIN_AI)
 	@$(MAKE) -C $(FOLDER_SERVER) fclean
+	rm -f $(BIN_SERVER)
 	@$(MAKE) -C $(FOLDER_GUI) fclean
+	rm -f $(BIN_GUI)
 
 re: fclean all
 
