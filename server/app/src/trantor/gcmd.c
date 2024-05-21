@@ -7,6 +7,9 @@
 
 #include "trantor/gcmd.h"
 
+#include <string.h>
+#include <stdlib.h>
+
 const char *GCOMMAND_LINES[10] = {
     "", "msz", "bct", "mct", "tna", "ppo", "plv", "pin", "sgt", "sst"
 };

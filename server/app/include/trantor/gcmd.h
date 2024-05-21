@@ -25,7 +25,7 @@ typedef enum gcommand_e {
 } gcommand_t;
 
 typedef union gcmd_args_u {
-    len_t[2] pos;
+    len_t pos[2];
     unsigned int n;
     float t;
 } gcmd_args_t;

@@ -7,6 +7,8 @@
 
 #include "trantor/map.h"
 
+#include <stdlib.h>
+
 const char *ITEM_NAMES[7] = {
     "food",
     "linemate",
@@ -17,7 +19,7 @@ const char *ITEM_NAMES[7] = {
     "thystame"
 };
 
-const float[7] DENSITIES = {
+const float DENSITIES[7] = {
     0.5f, 0.3f, 0.15f, 0.1f, 0.1f, 0.08f, 0.05f
 };
 
@@ -44,6 +46,7 @@ void free_map(map_t *map)
 {
     free(map->tiles);
 }
+
 
 void player_move(player_t *player, map_t *map, direction_t direction)
 {

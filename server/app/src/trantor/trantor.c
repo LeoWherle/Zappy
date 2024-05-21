@@ -6,6 +6,7 @@
 */
 
 #include "trantor.h"
+#include "trantor/pcmd.h"
 
 bool parse_args(int ac, char **av, trantor_params_t *params)
 {
@@ -17,23 +18,23 @@ void init_trantor(trantor_t *trantor, trantor_params_t *params)
 {
     trantor->params = *params;
     init_map(params->width, params->height, &trantor->map);
-    trantor->free_players = vec_new(sizeof(player_t), NULL, destroy_player);
+    trantor->players = vec_new(sizeof(player_t), destroy_player, NULL);
     trantor->player_executors = vec_new(sizeof(pcmd_executor_t), NULL, NULL);
 }
 
 void free_trantor(trantor_t *trantor)
 {
     free_map(&trantor->map);
-    vec_delete(trantor->free_players);
+    vec_delete(trantor->players);
     vec_delete(trantor->player_executors);
 }
 
-player_t *get_team_egg(vector_t *players, const char *team)
+player_t *get_team_egg(vector_t *players, team_t team)
 {
-    for (unsigned int i = 0; i < players->size; i++) {
-        player_t *player = vec_get(players, i);
+    for (unsigned int i = 0; i < players->nmemb; i++) {
+        player_t *player = vec_at(players, i);
 
-        if (player->is_egg && strcmp(player->team, team) == 0)
+        if (player->is_egg && player->team == team)
             return player;
     }
     return NULL;

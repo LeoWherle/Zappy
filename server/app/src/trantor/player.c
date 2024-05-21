@@ -7,6 +7,8 @@
 
 #include "trantor/player.h"
 
+#include <stddef.h>
+
 void init_player(player_t *player, team_t team, len_t x, len_t y)
 {
     player->is_egg = false;
@@ -18,9 +20,9 @@ void init_player(player_t *player, team_t team, len_t x, len_t y)
         player->inventory.items[i] = 0;
     }
     player->elevation = 1;
-    pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
-    response_buffer = vec_new(sizeof(char *), NULL, NULL);
-    busy = false;
+    player->pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
+    player->response_buffer = vec_new(sizeof(char *), NULL, NULL);
+    player->busy = false;
 }
 
 void init_egg(player_t *player, team_t team, len_t x, len_t y)
@@ -36,12 +38,13 @@ void hatch_egg(player_t *player)
     player->is_egg = false;
     player->direction = UP; // MAKE RANDOM
     player->elevation = 1;
-    pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
-    response_buffer = vec_new(sizeof(char *), NULL, NULL);
-    busy = false;
+    player->pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
+    player->response_buffer = vec_new(sizeof(char *), NULL, NULL);
+    player->busy = false;
 }
 
-void destroy_player(player_t *player)
+void destroy_player(void *player)
 {
-    vec_delete(player->pcmd_buffer);
+    vec_delete(((player_t *)player)->pcmd_buffer);
 }
+

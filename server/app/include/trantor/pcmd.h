@@ -8,6 +8,9 @@
 #pragma once
 
 #include "trantor/player.h"
+#include "trantor/map.h"
+
+#include <string.h>
 
 #define SAY_OK(res) (res = strdup("ok"))
 #define SAY_KO(res) (res = strdup("ko"))
@@ -37,7 +40,7 @@ typedef struct pcmd_executor_s {
 } pcmd_executor_t;
 
 typedef struct broadcast_buffer_s {
-    len_t[2] pos;
+    len_t pos[2];
     char *msg;
 } broadcast_buffer_t;  // gneh
 

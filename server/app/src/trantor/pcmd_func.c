@@ -7,7 +7,7 @@
 
 #include "trantor/pcmd.h"
 
-void player_error(pcmd_args_t *args, char **response)
+void player_error(__attribute__((unused)) pcmd_args_t *args, char **response)
 {
     SAY_KO(*response);
 }

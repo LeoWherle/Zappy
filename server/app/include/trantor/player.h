@@ -7,7 +7,12 @@
 
 #pragma once
 
-#include "trantor/map.h"
+#include "trantor/common.h"
+#include "trantor/direction.h"
+#include "trantor/tile.h"
+
+#include "vector.h"
+#include <stdbool.h>
 
 #define PLAYER_IS_AT(pl, x, y) (pl.x == x && pl.y == y)
 
@@ -27,5 +32,4 @@ typedef struct player_s {
 void init_player(player_t *player, team_t team, len_t x, len_t y);
 void init_egg(player_t *player, team_t team, len_t x, len_t y);
 void hatch_egg(player_t *player);
-void destroy_player(player_t *player);
-void player_move(player_t *player, map_t *map, direction_t direction);
+void destroy_player(void *player);
