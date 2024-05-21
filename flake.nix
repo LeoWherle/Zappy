@@ -76,6 +76,7 @@
 
           shellHook = ''
             ${self.checks.${system}.pre-commit-check.shellHook}
+            export MAKEFLAGS="-j $NIX_BUILD_CORES"
           '';
         };
 
