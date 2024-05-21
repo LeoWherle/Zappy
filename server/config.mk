@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-BIN=myteams_server
+BIN=zappy_server
 # change to DEBUG=n at the end of the project
 DEBUG=
 

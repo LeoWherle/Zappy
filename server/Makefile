@@ -44,7 +44,7 @@ else
 	BUILD_PATH := $(BUILD_DIR)debug/
 endif
 
-SRC_SERV = $(shell find server/src/ -name "*.c" -type f)
+SRC_SERV = $(shell find app/src/ -name "*.c" -type f)
 OBJ_SERV = 	$(SRC_SERV:%.c=$(BUILD_PATH)%.o)
 DEPS_SERV = 	$(OBJ_SERV:%.o=%.d)
 
@@ -53,24 +53,25 @@ LIB_FLAGS = -L$(BUILD_PATH) $(addprefix -l, $(LIBS))
 
 CFLAGS += -W -Wall -Wextra $(LIBINC)
 
-CFLAGS += -Iserver/include
+CFLAGS += -Iapp/include
 CFLAGS += -std=gnu2x
-CFLAGS += -MMD -MP
 
 LDFLAGS += $(LIB_FLAGS)
 CRITFLAGS = -lcriterion --coverage
+
 
 $(BUILD_PATH)%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all: server
+
+all: app
 
 $(BUILD_PATH)$(BIN): lib_build $(OBJ_SERV)
 	$(CC) -o $(BUILD_PATH)$(BIN) $(OBJ_SERV) $(LDFLAGS)
 	@echo -e "$(GREEN)✓ Compiled $(BIN)$(RESET)"
 
-server: $(BUILD_PATH)$(BIN)
+app: $(BUILD_PATH)$(BIN)
 	cp $(BUILD_PATH)$(BIN) $(BIN)
 
 lib_build:
@@ -92,13 +93,10 @@ fclean: clean
 	@rm -f $(BUILD_DIR)debug/$(BIN)
 	@rm -f $(BUILD_DIR)release/$(BIN)
 
-re:
-	$(MAKE) fclean
-	$(MAKE) all
+re: fclean all
 
 tests_run:
 	@for i in $(LIBS); do $(MAKE) -C $$i tests_run; done
 
 .PHONY: all clean fclean re debug tests_run lib_build server
-
--include $(DEPS_SERV)
+.NOTPARALLEL: re

@@ -86,5 +86,6 @@ tests_run: $(OBJ_CRIT)
 	@./unit-tests
 
 .PHONY: all clean fclean re
+.NOTPARALLEL: re
 
 -include $(DEPS)

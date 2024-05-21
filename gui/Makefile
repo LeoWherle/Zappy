@@ -6,10 +6,11 @@
 ##
 
 
-all:
+all: zappy_gui
 
 zappy_gui:
 	@echo -e "do nothing"
+	touch zappy_gui
 
 clean:
 	@echo -e "cleaning"
@@ -20,3 +21,4 @@ fclean:
 re: fclean all
 
 .PHONY: all zappy_gui clean fclean re
+.NOTPARALLEL: re
