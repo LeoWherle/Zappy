@@ -7,6 +7,7 @@
 
 #include "serrorh.h"
 #include "server.h"
+#include "sstrings.h"
 #include "vector.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -20,7 +21,7 @@ static void client_read(client_t *client, server_t *server)
     ssize_t red = 0;
 
     (void) server;
-    if (vec_reserve(&client->read_buf, BUFFER_SIZE)) {
+    if (vec_reserve(str_to_vec(&client->read_buf), BUFFER_SIZE)) {
         LOG_WARN("Failed to reserve space in read buffer");
     }
     red = read(client->sd, client->read_buf.items + client->read_buf.nmemb,
@@ -52,7 +53,7 @@ static void client_write(client_t *client)
         LOG_ERROR("Failed to write to client");
         return;
     }
-    if (vec_erase(&client->write_buf, 0, written) != BUF_OK) {
+    if (str_erase(&client->write_buf, 0, written) != BUF_OK) {
         LOG_ERROR("Failed to erase written bytes from write buffer");
         return;
     }
@@ -62,7 +63,7 @@ static void client_write(client_t *client)
 static void client_consume_read_buffer(client_t *client, size_t consumed)
 {
     if (consumed > 0) {
-        if (vec_erase(&client->read_buf, 0, consumed) != BUF_OK) {
+        if (str_erase(&client->read_buf, 0, consumed) != BUF_OK) {
             LOG_ERROR("Failed to erase consumed bytes from read buffer");
         }
     }

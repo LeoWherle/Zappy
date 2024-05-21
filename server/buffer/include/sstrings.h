@@ -75,6 +75,7 @@ WUR char str_at(const string_t *str, size_t index);
 WUR buf_error_t str_push_cstr(string_t *str, const char *cstr);
 WUR buf_error_t str_push_str(string_t *str, const string_t *str_to_push);
 WUR buf_error_t str_push_char(string_t *str, char c);
+buf_error_t str_push_bytes(string_t *str, const void *bytes, size_t n);
 
 void str_truncate(string_t *str, size_t new_size);
 
@@ -147,7 +148,7 @@ WUR buf_error_t str_insert_str(
 
 /***************************** STRING UTILITIES ******************************/
 
-vector_t *str_as_vec(string_t *str);
+vector_t *str_to_vec(string_t *str);
 
 /**
  * @brief Splits the string at the given index and returns the right part
