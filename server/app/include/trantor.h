@@ -75,8 +75,9 @@ typedef struct player_s {
     direction_t direction;
     tile_t inventory;
     elevation_t elevation;
-    vector_t *pcmd_buffer; // stores receive commands
+    vector_t *pcmd_buffer; // stores received commands
     vector_t *response_buffer; // stores responses
+    bool busy;
 } player_t;
 
 void init_player(player_t *player, team_t team, len_t x, len_t y)
@@ -91,6 +92,26 @@ void init_player(player_t *player, team_t team, len_t x, len_t y)
     }
     player->elevation = 1;
     pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
+    response_buffer = vec_new(sizeof(char *), NULL, NULL);
+    busy = false;
+}
+
+void init_egg(player_t *player, team_t team, len_t x, len_t y)
+{
+    player->is_egg = true;
+    player->team = team;
+    player->x = x;
+    player->y = y;
+}
+
+void hatch_egg(player_t *player)
+{
+    player->is_egg = false;
+    player->direction = UP; // MAKE RANDOM
+    player->elevation = 1;
+    pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
+    response_buffer = vec_new(sizeof(char *), NULL, NULL);
+    busy = false;
 }
 
 void destroy_player(player_t *player)
@@ -101,20 +122,20 @@ void destroy_player(player_t *player)
 #define PLAYER_IS_AT(pl, x, y) (pl.x == x && pl.y == y)
 
 typedef enum pcommand_e {
-    NONE_CMD = 0,
-    FORWARD_CMD = 1,
-    RIGHT_CMD = 2,
-    LEFT_CMD = 3,
-    LOOK_CMD = 4,
-    INVENTORY_CMD = 5,
-    BROADCAST_CMD = 6,
-    CONNECT_CMD = 7,
-    FORK_CMD = 8,
-    EJECT_CMD = 9,
-    DEATH_CMD = 10, // gneh
-    TAKE_CMD = 11,
-    SET_CMD = 12,
-    INCANTATION_CMD = 13
+    NONE_PCMD = 0,
+    FORWARD_PCMD = 1,
+    RIGHT_PCMD = 2,
+    LEFT_PCMD = 3,
+    LOOK_PCMD = 4,
+    INVENTORY_PCMD = 5,
+    BROADCAST_PCMD = 6,
+    CONNECT_PCMD = 7,
+    FORK_PCMD = 8,
+    EJECT_PCMD = 9,
+    DEATH_PCMD = 10, // gneh
+    TAKE_PCMD = 11,
+    SET_PCMD = 12,
+    INCANTATION_PCMD = 13
 } pcommand_t;
 
 const char *COMMAND_LINES[14] = {
@@ -134,7 +155,7 @@ const char *COMMAND_LINES[14] = {
     "Incantation"
 };
 
-#define CMD_NAME_LEN(cmd) (strlen(COMMAND_LINES[cmd]))
+#define PCMD_NAME_LEN(cmd) (strlen(COMMAND_LINES[cmd]))
 
 const unsigned int COMMAND_TIMES[14] = {
     0, 7, 7, 7, 7, 1, 7, 0, 42, 7, 0, 7, 7, 300
@@ -297,14 +318,14 @@ pcmd_func_t COMMAND_FUNCS[13] = {
 pcommand_t parse_pcmd(const char *pcmd, char **arg)
 {
     for (int i = 1; i < 14; i++) {
-        if (strncmp(pcmd, COMMAND_LINES[i], CMD_NAME_LEN(i)) != 0)
+        if (strncmp(pcmd, COMMAND_LINES[i], PCMD_NAME_LEN(i)) != 0)
             continue;
-        if (i == BROADCAST_CMD) {
-            *arg = strdup(pcmd + CMD_NAME_LEN(i) + 1);
+        if (i == BROADCAST_PCMD) {
+            *arg = strdup(pcmd + PCMD_NAME_LEN(i) + 1);
         }
         return i;
     }
-    return NONE_CMD;
+    return NONE_PCMD;
 }
 
 typedef struct pcmd_executor_s {
@@ -321,7 +342,7 @@ pcmd_executor_t *create_pcmd_executor(player_t *player, const char *pcmd, float 
     pcmd_executor_t *executor = NULL;
 
     command = parse_pcmd(pcmd, &arg);
-    if (command == NONE_CMD)
+    if (command == NONE_PCMD)
         return NULL;
     executor = malloc(sizeof(pcmd_executor_t));
     executor->command = command;
@@ -337,7 +358,7 @@ typedef struct trantor_params_s {
     unsigned int teams;
     char **team_names;
     unsigned int players;
-    float freq;
+    float f;
 } trantor_params_t;
 
 bool parse_args(int ac, char **av, trantor_params_t *params)
@@ -346,12 +367,12 @@ bool parse_args(int ac, char **av, trantor_params_t *params)
     return true;
 }
 
-
 typedef struct trantor_s {
     trantor_params_t params;
     map_t map;
-    vector_t free_players;
+    vector_t players;
     vector_t player_executors;
+    vector_t log;
 } trantor_t;
 
 void init_trantor(trantor_t *trantor, trantor_params_t *params)
@@ -367,4 +388,173 @@ void free_trantor(trantor_t *trantor)
     free_map(&trantor->map);
     vec_delete(trantor->free_players);
     vec_delete(trantor->player_executors);
+}
+
+typedef enum gcommand_e {
+    NONE_GCMD = 0,
+    MSZ_GCMD = 1,
+    BCT_GCMD = 2,
+    MCT_GCMD = 3,
+    TNA_GCMD = 4,
+    PPO_GCMD = 5,
+    PLV_GCMD = 6,
+    PIN_GCMD = 7,
+    SGT_GCMD = 8,
+    SST_GCMD = 9
+} gcommand_t;
+
+#define USES_N(cmd) (cmd == PPO_GCMD || cmd == PLV_GCMD || cmd == PIN_GCMD)
+
+const char *GCOMMAND_LINES[10] = {
+    "", "msz", "bct", "mct", "tna", "ppo", "plv", "pin", "sgt", "sst"
+};
+
+#define GCMD_NAME_LEN(cmd) (strlen(GCOMMAND_LINES[cmd]))
+
+typedef union gcmd_args_u {
+    len_t[2] pos;
+    unsigned int n;
+    float t;
+} gcmd_args_t;
+
+typedef void (*gcmd_func_t)(trantor_t *trantor, gcmd_args_t *args);
+
+void gui_error(trantor_t *trantor, gcmd_args_t *args)
+{
+    vec_push(&trantor->log, strdup("suc"));
+}
+
+void gui_msz(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+
+    asprintf(&msg, "msz %d %d", trantor->map.width, trantor->map.height);
+    vec_push(&trantor->log, msg);
+}
+
+void gui_bct(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+    tile_t *tile =
+        &trantor->map.tiles[args->pos[1] * trantor->map.width + args->pos[0]];
+
+    asprintf(&msg, "bct %d %d %d %d %d %d %d %d %d",
+        args->pos[0], args->pos[1],
+        tile->items[0], tile->items[1], tile->items[2], tile->items[3],
+        tile->items[4], tile->items[5], tile->items[6]);
+    vec_push(&trantor->log, msg);
+}
+
+void gui_mct(trantor_t *trantor, gcmd_args_t *args)
+{
+    gcmd_args_t args;
+
+    for (len_t y = 0; y < trantor->map.height; y++) {
+        for (len_t x = 0; x < trantor->map.width; x++) {
+            args.pos = {x, y};
+            gui_bct(trantor, &args);
+        }
+    }
+}
+
+void gui_tna(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+
+    for (unsigned int i = 0; i < trantor->params.teams; i++) {
+        asprintf(&msg, "tna %s", trantor->params.team_names[i]);
+        vec_push(&trantor->log, msg);
+    }
+}
+
+void gui_ppo(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+    player_t *player = vec_get(&trantor->players, args->n);
+
+    asprintf(&msg, "ppo %d %d %d %d", args->n,
+        player->x, player->y, player->direction + 1);
+    vec_push(&trantor->log, msg);
+}
+
+void gui_plv(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+    player_t *player = vec_get(&trantor->players, args->n);
+
+    asprintf(&msg, "plv %d %d", args->n, player->elevation);
+    vec_push(&trantor->log, msg);
+}
+
+void gui_pin(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+    player_t *player = vec_get(&trantor->players, args->n);
+
+    asprintf(&msg, "pin %d %d %d %d %d %d %d %d %d %d",
+        args->n, player->x, player->y, player->inventory.items[0],
+        player->inventory.items[1], player->inventory.items[2],
+        player->inventory.items[3], player->inventory.items[4],
+        player->inventory.items[5], player->inventory.items[6]);
+    vec_push(&trantor->log, msg);
+}
+
+void gui_sgt(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+
+    asprintf(&msg, "sgt %f", 0.0f); // replace by actual time or f ?
+    vec_push(&trantor->log, msg);
+}
+
+void gui_sst(trantor_t *trantor, gcmd_args_t *args)
+{
+    char *msg = NULL;
+
+    asprintf(&msg, "sst %f", 0.0f); // same
+    vec_push(&trantor->log, msg);
+}
+
+gcmd_func_t GCOMMAND_FUNCS[10] = {
+    gui_error, gui_msz, gui_bct, gui_mct, gui_tna,
+    gui_ppo, gui_plv, gui_pin, gui_sgt, gui_sst
+};
+
+gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
+{
+    for (int i = 1; i < 10; i++) {
+        if (strncmp(gcmd, GCOMMAND_LINES[i], GCMD_NAME_LEN(i)) != 0)
+            continue;
+        if (i == BCT_GCMD) {
+            args->pos[0] = atoi(gcmd + GCMD_NAME_LEN(i) + 1);
+            args->pos[1] = atoi(gcmd + GCMD_NAME_LEN(i) + 3); // WRONG
+        }
+        if (USES_N(i))
+            args->n = atoi(gcmd + GCMD_NAME_LEN(i) + 1);
+        if (i == SST_GCMD)
+            args->t = atof(gcmd + GCMD_NAME_LEN(i) + 1);
+        return i;
+    }
+    return NONE_GCMD;
+}
+
+player_t *get_team_egg(vector_t *players, const char *team)
+{
+    for (unsigned int i = 0; i < players->size; i++) {
+        player_t *player = vec_get(players, i);
+
+        if (player->is_egg && strcmp(player->team, team) == 0)
+            return player;
+    }
+    return NULL;
+}
+
+void player_feed_trantor_line(player_t *player, trantor_t *trantor, const char *line)
+{
+    // not implemented
+}
+
+void gui_feed_trantor_line(trantor_t *trantor, const char *line)
+{
+    // not implemented
 }
