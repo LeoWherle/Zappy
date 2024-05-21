@@ -75,7 +75,28 @@ typedef struct player_s {
     direction_t direction;
     tile_t inventory;
     elevation_t elevation;
+    vector_t *pcmd_buffer; // stores receive commands
+    vector_t *response_buffer; // stores responses
 } player_t;
+
+void init_player(player_t *player, team_t team, len_t x, len_t y)
+{
+    player->is_egg = false;
+    player->team = team;
+    player->x = x;
+    player->y = y;
+    player->direction = UP;
+    for (int i = 0; i < 7; i++) {
+        player->inventory.items[i] = 0;
+    }
+    player->elevation = 1;
+    pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
+}
+
+void destroy_player(player_t *player)
+{
+    vec_delete(player->pcmd_buffer);
+}
 
 #define PLAYER_IS_AT(pl, x, y) (pl.x == x && pl.y == y)
 
@@ -125,7 +146,24 @@ typedef struct map_s {
     tile_t *tiles;
 } map_t;
 
-bool player_move(player_t *player, map_t *map, direction_t direction)
+void init_map(len_t width, len_t height, map_t *map)
+{
+    map->width = width;
+    map->height = height;
+    map->tiles = malloc(sizeof(tile_t) * width * height);
+    for (len_t i = 0; i < width * height; i++) {
+        for (int j = 0; j < 7; j++) {
+            map->tiles[i].items[j] = 0;
+        }
+    }
+}
+
+void free_map(map_t *map)
+{
+    free(map->tiles);
+}
+
+void player_move(player_t *player, map_t *map, direction_t direction)
 {
     int new_x = ((int)player->x) + DIRECTIONS[direction][0];
     int new_y = ((int)player->y) + DIRECTIONS[direction][1];
@@ -140,7 +178,6 @@ bool player_move(player_t *player, map_t *map, direction_t direction)
         new_y = 0;
     player->x = (len_t) new_x;
     player->y = (len_t) new_y;
-    return true;
 }
 
 typedef struct pcmd_args_s {
@@ -154,38 +191,39 @@ typedef struct pcmd_args_s {
 #define SAY_OK(res) (res = strdup("ok"))
 #define SAY_KO(res) (res = strdup("ko"))
 
-typedef bool (*pcmd_func_t)(pcmd_args_t *args, char **response);
+typedef void (*pcmd_func_t)(pcmd_args_t *args, char **response);
 
-bool player_forward(pcmd_args_t *args, char **response)
+void player_error(pcmd_args_t *args, char **response)
 {
-    SAY_OK(*response);
-    return player_move(args->player, args->map, args->player->direction);
+    SAY_KO(*response);
 }
 
-bool player_right(pcmd_args_t *args, char **response)
+void player_forward(pcmd_args_t *args, char **response)
+{
+    SAY_OK(*response);
+    player_move(args->player, args->map, args->player->direction);
+}
+
+void player_right(pcmd_args_t *args, char **response)
 {
     SAY_OK(*response);
     args->player->direction = (args->player->direction + 1) % 4;
-    return true;
 }
 
-bool player_left(pcmd_args_t *args, char **response)
+void player_left(pcmd_args_t *args, char **response)
 {
     SAY_OK(*response);
     args->player->direction = (args->player->direction + 3) % 4;
-    return true;
 }
 
-bool player_look(pcmd_args_t *args, char **response)
+void player_look(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
-bool player_inventory(pcmd_args_t *args, char **response)
+void player_inventory(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
 typedef struct broadcast_buffer_s {
@@ -193,57 +231,49 @@ typedef struct broadcast_buffer_s {
     char *msg;
 } broadcast_buffer_t;  // gneh
 
-bool player_broadcast(pcmd_args_t *args, char **response)
+void player_broadcast(pcmd_args_t *args, char **response)
 {
     broadcast_buffer_t *buf = (broadcast_buffer_t *) response;
 
     buf->pos[0] = args->player->x;
     buf->pos[1] = args->player->y;
     buf->msg = args->broadcast_msg;
-    return true;
 }
 
-bool player_co_num(pcmd_args_t *args, char **response)
+void player_co_num(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
-bool player_fork(pcmd_args_t *args, char **response)
+void player_fork(pcmd_args_t *args, char **response)
 {
     SAY_OK(*response);
     // not implemented
-    return true;
 }
 
-bool player_eject(pcmd_args_t *args, char **response)
+void player_eject(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
-bool player_death(pcmd_args_t *args, char **response)
+void player_death(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
-bool player_take(pcmd_args_t *args, char **response)
+void player_take(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
-bool player_set(pcmd_args_t *args, char **response)
+void player_set(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
-bool player_incantation(pcmd_args_t *args, char **response)
+void player_incantation(pcmd_args_t *args, char **response)
 {
     // not implemented
-    return true;
 }
 
 pcmd_func_t COMMAND_FUNCS[13] = {
@@ -299,4 +329,42 @@ pcmd_executor_t *create_pcmd_executor(player_t *player, const char *pcmd, float 
     executor->player = player;
     executor->exec_time_left = COMMAND_TIMES[executor->command] / f;
     return executor;
+}
+
+typedef struct trantor_params_s {
+    len_t width;
+    len_t height;
+    unsigned int teams;
+    char **team_names;
+    unsigned int players;
+    float freq;
+} trantor_params_t;
+
+bool parse_args(int ac, char **av, trantor_params_t *params)
+{
+    // not implemented
+    return true;
+}
+
+
+typedef struct trantor_s {
+    trantor_params_t params;
+    map_t map;
+    vector_t free_players;
+    vector_t player_executors;
+} trantor_t;
+
+void init_trantor(trantor_t *trantor, trantor_params_t *params)
+{
+    trantor->params = *params;
+    init_map(params->width, params->height, &trantor->map);
+    trantor->free_players = vec_new(sizeof(player_t), NULL, destroy_player);
+    trantor->player_executors = vec_new(sizeof(pcmd_executor_t), NULL, NULL);
+}
+
+void free_trantor(trantor_t *trantor)
+{
+    free_map(&trantor->map);
+    vec_delete(trantor->free_players);
+    vec_delete(trantor->player_executors);
 }
