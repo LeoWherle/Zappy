@@ -24,6 +24,7 @@ void free_trantor(trantor_t *trantor)
 {
     free_map(&trantor->map);
     vec_delete(trantor->players);
+    destroy_params(&trantor->params);
 }
 
 player_t *get_team_egg(vector_t *players, team_t team)
