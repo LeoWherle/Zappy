@@ -5,7 +5,7 @@
 ** pmcd funcs source file
 */
 
-#include "trantor/pcmd.h"
+#include "trantor/pcmd_args.h"
 
 // not implemented
 void player_look(pcmd_args_t *args, char **response)

@@ -5,7 +5,7 @@
 ** pmcd funcs source file
 */
 
-#include "trantor/pcmd.h"
+#include "trantor/pcmd_args.h"
 
 void player_broadcast(pcmd_args_t *args, char **response)
 {

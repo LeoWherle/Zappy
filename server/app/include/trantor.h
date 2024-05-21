@@ -15,7 +15,6 @@ typedef struct trantor_s {
     trantor_params_t params;
     map_t map;
     vector_t *players;
-    vector_t *player_executors;
     vector_t *log;
 } trantor_t;
 

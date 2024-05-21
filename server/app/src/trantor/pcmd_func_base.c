@@ -5,7 +5,7 @@
 ** pmcd funcs source file
 */
 
-#include "trantor/pcmd.h"
+#include "trantor/pcmd_args.h"
 
 void player_error(__attribute__((unused)) pcmd_args_t *args, char **response)
 {
