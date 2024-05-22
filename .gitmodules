@@ -1,3 +1,4 @@
 [submodule "gui/raylib"]
 	path = gui/raylib
 	url = https://github.com/raysan5/raylib
+	ignore = dirty

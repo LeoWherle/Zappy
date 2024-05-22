@@ -113,8 +113,5 @@ dkms.conf
 .vscode/*
 .cache/
 
-# Submodules
-gui/raylib/
-
 !.vscode/launch.json
 __pycache__/
