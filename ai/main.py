@@ -13,7 +13,8 @@ def run(args):
 
     ai = AI(args.n, serv)
     ai.inventory() # Get the inventory as a dictionary
-    ai.get_unused_slots() # Get the number of unused slots
+    ai.turn_right() # Turn the AI right
+    ai.forward() # Move the AI forward
 
     input("\nPress Enter to exit... (fake AI loop)") # fake AI loop
 
