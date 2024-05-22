@@ -9,16 +9,6 @@
 
 #include <stdlib.h>
 
-const char *ITEM_NAMES[7] = {
-    "food",
-    "linemate",
-    "deraumere",
-    "sibur",
-    "mendiane",
-    "phiras",
-    "thystame"
-};
-
 const int DIRECTIONS[4][2] = {
     {0, -1},
     {1, 0},

@@ -19,13 +19,10 @@
 
 typedef struct pcmd_args_s {
     player_t *player;
-    union {
-        map_t *map;
-        struct {
-            char *broadcast_msg;
-            vector_t *players;
-        };
-    };
+    map_t *map;
+    char *broadcast_msg;
+    vector_t *players;
+    unsigned int cnb;
 } pcmd_args_t;
 
 typedef void (*pcmd_func_t)(pcmd_args_t *args);
