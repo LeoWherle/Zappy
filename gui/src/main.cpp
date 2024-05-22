@@ -5,7 +5,7 @@
 ** main raylib
 */
 
-#include "raylib.h"
+#include "../raylib/cpp_binding/include/raylib-cpp.hpp"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
