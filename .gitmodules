@@ -1,3 +1,6 @@
-[submodule "gui/raylib"]
-	path = gui/raylib
+[submodule "gui/raylib_cpp"]
+	path = gui/raylib_cpp
 	url = git@github.com:RobLoach/raylib-cpp.git
+[submodule "raylib"]
+	path = raylib
+	url = https://github.com/raysan5/raylib
