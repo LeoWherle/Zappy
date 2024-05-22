@@ -19,25 +19,12 @@ const char *ITEM_NAMES[7] = {
     "thystame"
 };
 
-const float DENSITIES[7] = {
-    0.5f, 0.3f, 0.15f, 0.1f, 0.1f, 0.08f, 0.05f
-};
-
 const int DIRECTIONS[4][2] = {
     {0, -1},
     {1, 0},
     {0, 1},
     {-1, 0}
 };
-
-static void get_item_count(len_t width, len_t height, tile_t *quants)
-{
-    len_t total = width * height;
-
-    for (unsigned int i = 0; i < 7; i++) {
-        quants->items[i] = (quant_t) (total * DENSITIES[i]);
-    }
-}
 
 // calculate the diff between result of get_item_count and what's on the map
 static void get_missing_items(map_t *map, tile_t *missing)
@@ -55,32 +42,6 @@ static void get_missing_items(map_t *map, tile_t *missing)
     }
 }
 
-static quant_t get_total_items(tile_t *tile)
-{
-    quant_t total = 0;
-
-    for (unsigned int i = 0; i < 7; i++) {
-        total += tile->items[i];
-    }
-    return total;
-}
-
-static item_t rand_item(tile_t *items_left, len_t tiles_left)
-{
-    quant_t total = get_total_items(items_left);
-    double item_prob = (double) total / (double) tiles_left;
-    double rand_prob = (double) rand() / (double) RAND_MAX;
-
-    if (rand_prob > item_prob)
-        return NONE_ITEM;
-    for (unsigned int i = 0; i < 7; i++) {
-        if (rand_prob < (double) items_left->items[i] / (double) total)
-            return i + 1;
-        rand_prob -= (double) items_left->items[i] / (double) total;
-    }
-    return NONE_ITEM;
-}
-
 static void add_item(len_t i, tile_t *item_tile, map_t *map)
 {
     item_t tmp;
@@ -90,7 +51,18 @@ static void add_item(len_t i, tile_t *item_tile, map_t *map)
         if (tmp == NONE_ITEM)
             continue;
         ADD_ITEM(map->tiles[i], tmp);
+        TAKE_ITEM(*item_tile, tmp);
     }
+}
+
+// recursive to ensure all items are added
+static void add_all_ressources(map_t *map, tile_t *item_tile)
+{
+    for (len_t i = 0; i < map->width * map->height; i++) {
+        add_item(i, item_tile, map);
+    }
+    if (get_total_items(item_tile) > 0)
+        add_all_ressources(map, item_tile);
 }
 
 void init_map(len_t width, len_t height, map_t *map)
@@ -103,18 +75,16 @@ void init_map(len_t width, len_t height, map_t *map)
     get_item_count(width, height, &item_tile);
     for (len_t i = 0; i < width * height; i++) {
         map->tiles[i] = (tile_t) {0};
-        add_item(i, &item_tile, map);
     }
+    add_all_ressources(map, &item_tile);
 }
 
-static void add_ressources(map_t *map)
+void add_ressources(map_t *map)
 {
     tile_t item_tile = {0};
 
     get_missing_items(map, &item_tile);
-    for (len_t i = 0; i < map->width * map->height; i++) {
-        add_item(i, &item_tile, map);
-    }
+    add_all_ressources(map, &item_tile);
 }
 
 void free_map(map_t *map)
