@@ -9,5 +9,5 @@ BIN=zappy_gui
 # change to DEBUG=n at the end of the project
 DEBUG=
 
-LIBS = \
+LIBS = raylib\
 

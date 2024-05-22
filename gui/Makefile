@@ -23,6 +23,7 @@ WHITE		=	\033[1;37m
 RESET		=	\033[0m
 
 MAKE  = make --no-print-directory
+BUILD_PATH = build/
 CC = g++
 
 RULE =
@@ -39,24 +40,23 @@ else
 	CFLAGS += -g
 endif
 
-SRC_GUI = $(shell find src/ -name "*.cpp" -type f)
-OBJ_GUI = 	$(SRC_GUI:%.c=$(BUILD_PATH)%.o)
+SRC_GUI = 	$(shell find src/ -name "*.cpp" -type f)
+OBJ_GUI = 	$(SRC_GUI:%.cpp=%.o)
 DEPS_GUI = 	$(OBJ_GUI:%.o=%.d)
 
 #LIBINC = $(addsuffix /include, $(addprefix -I, $(LIBS)))
-#LIB_FLAGS = -L$(BUILD_PATH) $(addprefix -l, $(LIBS))
-RAYLIB_FLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+LIB_FLAGS = -Lraylib/src $(addprefix -l, $(LIBS))
+RAYLIB_FLAGS = -lGL -lm -lpthread -ldl -lrt -lX11
 
 CFLAGS += -W -Wall -Wextra
 
-CFLAGS += -Iraylib/include
+CFLAGS += -Iraylib_cpp/include/
 
-LDFLAGS += $(RAYLIB_FLAGS)
+LDFLAGS += $(LIB_FLAGS) $(RAYLIB_FLAGS)
 CRITFLAGS = -lcriterion --coverage
 
 
-%.o: %.c
-	@mkdir -p $(dir $@)
+%.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
@@ -70,6 +70,8 @@ $(BIN): lib_build $(OBJ_GUI)
 #	@for i in $(LIBS); do $(MAKE) -C $$i $(RULE); done
 
 clean:
+	@rm -f $(OBJ_GUI)
+	@rm -f $(DEPS_GUI)
 #	@for j in "DEBUG=n" "DEBUG=y" ""; do \
 	for i in $(LIBS); do $(MAKE) -C $$i clean $$j; done \
 	done
@@ -78,7 +80,6 @@ fclean: clean
 #	@for j in "DEBUG=n" "DEBUG=y" ""; do \
 	for i in $(LIBS); do $(MAKE) -C $$i fclean $$j; done \
 	done
-	@$(MAKE) -C 
 	@rm -f unit-tests
 	@rm -f $(BIN)
 
