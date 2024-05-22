@@ -6,7 +6,6 @@
 */
 
 #include "trantor.h"
-#include "trantor/pcmd.h"
 #include "serrorh.h"
 
 #include <string.h>

@@ -38,10 +38,10 @@ void free_trantor(trantor_t *trantor);
  * @brief Find an available unhatched egg from a team. Will return NULL if no
  * egg is found. This will hatch the egg and init necessary player fields.
  *
- * @param players a vector of player_t *
- * @param team the team to find the egg from
+ * @param trantor a pointer to trantor
+ * @param team the team name
  */
-player_t *hatch_team_egg(vector_t *players, team_t team);
+player_t *hatch_team_egg(trantor_t *trantor, const char *team_name);
 
 /**
  * @brief Feed a line to a player. We have no fucking idea what the player is
@@ -75,10 +75,12 @@ void trantor_time_pass(trantor_t *trantor);
 
 /**
  * @brief returns the list of lines to send to a player
+ * please empty them, i'll not do it
  */
 vector_t *get_player_buffer(player_t *player);
 
 /**
  * @brief returns the list of lines to send to the GUI
+ * please empty them, i'll not do it
  */
 vector_t *get_gui_buffer(trantor_t *trantor);

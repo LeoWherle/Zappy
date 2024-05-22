@@ -6,7 +6,6 @@
 */
 
 #include "trantor.h"
-#include "trantor/pcmd.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -19,16 +18,21 @@ void free_trantor(trantor_t *trantor)
     destroy_params(&trantor->params);
 }
 
-player_t *hatch_team_egg(vector_t *players, team_t team)
+player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
 {
     player_t *temp;
+    team_t team;
+    int idx = get_team_index(&trantor->params, team_name);
 
-    for (unsigned int i = 0; i < players->nmemb; i++) {
-        temp = vec_at(players, i);
-        if (temp->is_egg && temp->team == team) {
-            hatch_egg(temp);
-            return temp;
-        }
+    if (idx == -1)
+        return NULL;
+    team = (team_t) idx;
+    for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
+        temp = vec_at(trantor->players, i);
+        if (!temp->is_egg || temp->team != team)
+            continue;
+        hatch_egg(temp);
+        return temp;
     }
     return NULL;
 }

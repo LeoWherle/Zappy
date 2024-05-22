@@ -9,13 +9,6 @@
 
 #include <stdlib.h>
 
-const int DIRECTIONS[4][2] = {
-    {0, -1},
-    {1, 0},
-    {0, 1},
-    {-1, 0}
-};
-
 // calculate the diff between result of get_item_count and what's on the map
 static void get_missing_items(map_t *map, tile_t *missing)
 {
@@ -80,21 +73,4 @@ void add_ressources(map_t *map)
 void free_map(map_t *map)
 {
     free(map->tiles);
-}
-
-void player_move(player_t *player, map_t *map, direction_t direction)
-{
-    int new_x = ((int)player->x) + DIRECTIONS[direction][0];
-    int new_y = ((int)player->y) + DIRECTIONS[direction][1];
-
-    if (new_x < 0)
-        new_x = ((int) map->width) - 1;
-    if (new_y < 0)
-        new_y = ((int) map->height) - 1;
-    if (new_x >= ((int) map->width))
-        new_x = 0;
-    if (new_y >= ((int) map->height))
-        new_y = 0;
-    player->x = (len_t) new_x;
-    player->y = (len_t) new_y;
 }

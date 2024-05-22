@@ -17,8 +17,16 @@ typedef struct map_s {
     tile_t *tiles;
 } map_t;
 
+typedef len_t coord_t[2];
+
+typedef int unbounded_coord_t[2];
+
 #define GET_TILE(map, x, y) (map->tiles + (y * map->width + x))
 
 void init_map(len_t width, len_t height, map_t *map);
+void add_ressources(map_t *map);
 void free_map(map_t *map);
 void player_move(player_t *player, map_t *map, direction_t direction);
+tile_t *unbounded_tile_get(map_t *map, int x, int y);
+void get_true_closest_coord(
+    map_t *map, coord_t a, coord_t b, unbounded_coord_t *res);

@@ -5,10 +5,12 @@
 ** pmcd funcs source file
 */
 
+#include "trantor/direction.h"
 #include "trantor/pcmd_args.h"
 #include "trantor/map.h"
 #include "serrorh.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 // not implemented
@@ -38,9 +40,17 @@ void player_fork(pcmd_args_t *args)
         LOG_ERROR("Error while pushing egg to players");
 }
 
-// not implemented
-static void warn_player_eject(void)
+static void warn_player_eject(player_t *player, direction_t from)
 {
+    char *msg = NULL;
+    size_t len = 0;
+    direction_t relative = (4 + (from - player->direction)) % 4;
+
+    len = snprintf(NULL, 0, "eject: %d", relative);
+    msg = malloc(sizeof(char) * (len + 1));
+    sprintf(msg, "eject: %d", relative);
+    if (vec_push(player->response_buffer, msg) != BUF_OK)
+        LOG_ERROR("Error while pushing eject message to player");
 }
 
 static bool player_eject_step(pcmd_args_t *args, unsigned int *i)
@@ -54,7 +64,7 @@ static bool player_eject_step(pcmd_args_t *args, unsigned int *i)
         return false;
     if (!tmp->is_egg) {
         player_move(tmp, args->map, args->player->direction);
-        warn_player_eject();
+        warn_player_eject(tmp, (args->player->direction + 2) % 4);
     } else if (vec_delete_at(args->players, *i) == BUF_OK)
         (*i)--;
     return true;

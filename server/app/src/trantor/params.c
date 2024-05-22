@@ -76,3 +76,12 @@ void destroy_params(trantor_params_t *params)
 {
     vec_delete(params->team_names);
 }
+
+int get_team_index(trantor_params_t *params, const char *team_name)
+{
+    for (unsigned int i = 0; i < params->team_names->nmemb; i++) {
+        if (strcmp(team_name, (char *)vec_at(params->team_names, i)) == 0)
+            return i;
+    }
+    return -1;
+}

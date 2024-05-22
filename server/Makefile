@@ -56,7 +56,7 @@ CFLAGS += -W -Wall -Wextra $(LIBINC)
 CFLAGS += -Iapp/include
 CFLAGS += -std=gnu2x
 
-LDFLAGS += $(LIB_FLAGS)
+LDFLAGS += $(LIB_FLAGS) -lm
 CRITFLAGS = -lcriterion --coverage
 
 

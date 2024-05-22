@@ -7,7 +7,6 @@
 
 #include "trantor/pcmd.h"
 #include <string.h>
-#include <stdlib.h>
 
 const char *PCOMMAND_LINES[PCMD_COUNT] = {
     "", "Forward", "Right", "Left", "Look", "Inventory", "Broadcast",
