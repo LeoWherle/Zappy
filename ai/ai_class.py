@@ -1,5 +1,4 @@
 from messages import logger
-from connection import Server
 
 class AI:
     def __init__(self, team, serv):
@@ -17,4 +16,29 @@ class AI:
             value = int(elem.split(" ")[2])
             dic[key] = value
         return dic
+    
+    # Move the AI forward
+    def forward(self):
+        self.serv.send("Forward")
+        logger.info("Moved forward")
+    
+    # Turn the AI right
+    def turn_right(self):
+        self.serv.send("Right")
+        logger.info("Turned right")
+
+    # Turn the AI left
+    def turn_left(self):
+        self.serv.send("Left")
+        logger.info("Turned left")
+
+    # Broadcast a message
+    def broadcast(self, msg):
+        self.serv.send(f"Broadcast {msg}")
+        logger.info(f"Broadcasted: {msg}")
+
+    # Fork the AI
+    def fork(self):
+        self.serv.send("Fork")
+        logger.info("Forked")
 
