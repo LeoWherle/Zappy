@@ -6,9 +6,11 @@ class Server:
         self.host = host
         self.port = port
         self.sock = None
+        self.map_x = 0
+        self.map_y = 0
 
     def connect(self):
-        logger.ai("Trying to connect to the server...")
+        logger.ai("Trying to connect to the server...\n")
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((self.host, self.port))
@@ -27,6 +29,12 @@ class Server:
         response = self.sock.recv(1024).decode()
         logger.server(response)
         return response
+    
+    def send_team(self, team):
+        infos = self.send(team).split("\n")
+        self.map_x = int(infos[1].split(" ")[0])
+        self.map_y = int(infos[1].split(" ")[1])
+        return int(infos[0])
 
     def close_connection(self):
         self.sock.close()

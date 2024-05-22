@@ -2,6 +2,7 @@
 from sys import argv
 import argparse
 from connection import Server
+from ai_class import AI
 
 def run(args):
     """Run the program"""
@@ -9,9 +10,13 @@ def run(args):
     serv = Server(args.h, args.p)
     if not serv.connect():
         return 84
-    serv.send(args.n) # send team name
-    input("Press Enter to exit... (fake AI loop)") # fake AI loop
-    serv.close_connection()
+
+    ai = AI(args.n, serv)
+    ai.inventory() # Get the inventory as a dictionary
+
+    input("\nPress Enter to exit... (fake AI loop)") # fake AI loop
+
+    serv.close_connection() # End of the program
     return 0
 
 

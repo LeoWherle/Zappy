@@ -17,7 +17,7 @@ class logger:
 
     @staticmethod
     def ai(msg):
-        print(colors.OKCYAN + "AI:" + colors.ENDC, msg)
+        print(colors.OKCYAN + "AI:" + colors.ENDC, msg, end="")
 
     @staticmethod
     def info(msg):
