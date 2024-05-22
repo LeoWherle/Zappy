@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 from sys import argv
 import argparse
+from connection import send_to_server, connect_to_server
 
 def run(args):
     """Run the program"""
-    print(args)
+    sock = connect_to_server(args.h, args.p)
+    if not sock:
+        return 84
+    response = send_to_server(sock, "ping\n")
+    print(response)
     return 0
 
 
