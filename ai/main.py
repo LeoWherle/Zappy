@@ -10,6 +10,7 @@ def run(args):
     if not serv.connect():
         return 84
     serv.send(args.n) # send team name
+    input("Press Enter to exit... (fake AI loop)") # fake AI loop
     serv.close_connection()
     return 0
 
