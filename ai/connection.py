@@ -21,17 +21,20 @@ class Server:
         self.sock = sock
         return True
 
-    def send(self, msg):
+    def send(self, msg, ai):
         if (msg[-1] != '\n'):
             msg += '\n'
         logger.ai(msg)
         self.sock.sendall(msg.encode())
         response = self.sock.recv(1024).decode()
         logger.server(response)
+        if response.__contains__("dead"):
+            logger.warning("The AI is dead")
+            ai.dead = True
         return response
     
     def send_team(self, team):
-        infos = self.send(team).split("\n")
+        infos = self.send(team, None).split("\n")
         self.map_x = int(infos[1].split(" ")[0])
         self.map_y = int(infos[1].split(" ")[1])
         return int(infos[0])
