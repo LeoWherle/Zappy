@@ -9,14 +9,24 @@ class colors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def server_print(msg):
-    print(colors.OKBLUE + "SERVER:" + colors.ENDC, msg)
+class logger:
 
-def info_print(msg):
-    print(colors.OKGREEN + "INFO:" + colors.ENDC, msg)
+    @staticmethod
+    def server(msg):
+        print(colors.OKBLUE + "SERVER:" + colors.ENDC, msg, end="")
 
-def error_print(msg):
-    print(colors.FAIL + "ERROR:" + colors.ENDC, msg)
+    @staticmethod
+    def ai(msg):
+        print(colors.OKCYAN + "AI:" + colors.ENDC, msg)
 
-def warning_print(msg):
-    print(colors.WARNING + "WARNING:" + colors.ENDC, msg)
+    @staticmethod
+    def info(msg):
+        print(colors.OKGREEN + "INFO:" + colors.ENDC, msg)
+
+    @staticmethod
+    def error(msg):
+        print(colors.FAIL + "ERROR:" + colors.ENDC, msg)
+
+    @staticmethod
+    def warning(msg):
+        print(colors.WARNING + "WARNING:" + colors.ENDC, msg)

@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 from sys import argv
 import argparse
-from connection import send_to_server, connect_to_server, close_connection
+from connection import Server
 
 def run(args):
     """Run the program"""
-    sock = connect_to_server(args.h, args.p)
-    if not sock:
+
+    serv = Server(args.h, args.p)
+    ret = serv.connect()
+    if ret == 84:
         return 84
-    send_to_server(sock, "ping\n")
-    close_connection(sock)
+    serv.send(args.n) # send team name
+    serv.close_connection()
     return 0
 
 

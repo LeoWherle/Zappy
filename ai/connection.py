@@ -1,22 +1,33 @@
 import socket
-from messages import server_print, error_print, warning_print, info_print
+from messages import logger
 
-def connect_to_server(host, port=4242):
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((host, port))
-        server_print(sock.recv(1024).decode())
-    except Exception as e:
-        error_print(f"Failed to connect to server: {e}")
-        return None
-    return sock
+class Server:
+    def __init__(self, host, port=4242):
+        self.host = host
+        self.port = port
+        self.sock = None
 
-def send_to_server(sock, msg):
-    sock.sendall(msg.encode())
-    response = sock.recv(1024).decode()
-    server_print(response)
-    return response
+    def connect(self):
+        logger.ai("Trying to connect to the server...")
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((self.host, self.port))
+            logger.server(sock.recv(1024).decode())
+        except Exception as e:
+            logger.error(f"Failed to connect to server: {e}")
+            return 84
+        self.sock = sock
+        return 0
 
-def close_connection(sock):
-    sock.close()
-    warning_print("Disconnected")
+    def send(self, msg):
+        if (msg[-1] != '\n'):
+            msg += '\n'
+        logger.ai(msg)
+        self.sock.sendall(msg.encode())
+        response = self.sock.recv(1024).decode()
+        logger.server(response)
+        return response
+
+    def close_connection(self):
+        self.sock.close()
+        logger.warning("Disconnected")
