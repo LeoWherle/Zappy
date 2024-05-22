@@ -17,6 +17,12 @@ const int DIRECTIONS[4][2] = {
     {-1, 0}
 };
 
+void add_direction(unbounded_coord_t *coord, direction_t direction)
+{
+    (*coord)[0] += DIRECTIONS[direction][0];
+    (*coord)[1] += DIRECTIONS[direction][1];
+}
+
 void player_move(player_t *player, map_t *map, direction_t direction)
 {
     int new_x = ((int)player->x) + DIRECTIONS[direction][0];
@@ -39,6 +45,17 @@ tile_t *unbounded_tile_get(map_t *map, int x, int y)
     x = (x + (int) map->width) % (int) map->width;
     y = (y + (int) map->height) % (int) map->height;
     return GET_TILE(map, (len_t) x, (len_t) y);
+}
+
+void get_tile_line(map_t *map, ray_t ray, len_t len, tile_t **tiles)
+{
+    unbounded_coord_t pos = {ray.start[0], ray.start[1]};
+
+    for (len_t i = 0; i < len; i++) {
+        pos[0] += DIRECTIONS[ray.direction][0];
+        pos[1] += DIRECTIONS[ray.direction][1];
+        tiles[i] = unbounded_tile_get(map, pos[0], pos[1]);
+    }
 }
 
 static float get_distance(unbounded_coord_t a, unbounded_coord_t b)
