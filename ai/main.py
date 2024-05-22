@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 from sys import argv
 import argparse
-from connection import send_to_server, connect_to_server
+from connection import send_to_server, connect_to_server, close_connection
 
 def run(args):
     """Run the program"""
     sock = connect_to_server(args.h, args.p)
     if not sock:
         return 84
-    response = send_to_server(sock, "ping\n")
-    print(response)
+    send_to_server(sock, "ping\n")
+    close_connection(sock)
     return 0
 
 
@@ -25,7 +25,7 @@ def get_args():
 
     if len(argv) == 2 and argv[1] == "-h":
         parser.print_help()
-        exit(0)
+        return None
         
     args = parser.parse_args()
 
@@ -34,6 +34,9 @@ def get_args():
 
 def main():
     args = get_args()
+
+    if args is None:
+        return 0
 
     if args.p >= 0:
         return run(args)
