@@ -7,8 +7,7 @@ def run(args):
     """Run the program"""
 
     serv = Server(args.h, args.p)
-    ret = serv.connect()
-    if ret == 84:
+    if not serv.connect():
         return 84
     serv.send(args.n) # send team name
     serv.close_connection()
@@ -37,7 +36,7 @@ def get_args():
 def main():
     args = get_args()
 
-    if args is None:
+    if len(argv) == 2 and argv[1] == "-h":
         return 0
 
     if args.p >= 0:

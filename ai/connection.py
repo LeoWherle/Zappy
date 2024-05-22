@@ -15,9 +15,9 @@ class Server:
             logger.server(sock.recv(1024).decode())
         except Exception as e:
             logger.error(f"Failed to connect to server: {e}")
-            return 84
+            return False
         self.sock = sock
-        return 0
+        return True
 
     def send(self, msg):
         if (msg[-1] != '\n'):
