@@ -4,8 +4,9 @@ class AI:
     def __init__(self, team, serv):
         self.serv = serv
         self.team = team
-        self.team_slots_left = serv.send_team(team)
-        logger.info(f"Team {team} has {self.team_slots_left} slots left")
+
+        team_slots_left = serv.send_team(team)
+        logger.info(f"Team {team} has {team_slots_left} slots left")
 
     # Return a dictionary of the inventory
     def inventory(self):
@@ -41,4 +42,10 @@ class AI:
     def fork(self):
         self.serv.send("Fork")
         logger.info("Forked")
+
+    # Get the nb of unused slots in the team
+    def get_unused_slots(self):
+        team_slots_left = self.serv.send("Connect_nbr").split("\n")[0]
+        logger.info(f"Team {self.team} has {team_slots_left} slots left")
+        return int(team_slots_left)
 

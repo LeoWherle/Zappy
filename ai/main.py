@@ -13,6 +13,7 @@ def run(args):
 
     ai = AI(args.n, serv)
     ai.inventory() # Get the inventory as a dictionary
+    ai.get_unused_slots() # Get the number of unused slots
 
     input("\nPress Enter to exit... (fake AI loop)") # fake AI loop
 
