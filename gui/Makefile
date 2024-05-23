@@ -73,11 +73,7 @@ $(BUILD_PATH)$(BIN): lib_build $(OBJ_GUI)
 app: $(BUILD_PATH)$(BIN)
 	cp $(BUILD_PATH)$(BIN) .
 
-lib_build:
-	$(MAKE) -C $(RAYLIB_DIR) PLATFORM=PLATFORM_DESKTOP
-
 clean:
-	$(MAKE) -C $(RAYLIB_DIR) clean
 	@rm -f $(BUILD_DIR)asan $(BUILD_DIR)debug $(BUILD_DIR)release
 
 fclean: clean

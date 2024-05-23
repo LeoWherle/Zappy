@@ -4,4 +4,4 @@
 	ignore = dirty
 [submodule "gui/raylib_cpp"]
 	path = gui/raylib_cpp
-	url = https://github.com/Nevi1/zappy-raylib-cpp
+	url = https://github.com/RobLoach/raylib-cpp
