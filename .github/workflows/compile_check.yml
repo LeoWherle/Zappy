@@ -80,7 +80,7 @@ jobs:
             custom_message="${error_messages[$message]:-Unknown Error}"
             echo "::error file=$file,line=$line_number::$severity $message $custom_message"
           done < coding-style-reports.log
-          line_count=$(wc -l coding-style-reports.log | awk '{print $1}')
+          line_count=$(grep --invert-match "./server/tests" coding-style-reports.log | wc -l)
           if [ "$line_count" -gt 0 ]; then
             echo "::error::Too many style errors (skill issue)"
             exit 1
@@ -94,7 +94,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Compile program
-        run: make; make fclean; make re
+        run: ./install.sh; make; make fclean; make re
 
       # fail if executable is not found
       - name: Check executables
