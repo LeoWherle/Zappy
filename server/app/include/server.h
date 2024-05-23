@@ -9,6 +9,8 @@
 
 #include "common.h"
 #include "packets.h"
+#include "trantor.h"
+#include "trantor/player.h"
 #include "sstrings.h"
 #include "vector.h"
 #include <arpa/inet.h>
@@ -33,6 +35,9 @@ typedef struct server_s {
     struct sockaddr_in addr;
     vector_t clients;
     serv_command_t command;
+    struct {
+        trantor_t trantor;
+    };
 } server_t;
 
 // both buffers are vectors of char
@@ -42,9 +47,8 @@ typedef struct client_s {
     string_t read_buf;
     string_t write_buf;
     struct {
-        struct {
-            bool logged_in;
-        };
+        bool sent_welcome;
+        player_t *player;
     };
 } client_t;
 
