@@ -7,6 +7,7 @@
 
 #include "buffer.h"
 #include "trantor/map.h"
+#include "trantor/map_fn.h"
 #include "trantor/pcmd_args.h"
 #include "trantor/tile.h"
 #include "trantor/string_utils.h"
@@ -28,7 +29,7 @@ static tile_t **internal_player_look(pcmd_args_t *args, size_t *lenbuf)
 {
     direction_t ray_dir = (args->player->direction + 1) % 4;
     unbounded_coord_t start =
-        {(int) args->player->x, (int) args->player->y};
+        {(int) args->player->coord[0], (int) args->player->coord[0]};
     tile_t **tiles;
     size_t len = 1;
 
@@ -123,7 +124,7 @@ void player_take(pcmd_args_t *args)
     item_t i;
     tile_t *t;
 
-    t = GET_TILE(args->map, args->player->x, args->player->y);
+    t = CGET_TILE(args->map, args->player->coord);
     if (!HAS_ITEM(*t, args->item)) {
         SAY_KO(args->player->response_buffer);
         return;

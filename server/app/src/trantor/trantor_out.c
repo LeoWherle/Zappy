@@ -6,6 +6,7 @@
 */
 
 #include "trantor.h"
+#include "trantor/map_fn.h"
 
 #include <stdlib.h>
 #include <time.h>

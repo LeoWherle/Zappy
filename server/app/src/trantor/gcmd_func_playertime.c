@@ -13,7 +13,7 @@ void gui_ppo(trantor_t *trantor, gcmd_args_t *args)
     player_t *player = vec_at(trantor->players, args->n);
 
     talkf(trantor->log, "ppo %d %d %d %d\n", args->n,
-        player->x, player->y, player->direction + 1);
+        player->coord[0], player->coord[1], player->direction + 1);
 }
 
 void gui_plv(trantor_t *trantor, gcmd_args_t *args)
@@ -27,8 +27,8 @@ void gui_pin(trantor_t *trantor, gcmd_args_t *args)
 {
     player_t *player = vec_at(trantor->players, args->n);
 
-    talkf(trantor->log, "pin %d %d %d %d %d %d %d %d %d %d\n",
-        args->n, player->x, player->y, player->inventory.items[0],
+    talkf(trantor->log, "pin %d %d %d %d %d %d %d %d %d %d\n", args->n,
+        player->coord[0], player->coord[1], player->inventory.items[0],
         player->inventory.items[1], player->inventory.items[2],
         player->inventory.items[3], player->inventory.items[4],
         player->inventory.items[5], player->inventory.items[6]);

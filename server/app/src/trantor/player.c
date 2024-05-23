@@ -6,18 +6,19 @@
 */
 
 #include "trantor/player.h"
+#include "trantor/map.h"
 
 #include <stdlib.h>
 
 
-void init_egg(player_t *player, team_t team, len_t x, len_t y)
+void init_egg(player_t *player, team_t team, coord_t c)
 {
     static unsigned int last_n_given = 0;
 
     player->is_egg = true;
     player->team = team;
-    player->x = x;
-    player->y = y;
+    player->coord[0] = c[0];
+    player->coord[1] = c[1];
     player->n = last_n_given;
     last_n_given++;
 }

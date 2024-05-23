@@ -9,6 +9,7 @@
 
 #include "trantor/common.h"
 #include "trantor/direction.h"
+#include "trantor/map.h"
 #include "trantor/tile.h"
 #include "trantor/pcmd_exec.h"
 
@@ -22,8 +23,7 @@ typedef struct player_s player_t;
 struct player_s {
     bool is_egg;
     team_t team;
-    len_t x;
-    len_t y;
+    coord_t coord;
     direction_t direction;
     tile_t inventory;
     elevation_t elevation;
@@ -35,6 +35,6 @@ struct player_s {
     unsigned int n;
 };
 
-void init_egg(player_t *player, team_t team, len_t x, len_t y);
+void init_egg(player_t *player, team_t team, coord_t c);
 void hatch_egg(player_t *player);
 void destroy_player(void *player);

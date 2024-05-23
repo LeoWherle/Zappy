@@ -6,7 +6,7 @@
 */
 
 #include "trantor/direction.h"
-#include "trantor/map.h"
+#include "trantor/map_fn.h"
 
 #include <math.h>
 #include <string.h>
@@ -26,8 +26,8 @@ void add_direction(unbounded_coord_t *coord, direction_t direction)
 
 void player_move(player_t *player, map_t *map, direction_t direction)
 {
-    int new_x = ((int)player->x) + DIRECTIONS[direction][0];
-    int new_y = ((int)player->y) + DIRECTIONS[direction][1];
+    int new_x = ((int)player->coord[0]) + DIRECTIONS[direction][0];
+    int new_y = ((int)player->coord[1]) + DIRECTIONS[direction][1];
 
     if (new_x < 0)
         new_x = ((int) map->width) - 1;
@@ -37,8 +37,8 @@ void player_move(player_t *player, map_t *map, direction_t direction)
         new_x = 0;
     if (new_y >= ((int) map->height))
         new_y = 0;
-    player->x = (len_t) new_x;
-    player->y = (len_t) new_y;
+    player->coord[0] = (len_t) new_x;
+    player->coord[1] = (len_t) new_y;
 }
 
 tile_t *unbounded_tile_get(map_t *map, int x, int y)

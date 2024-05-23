@@ -15,7 +15,8 @@ void gui_error(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 
 void gui_msz(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 {
-    talkf(trantor->log, "msz %d %d\n", trantor->map.width, trantor->map.height);
+    talkf(trantor->log, "msz %d %d\n",
+        trantor->map.width, trantor->map.height);
 }
 
 void gui_bct(trantor_t *trantor, gcmd_args_t *args)

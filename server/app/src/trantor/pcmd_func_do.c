@@ -7,7 +7,7 @@
 
 #include "trantor/direction.h"
 #include "trantor/pcmd_args.h"
-#include "trantor/map.h"
+#include "trantor/map_fn.h"
 #include "serrorh.h"
 #include "trantor/tile.h"
 #include "trantor/string_utils.h"
@@ -26,8 +26,7 @@ void player_broadcast(pcmd_args_t *args)
         if (p == args->player)
             continue;
         sq = get_receiving_square(args->map, p->direction,
-            (coord_t){args->player->x, args->player->y},
-            (coord_t){p->x, p->y});
+            args->player->coord, p->coord);
         talkf(p->response_buffer, "message %d, %s\n",
             sq, args->player->pcmd_exec.arg);
     }
@@ -40,7 +39,7 @@ void player_fork(pcmd_args_t *args)
 
     SAY_OK(args->player->response_buffer);
     egg = malloc(sizeof(player_t));
-    init_egg(egg, args->player->team, args->player->x, args->player->y);
+    init_egg(egg, args->player->team, args->player->coord);
     if (vec_push(args->players, egg) != BUF_OK)
         LOG_ERROR("Error while pushing egg to players");
 }
@@ -59,7 +58,7 @@ static bool player_eject_step(pcmd_args_t *args, unsigned int *i)
     if (vec_at(args->players, *i) == args->player)
         return false;
     tmp = vec_at(args->players, *i);
-    if (tmp->x != args->player->x || tmp->y == args->player->y)
+    if (COORD_EQ(tmp->coord, args->player->coord))
         return false;
     if (!tmp->is_egg) {
         player_move(tmp, args->map, args->player->direction);
@@ -86,7 +85,7 @@ void player_set(pcmd_args_t *args)
     item_t i;
     tile_t *t;
 
-    t = GET_TILE(args->map, args->player->x, args->player->y);
+    t = CGET_TILE(args->map, args->player->coord);
     if (!HAS_ITEM(args->player->inventory, args->item)) {
         SAY_KO(args->player->response_buffer);
         return;

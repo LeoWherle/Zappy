@@ -7,6 +7,7 @@
 
 #include "trantor/pcmd_args.h"
 #include "trantor/string_utils.h"
+#include "trantor/map_fn.h"
 
 void player_error(pcmd_args_t *args)
 {
