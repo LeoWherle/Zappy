@@ -12,21 +12,21 @@ class colors:
 class logger:
 
     @staticmethod
-    def server(msg):
-        print(colors.OKBLUE + "SERVER:" + colors.ENDC, msg, end="")
+    def server(msg, id):
+        print(colors.OKBLUE + f"SERVER for AI {id}:" + colors.ENDC, msg, end="")
 
     @staticmethod
-    def ai(msg):
-        print(colors.OKCYAN + "AI:" + colors.ENDC, msg, end="")
+    def ai(msg, id):
+        print(colors.OKCYAN + f"AI {id}:" + colors.ENDC, msg, end="")
 
     @staticmethod
-    def info(msg):
-        print(colors.OKGREEN + "INFO:" + colors.ENDC, msg)
+    def info(msg, id):
+        print(colors.OKGREEN + f"INFO AI {id}:" + colors.ENDC, msg)
 
     @staticmethod
-    def error(msg):
-        print(colors.FAIL + "ERROR:" + colors.ENDC, msg)
+    def error(msg, id):
+        print(colors.FAIL + f"ERROR AI {id}:" + colors.ENDC, msg)
 
     @staticmethod
-    def warning(msg):
-        print(colors.WARNING + "WARNING:" + colors.ENDC, msg)
+    def warning(msg, id):
+        print(colors.WARNING + f"WARNING AI {id}:" + colors.ENDC, msg)

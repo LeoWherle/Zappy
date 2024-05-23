@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 from sys import argv
 import argparse
-from connection import Server
+from connection import ServerConnection
 from ai_class import AI
 
 def run(args):
     """Run the program"""
 
-    serv = Server(args.h, args.p)
+    serv = ServerConnection(args.h, args.p)
     if not serv.connect():
         return 84
 
-    ai = AI(args.n, serv)
-    ai.inventory() # Get the inventory as a dictionary
-    ai.turn_right() # Turn the AI right
-    ai.forward() # Move the AI forward
-    ai.look() # Look around
+    ai = AI(args.n, serv, 0)
+    while (not ai.dead and ai.lvl < 2):
+        ai.incantation()
+        ai.take("food")
+        ai.forward()
 
-    input("\nPress Enter to exit... (fake AI loop)") # fake AI loop
+    ai.inventory()
+
+    input("Press Enter to disconnect... ")
 
     serv.close_connection() # End of the program
     return 0
