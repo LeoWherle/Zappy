@@ -5,6 +5,17 @@
 ## Makefile
 ##
 
+GRAY		=	\033[1;30m
+RED			=	\033[1;31m
+GREEN 		= 	\033[1;32m
+YELLOW		=	\033[1;33m
+BLUE		=	\033[1;34m
+PURPLE		=	\033[1;35m
+CYAN		=	\033[1;36m
+WHITE		=	\033[1;37m
+
+RESET		=	\033[0m
+
 BIN_AI=zappy_ai
 BIN_SERVER=zappy_server
 BIN_GUI=zappy_gui
@@ -16,6 +27,19 @@ FOLDER_GUI=gui/
 
 MAKE  = make --no-print-directory
 
+RAYLIB_PATH=gui/raylib/src
+RAYLIB_CPP_PATH=gui/raylib-cpp
+
+install:
+	@git submodule update --init --recursive
+	$(MAKE) -C $(RAYLIB_PATH) clean
+	$(MAKE) -C $(RAYLIB_PATH) PLATFORM=PLATFORM_DESKTOP
+	@rm -rf $(RAYLIB_CPP_PATH)/build
+	@mkdir $(RAYLIB_CPP_PATH)/build
+	@cmake .. -B$(RAYLIB_CPP_PATH)/build -S$(RAYLIB_CPP_PATH)
+	$(MAKE) -C $(RAYLIB_CPP_PATH)/build
+	$(MAKE) -C gui/ setup
+	echo -e "$(GREEN)✓ Raylib installed sucessfully$(RESET)"
 
 all: $(BIN_SERVER) $(BIN_AI)  $(BIN_GUI)
 
