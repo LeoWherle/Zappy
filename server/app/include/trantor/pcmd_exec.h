@@ -8,7 +8,6 @@
 #pragma once
 
 #include "trantor/pcmd.h"
-#include "trantor/tile.h"
 
 typedef struct pcmd_executor_s {
     pcommand_t command;
