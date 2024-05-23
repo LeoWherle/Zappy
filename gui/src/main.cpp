@@ -1,58 +1,29 @@
-/*
-** EPITECH PROJECT, 2024
-** zappy
-** File description:
-** main raylib
-*/
+#include <raylib-cpp.hpp>
 
-#include "raylib-cpp.hpp"
-
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
-int main(void)
-{
+int main() {
+    
     // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    int screenWidth = 800;
+    int screenHeight = 450;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-
-    // TODO: Load resources / Initialize variables at this point
-
+    raylib::Color textColor(LIGHTGRAY);
+    raylib::Window w(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
+    
     SetTargetFPS(60);
-    //--------------------------------------------------------------------------------------
 
     // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    while (!w.ShouldClose()) // Detect window close button or ESC key
     {
         // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update variables / Implement example logic at this point
-        //----------------------------------------------------------------------------------
+
+        // TODO: Update your variables here
 
         // Draw
-        //----------------------------------------------------------------------------------
         BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            // TODO: Draw everything that requires to be drawn at this point:
-
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);  // Example
-
+        ClearBackground(RAYWHITE);
+        textColor.DrawText("Congrats! You created your first window!", 190, 200, 20);
         EndDrawing();
-        //----------------------------------------------------------------------------------
     }
-
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-
-    // TODO: Unload all loaded resources at this point
-
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
 
     return 0;
 }

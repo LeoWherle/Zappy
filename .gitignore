@@ -118,6 +118,8 @@ gui/include
 gui/lib
 gui/bin
 gui/.idea
+gui/docs
+gui/vendor
 
 !.vscode/launch.json
 __pycache__/
