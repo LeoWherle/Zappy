@@ -24,7 +24,6 @@ jobs:
 
       - name: Run coding style checker
         run: |
-          rm -rf libs/myteams
           check.sh $(pwd) $(pwd)
 
           declare -A error_messages
@@ -79,7 +78,7 @@ jobs:
             message=$(echo "$line" | awk -F ':' '{print $4}')
             custom_message="${error_messages[$message]:-Unknown Error}"
             echo "::error file=$file,line=$line_number::$severity $message $custom_message"
-          done < coding-style-reports.log
+          done
           line_count=$(grep --invert-match "./server/tests" coding-style-reports.log | wc -l)
           if [ "$line_count" -gt 0 ]; then
             echo "::error::Too many style errors (skill issue)"
