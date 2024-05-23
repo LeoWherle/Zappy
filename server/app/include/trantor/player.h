@@ -32,6 +32,7 @@ struct player_s {
     bool busy;
     pcmd_executor_t pcmd_exec;
     player_t *incantator;
+    unsigned int n;
 };
 
 void init_egg(player_t *player, team_t team, len_t x, len_t y);
