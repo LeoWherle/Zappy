@@ -31,6 +31,8 @@ class Server:
         if response.__contains__("dead"):
             logger.warning("The AI is dead")
             ai.dead = True
+        if response.__contains__("Elevation underway"):
+            ai.lvl += 1
         return response
     
     def send_team(self, team):

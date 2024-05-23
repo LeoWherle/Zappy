@@ -4,6 +4,7 @@ class AI:
     def __init__(self, team, serv):
         self.serv = serv
         self.team = team
+        self.lvl = 1
         self.dead = False
 
         team_slots_left = serv.send_team(team)
