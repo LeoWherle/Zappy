@@ -25,14 +25,14 @@ jobs:
       - name: Run coding style checker
         run: |
           check.sh $(pwd) $(pwd)
-          grep --invert-match "./server/tests" coding-style-reports.log | while IFS= read -r line; do
+          grep --invert-match "./server/tests|./gui/raylib|./gui/raylib_cpp" coding-style-reports.log | while IFS= read -r line; do
             file=$(echo "$line" | awk -F ':' '{print $1}')
             line_number=$(echo "$line" | awk -F ':' '{print $2}')
             severity=$(echo "$line" | awk -F ':' '{print $3}')
             message=$(echo "$line" | awk -F ':' '{print $4}')
             echo "::error file=$file,line=$line_number::$severity $message"
           done
-          line_count=$(grep --invert-match "./server/tests" coding-style-reports.log | wc -l)
+          line_count=$(grep --invert-match "./server/tests|./gui/raylib|./gui/raylib_cpp" coding-style-reports.log | wc -l)
           if [ "$line_count" -gt 6 ]; then
             echo "::error::Too many style errors"
             exit 1
