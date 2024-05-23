@@ -30,18 +30,27 @@ MAKE  = make --no-print-directory
 RAYLIB_PATH=gui/raylib/src
 RAYLIB_CPP_PATH=gui/raylib-cpp
 
-install:
-	@git submodule update --init --recursive
-	$(MAKE) -C $(RAYLIB_PATH) clean
-	$(MAKE) -C $(RAYLIB_PATH) PLATFORM=PLATFORM_DESKTOP
-	@rm -rf $(RAYLIB_CPP_PATH)/build
-	@mkdir $(RAYLIB_CPP_PATH)/build
-	@cmake .. -B$(RAYLIB_CPP_PATH)/build -S$(RAYLIB_CPP_PATH)
-	$(MAKE) -C $(RAYLIB_CPP_PATH)/build
-	$(MAKE) -C gui/ setup
-	echo -e "$(GREEN)✓ Raylib installed sucessfully$(RESET)"
 
 all: $(BIN_SERVER) $(BIN_AI)  $(BIN_GUI)
+
+submodules:
+	@git submodule update --init --recursive
+
+install: submodules setup
+
+install-raylib:
+	$(MAKE) -C $(RAYLIB_PATH) clean
+	$(MAKE) -C $(RAYLIB_PATH) PLATFORM=PLATFORM_DESKTOP
+
+install-raylib-cpp:
+	@rm -rf $(RAYLIB_CPP_PATH)/build
+	@mkdir $(RAYLIB_CPP_PATH)/build
+	@cmake -B$(RAYLIB_CPP_PATH)/build -S$(RAYLIB_CPP_PATH)
+	$(MAKE) -C $(RAYLIB_CPP_PATH)/build
+
+setup: install-raylib-cpp install-raylib
+	$(MAKE) -C gui/ setup
+	@echo -e "$(GREEN)✓ Raylib installed sucessfully$(RESET)"
 
 $(BIN_AI):
 	@$(MAKE) -C $(FOLDER_AI)
@@ -73,5 +82,6 @@ fclean:
 
 re: fclean all
 
-.PHONY: all zappy_ai zappy_server zappy_gui clean fclean re
-.NOTPARALLEL: re
+.PHONY: all zappy_ai zappy_server zappy_gui clean fclean re setup \
+install-raylib install-raylib-cpp install build_lib submodules
+.NOTPARALLEL: re install
