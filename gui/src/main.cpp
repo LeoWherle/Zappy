@@ -6,53 +6,49 @@
 */
 
 #include "raylib-cpp.hpp"
+#include "Client.hpp"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main(void)
+int main(int ac, char **av)
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
-
-    // TODO: Load resources / Initialize variables at this point
-
-    SetTargetFPS(60);
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        // Update
-        //----------------------------------------------------------------------------------
-        // TODO: Update variables / Implement example logic at this point
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            // TODO: Draw everything that requires to be drawn at this point:
-
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);  // Example
-
-        EndDrawing();
-        //----------------------------------------------------------------------------------
+    if (ac < 3) {
+        return 84;
     }
+    bool run = true;
+    std::string ip = av[1];
+    std::size_t port = atoi(av[2]);
+    connection::Client conn(1000000, ip, port);
+    ReadBuffer stdInput;
+    ReadBuffer in;
+    WriteBuffer StdOutput;
+    WriteBuffer out;
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-
-    // TODO: Unload all loaded resources at this point
-
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
-
+    while (run) {
+        conn.handleSelect(in, out, stdInput, StdOutput);
+        std::vector<std::uint8_t> stdinBuff = stdInput.buffer();
+        std::vector<std::uint8_t> inBuff = in.buffer();
+        int consummed = 0;
+        std::vector<std::uint8_t> tmp;
+        if (stdinBuff.size() > 0) {
+            std::vector<std::uint8_t> tmp = {'p', 'i', 'n', 'g'};
+            if (stdinBuff == tmp) {
+                out.write_to_buffer("ping");
+            }
+            std::vector<std::uint8_t> tmp = {'e', 'x', 'i', 't'};
+            if (stdinBuff == tmp) {
+                run = false;
+            }
+            stdInput.consume(stdinBuff.size());
+        }
+        if (inBuff.size() > 0) {
+            tmp = {'p', 'o', 'n', 'g'};
+            if (inBuff == tmp) {
+                StdOutput.write_to_buffer("Pong !");
+            }
+            in.consume(inBuff.size());
+        }
+    }
     return 0;
 }
