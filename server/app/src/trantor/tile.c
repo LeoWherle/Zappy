@@ -13,7 +13,7 @@ const float DENSITIES[7] = {
     0.5f, 0.3f, 0.15f, 0.1f, 0.1f, 0.08f, 0.05f
 };
 
-const tile_t INVOCATION_REQUIREMENTS[7] = {
+const tile_t STONE_ELEV_REQ[7] = {
     {{0, 1, 0, 0, 0, 0, 0}},
     {{0, 1, 1, 1, 0, 0, 0}},
     {{0, 2, 0, 1, 0, 2, 0}},
@@ -69,12 +69,17 @@ static bool tile_contains_tile(const tile_t *first, const tile_t *second)
 
 bool tile_can_invocate(tile_t *tile, unsigned int level)
 {
-    return tile_contains_tile(tile, &INVOCATION_REQUIREMENTS[level - 1]);
+    return tile_contains_tile(tile, &STONE_ELEV_REQ[level - 1]);
 }
 
-void take_tile_from_tile(tile_t *container, const tile_t *list)
+static void take_tile_from_tile(tile_t *container, const tile_t *list)
 {
     for (unsigned int i = 0; i < 7; i++) {
         container->items[i] -= list->items[i];
     }
+}
+
+void tile_invocate(tile_t *tile, unsigned int level)
+{
+    take_tile_from_tile(tile, &STONE_ELEV_REQ[level - 1]);
 }

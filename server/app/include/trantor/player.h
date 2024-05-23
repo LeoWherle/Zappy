@@ -17,7 +17,9 @@
 
 #define PLAYER_IS_AT(pl, x, y) (pl.x == x && pl.y == y)
 
-typedef struct player_s {
+typedef struct player_s player_t;
+
+struct player_s {
     bool is_egg;
     team_t team;
     len_t x;
@@ -29,7 +31,8 @@ typedef struct player_s {
     vector_t *response_buffer; // stores responses
     bool busy;
     pcmd_executor_t pcmd_exec;
-} player_t;
+    player_t *incantator;
+};
 
 void init_egg(player_t *player, team_t team, len_t x, len_t y);
 void hatch_egg(player_t *player);

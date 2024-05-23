@@ -9,6 +9,7 @@
 #include "trantor/pcmd_args.h"
 #include "trantor/map.h"
 #include "serrorh.h"
+#include "trantor/tile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -112,12 +113,6 @@ void player_set(pcmd_args_t *args)
     }
     i = TAKE_ITEM(args->player->inventory, args->item);
     ADD_ITEM(*t, i);
-    if (!SAY_OK(args->player->response_buffer))
-        LOG_ERROR("Error while sending OK to player");
-}
-
-void player_incantation(pcmd_args_t *args)
-{
     if (!SAY_OK(args->player->response_buffer))
         LOG_ERROR("Error while sending OK to player");
 }

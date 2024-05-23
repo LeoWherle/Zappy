@@ -42,3 +42,6 @@ void player_eject(pcmd_args_t *args);
 void player_take(pcmd_args_t *args);
 void player_set(pcmd_args_t *args);
 void player_incantation(pcmd_args_t *args);
+
+// Extra for pre-check
+bool can_invocate(vector_t *players, player_t *invocator, map_t *map);

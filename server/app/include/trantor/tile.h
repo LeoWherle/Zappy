@@ -26,4 +26,4 @@ void get_item_count(len_t width, len_t height, tile_t *quants);
 item_t rand_item(tile_t *items_left, len_t tiles_left);
 quant_t get_total_items(tile_t *tile);
 bool tile_can_invocate(tile_t *tile, unsigned int level);
-void take_tile_from_tile(tile_t *container, const tile_t *list);
+void tile_invocate(tile_t *tile, unsigned int level);
