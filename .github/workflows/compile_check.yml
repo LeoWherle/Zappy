@@ -22,10 +22,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Checkout submodules
-        run: |
-          git submodule update --init --recursive
-
       - name: Run coding style checker
         run: |
           rm -rf libs/myteams
@@ -96,6 +92,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Checkout submodules
+        run: |
+          git submodule update --init --recursive
 
       - name: Compile program
         run: make; make fclean; make re
