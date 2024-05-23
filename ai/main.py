@@ -15,6 +15,7 @@ def run(args):
     ai.inventory() # Get the inventory as a dictionary
     ai.turn_right() # Turn the AI right
     ai.forward() # Move the AI forward
+    ai.look() # Look around
 
     input("\nPress Enter to exit... (fake AI loop)") # fake AI loop
 

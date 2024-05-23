@@ -112,10 +112,21 @@ class AI:
             return
         logger.info(f"Dropped {obj}")
 
-    # Look
+    # Look, return a list of the objects around the AI
     def look(self):
         if (self.dead):
             logger.warning("AI is dead")
             return
-        logger.warning("Look not implemented yet")
+        response = self.serv.send("Look", self)
+        list = response.split("[")[1].split(",")
+        for i in range(len(list)):
+            list[i] = list[i].split(" ")
+        for elem in list:
+            for i in range(len(elem) - 1):
+                if elem[i] == "":
+                    elem.pop(i)
+        
+        list.pop(-1)
+        return list
+        
 
