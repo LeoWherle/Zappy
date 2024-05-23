@@ -24,9 +24,6 @@ jobs:
 
       - name: Run coding style checker
         run: |
-          rm -rf libs/myteams
-          check.sh $(pwd) $(pwd)
-
           declare -A error_messages
           error_messages["C-G1"]="Multiline statements should not use backslash"
           error_messages["C-G1"]="C files must contain header files (*.h && *.c)"
@@ -72,6 +69,7 @@ jobs:
           error_messages["C-A3"]="Files must end with a line break (LF, '\\\n')"
           error_messages["C-A4"]="Global variables and function unused outside of the file must be declared as static"
 
+          check.sh $(pwd)/server $(pwd)
           while IFS= read -r line; do
             file=$(echo "$line" | awk -F ':' '{print $1}')
             line_number=$(echo "$line" | awk -F ':' '{print $2}')
@@ -93,8 +91,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Checkout submodules
+        run: |
+          git config --global --add safe.directory /__w/B-YEP-400-TLS-4-1-zappy-leo.wehrle/B-YEP-400-TLS-4-1-zappy-leo.wehrle
+          git submodule update --init --recursive
+
+      # - name: Install dependencies
+      #   run: |
+      #     sudo apt install libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev
+
       - name: Compile program
-        run: make; make fclean; make re
+        run: make install; make; make fclean; make re
 
       # fail if executable is not found
       - name: Check executables
