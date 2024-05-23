@@ -14,11 +14,6 @@ const char *GCOMMAND_LINES[10] = {
     "", "msz", "bct", "mct", "tna", "ppo", "plv", "pin", "sgt", "sst"
 };
 
-gcmd_func_t GCOMMAND_FUNCS[10] = {
-    gui_error, gui_msz, gui_bct, gui_mct, gui_tna,
-    gui_ppo, gui_plv, gui_pin, gui_sgt, gui_sst
-};
-
 // WRONG (2nd atoi for bct)
 gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
 {

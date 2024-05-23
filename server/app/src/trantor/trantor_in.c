@@ -6,7 +6,9 @@
 */
 
 #include "trantor.h"
+#include "trantor/trantor_internal.h"
 #include "trantor/string_utils.h"
+#include "trantor/map_fn.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -28,7 +30,7 @@ void feed_player_line(
     talk(player->response_buffer, line);
 }
 
-// not implemented
 void gui_feed_trantor_line(trantor_t *trantor, const char *line)
 {
+    execute_gcmd(trantor, line);
 }
