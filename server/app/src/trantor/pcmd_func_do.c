@@ -23,7 +23,7 @@ static void warn_player_broadcast(
     len = snprintf(NULL, 0, "message %d, %s", sq, m);
     msg = malloc(sizeof(char) * (len + 1));
     sprintf(msg, "message %d, %s", sq, m);
-    if (vec_push(player->response_buffer, msg) != BUF_OK)
+    if (!SAY(player->response_buffer, msg))
         LOG_ERROR("Error while pushing broadcast message to player");
 }
 
@@ -66,7 +66,7 @@ static void warn_player_eject(player_t *player, direction_t from)
     len = snprintf(NULL, 0, "eject: %d", relative);
     msg = malloc(sizeof(char) * (len + 1));
     sprintf(msg, "eject: %d", relative);
-    if (vec_push(player->response_buffer, msg) != BUF_OK)
+    if (!SAY(player->response_buffer, msg))
         LOG_ERROR("Error while pushing eject message to player");
 }
 
@@ -116,7 +116,6 @@ void player_set(pcmd_args_t *args)
         LOG_ERROR("Error while sending OK to player");
 }
 
-// not implemented
 void player_incantation(pcmd_args_t *args)
 {
     if (!SAY_OK(args->player->response_buffer))

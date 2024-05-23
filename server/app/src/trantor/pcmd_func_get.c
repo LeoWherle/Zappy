@@ -85,7 +85,7 @@ void player_look(pcmd_args_t *args)
             len += sprintf(msg + len, ", ");
     }
     len += sprintf(msg + len, "]");
-    if (vec_push(args->player->response_buffer, msg) != BUF_OK)
+    if (!SAY(args->player->response_buffer, msg))
         LOG_ERROR("Error while pushing to response buffer");
 }
 
@@ -106,7 +106,7 @@ void player_inventory(pcmd_args_t *args)
             len += sprintf(msg + len, ", ");
     }
     len += sprintf(msg + len, "]");
-    if (vec_push(args->player->response_buffer, msg) != BUF_OK)
+    if (!SAY(args->player->response_buffer, msg))
         LOG_ERROR("Error while pushing to response buffer");
 }
 
@@ -118,7 +118,7 @@ void player_co_num(pcmd_args_t *args)
     len = snprintf(NULL, 0, "%d\n", args->cnb);
     msg = malloc(sizeof(char) * (len + 1));
     sprintf(msg, "%d\n", args->cnb);
-    if (vec_push(args->player->response_buffer, msg) != BUF_OK)
+    if (!SAY(args->player->response_buffer, msg))
         LOG_ERROR("Error while pushing to response buffer");
 }
 

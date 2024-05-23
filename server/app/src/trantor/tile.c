@@ -13,6 +13,16 @@ const float DENSITIES[7] = {
     0.5f, 0.3f, 0.15f, 0.1f, 0.1f, 0.08f, 0.05f
 };
 
+const tile_t INVOCATION_REQUIREMENTS[7] = {
+    {{0, 1, 0, 0, 0, 0, 0}},
+    {{0, 1, 1, 1, 0, 0, 0}},
+    {{0, 2, 0, 1, 0, 2, 0}},
+    {{0, 1, 1, 2, 0, 1, 0}},
+    {{0, 1, 2, 1, 3, 0, 0}},
+    {{0, 1, 2, 3, 0, 1, 0}},
+    {{0, 2, 2, 2, 2, 2, 1}}
+};
+
 void get_item_count(len_t width, len_t height, tile_t *quants)
 {
     len_t total = width * height;
@@ -48,30 +58,23 @@ item_t rand_item(tile_t *items_left, len_t tiles_left)
     return NONE_ITEM;
 }
 
-static unsigned int types_present(tile_t *tile)
+static bool tile_contains_tile(const tile_t *first, const tile_t *second)
 {
-    unsigned int count = 0;
-
     for (unsigned int i = 0; i < 7; i++) {
-        if (tile->items[i] > 0)
-            count++;
+        if (first->items[i] < second->items[i])
+            return false;
     }
-    return count;
+    return true;
 }
 
-item_t take_rand_item(tile_t *tile)
+bool tile_can_invocate(tile_t *tile, unsigned int level)
 {
-    unsigned int idx = 0;
-    unsigned int rand_type;
-    unsigned int count = types_present(tile);
+    return tile_contains_tile(tile, &INVOCATION_REQUIREMENTS[level - 1]);
+}
 
-    if (count == 0)
-        return NONE_ITEM;
-    for (unsigned int i = rand() % count; i == 0; idx++) {
-        if (tile->items[idx] > 0)
-            i--;
+void take_tile_from_tile(tile_t *container, const tile_t *list)
+{
+    for (unsigned int i = 0; i < 7; i++) {
+        container->items[i] -= list->items[i];
     }
-    rand_type = idx;
-    TAKE_ITEM(*tile, rand_type + 1);
-    return rand_type + 1;
 }
