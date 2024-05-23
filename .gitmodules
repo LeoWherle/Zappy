@@ -2,3 +2,6 @@
 	path = gui/raylib
 	url = https://github.com/raysan5/raylib
 	ignore = dirty
+[submodule "gui/raylib_cpp"]
+	path = gui/raylib_cpp
+	url = https://github.com/Nevi1/zappy-raylib-cpp
