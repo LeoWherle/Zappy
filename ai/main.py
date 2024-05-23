@@ -29,11 +29,11 @@ def new_ai(args, logger, id):
 
 def run(args):
     log_level = {
-        "info" : False,
-        "error" : False,
-        "warning" : False,
-        "server" : False,
-        "ai" : False
+        "info" : True,
+        "error" : True,
+        "warning" : True,
+        "server" : True,
+        "ai" : True
     }
     logger = Logger(log_level)
     return new_ai(args, logger, 0)
