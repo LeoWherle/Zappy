@@ -25,7 +25,7 @@ void command_log(server_t *server, serv_context_t *context, vector_t *args)
         return;
     }
     for (size_t i = 0; i < sizeof(level_str) / sizeof(*level_str); i++) {
-        item = *(char **)vec_at(args, 1);
+        item = *(char **) vec_at(args, 1);
         if (strncasecmp(item, level_str[i], strlen(level_str[i])) == 0) {
             log_set_level(i);
             return;
@@ -47,8 +47,7 @@ void command_ping(server_t *server, serv_context_t *context, vector_t *args)
     (void) context;
     (void) args;
     LOG_INFO("Received ping command");
-    if (vec_append_array(
-            &server->command.write_buf, &packet, sizeof(packet), 1)) {
+    if (str_push_bytes(&server->command.write_buf, &packet, sizeof(packet))) {
         LOG_ERROR("Failed to push response to write buffer");
     }
 }

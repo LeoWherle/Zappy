@@ -9,6 +9,7 @@
 #include "packets.h"
 #include "serrorh.h"
 #include "server.h"
+#include "sstrings.h"
 #include "trantor.h"
 #include "trantor/player.h"
 #include "vector.h"
@@ -19,7 +20,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-static size_t get_next_packet(vector_t *buf, size_t start)
+static size_t get_next_packet(string_t *buf, size_t start)
 {
     size_t i = start;
 
@@ -47,7 +48,7 @@ static void client_send_start_info(client_t *client, player_t *player)
         // snprintf(msg, sizeof(msg), "%d %d\n", player->x, player->y);
         client->player = player;
     }
-    if (vec_append_array(&client->write_buf, msg, strlen(msg), sizeof(char))
+    if (str_push_bytes(&client->write_buf, msg, strlen(msg))
         != BUF_OK) {
         LOG_ERROR("Failed to push start info to write buffer");
     }
@@ -90,8 +91,7 @@ static size_t client_send_welcome(client_t *client)
 {
     char msg[] = "WELCOME\n";
 
-    if (vec_append_array(&client->write_buf, msg, sizeof(msg), sizeof(char))
-        == BUF_OK) {
+    if (str_push_bytes(&client->write_buf, msg, sizeof(msg)) == BUF_OK) {
         client->sent_welcome = true;
         return 0;
     }

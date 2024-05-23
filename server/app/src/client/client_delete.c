@@ -14,8 +14,8 @@ void client_teardown(client_t *client)
 {
     if (client != NULL) {
         close(client->sd);
-        vec_reset(&client->read_buf);
-        vec_reset(&client->write_buf);
+        str_reset(&client->read_buf);
+        str_reset(&client->write_buf);
     }
 }
 

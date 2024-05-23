@@ -18,7 +18,8 @@ void init_egg(player_t *player, team_t team, len_t x, len_t y)
     player->team = team;
     player->x = x;
     player->y = y;
-    player->n = ++last_n_given;
+    player->n = last_n_given;
+    last_n_given++;
 }
 
 void hatch_egg(player_t *player)

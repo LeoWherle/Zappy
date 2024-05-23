@@ -17,8 +17,8 @@ static void server_teardown(server_t *server)
         return;
     }
     vec_reset(&server->clients);
-    vec_reset(&server->command.read_buf);
-    vec_reset(&server->command.write_buf);
+    str_reset(&server->command.read_buf);
+    str_reset(&server->command.write_buf);
     close(server->listen_sd);
 }
 

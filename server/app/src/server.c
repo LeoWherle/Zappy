@@ -26,13 +26,11 @@ static int server_init(server_t *server)
         LOG_ERROR("Failed to initialize server socket");
         return 1;
     }
-    if (vec_init(&server->command.read_buf, sizeof(char), NULL, NULL)
-        != BUF_OK) {
+    if (str_init(&server->command.read_buf, "") != BUF_OK) {
         LOG_ERROR("Failed to initialize command read buffer");
         return 1;
     }
-    if (vec_init(&server->command.write_buf, sizeof(char), NULL, NULL)
-        != BUF_OK) {
+    if (str_init(&server->command.write_buf, "") != BUF_OK) {
         LOG_ERROR("Failed to initialize command write buffer");
         return 1;
     }

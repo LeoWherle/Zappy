@@ -27,7 +27,7 @@
 
         cs = cs-flake.packages.${system}.report;
         cs-wrapped = (pkgs.writeShellScriptBin "cs" ''
-          ${cs}/bin/cs . --ignore-folders=bins
+          ${cs}/bin/cs . --ignore-folders=bins,server/tests,server/build
         '');
 
       in

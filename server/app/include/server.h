@@ -11,6 +11,7 @@
 #include "packets.h"
 #include "trantor.h"
 #include "trantor/player.h"
+#include "sstrings.h"
 #include "vector.h"
 #include <arpa/inet.h>
 #include <bits/types/sigset_t.h>
@@ -23,8 +24,8 @@
 // Read = stdin, Write = stdout
 // vector are char
 typedef struct serv_command_s {
-    vector_t read_buf;
-    vector_t write_buf;
+    string_t read_buf;
+    string_t write_buf;
 } serv_command_t;
 
 // clients is a vector if client_t
@@ -43,8 +44,8 @@ typedef struct server_s {
 typedef struct client_s {
     bool delete;
     int sd;
-    vector_t read_buf;
-    vector_t write_buf;
+    string_t read_buf;
+    string_t write_buf;
     struct {
         bool sent_welcome;
         player_t *player;
