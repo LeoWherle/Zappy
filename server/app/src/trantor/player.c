@@ -30,13 +30,13 @@ void hatch_egg(player_t *player)
         player->inventory.items[i] = 0;
     }
     player->elevation = 1;
-    player->pcmd_buffer = vec_new(sizeof(char *), NULL, NULL);
-    player->response_buffer = vec_new(sizeof(char *), NULL, NULL);
+    player->pcmd_buffer = str_new();
+    player->response_buffer = str_new();
     player->busy = false;
 }
 
 void destroy_player(void *player)
 {
-    vec_delete(((player_t *)player)->pcmd_buffer);
-    vec_delete(((player_t *)player)->response_buffer);
+    str_delete(((player_t *)player)->pcmd_buffer);
+    str_delete(((player_t *)player)->response_buffer);
 }

@@ -12,7 +12,7 @@
 #include "trantor/tile.h"
 #include "trantor/pcmd_exec.h"
 
-#include "vector.h"
+#include "sstrings.h"
 #include <stdbool.h>
 
 #define PLAYER_IS_AT(pl, x, y) (pl.x == x && pl.y == y)
@@ -27,8 +27,8 @@ struct player_s {
     direction_t direction;
     tile_t inventory;
     elevation_t elevation;
-    vector_t *pcmd_buffer; // stores received commands
-    vector_t *response_buffer; // stores responses
+    string_t *pcmd_buffer; // stores received commands
+    string_t *response_buffer; // stores responses
     bool busy;
     pcmd_executor_t pcmd_exec;
     player_t *incantator;

@@ -38,16 +38,16 @@ player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
 }
 
 // not implemented
-void trantor_time_pass(trantor_t *trantor)
+void trantor_time_pass(trantor_t *trantor, double delta)
 {
 }
 
-vector_t *get_player_buffer(player_t *player)
+string_t *get_player_buffer(player_t *player)
 {
     return player->response_buffer;
 }
 
-vector_t *get_gui_buffer(trantor_t *trantor)
+string_t *get_gui_buffer(trantor_t *trantor)
 {
     return trantor->log;
 }

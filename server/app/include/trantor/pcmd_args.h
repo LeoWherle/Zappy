@@ -13,11 +13,6 @@
 
 #include <string.h>
 
-#define SAY(buf, msg) (vec_push(buf, strdup(msg)) == BUF_OK)
-
-#define SAY_OK(buf) (SAY(buf, "ok"))
-#define SAY_KO(res) (SAY(res, "ko"))
-
 typedef struct pcmd_args_s {
     player_t *player;
     map_t *map;

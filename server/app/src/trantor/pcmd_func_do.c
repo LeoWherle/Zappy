@@ -10,23 +10,11 @@
 #include "trantor/map.h"
 #include "serrorh.h"
 #include "trantor/tile.h"
+#include "trantor/string_utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-
-static void warn_player_broadcast(
-    player_t *player, const char *m, unsigned int sq)
-{
-    char *msg = NULL;
-    size_t len = 0;
-
-    len = snprintf(NULL, 0, "message %d, %s", sq, m);
-    msg = malloc(sizeof(char) * (len + 1));
-    sprintf(msg, "message %d, %s", sq, m);
-    if (!SAY(player->response_buffer, msg))
-        LOG_ERROR("Error while pushing broadcast message to player");
-}
 
 void player_broadcast(pcmd_args_t *args)
 {
@@ -40,18 +28,17 @@ void player_broadcast(pcmd_args_t *args)
         sq = get_receiving_square(args->map, p->direction,
             (coord_t){args->player->x, args->player->y},
             (coord_t){p->x, p->y});
-        warn_player_broadcast(p, args->player->pcmd_exec.arg, sq);
+        talkf(p->response_buffer, "message %d, %s\n",
+            sq, args->player->pcmd_exec.arg);
     }
-    if (!SAY_OK(args->player->response_buffer))
-        LOG_ERROR("Error while sending OK to player");
+    SAY_OK(args->player->response_buffer);
 }
 
 void player_fork(pcmd_args_t *args)
 {
     player_t *egg = NULL;
 
-    if (!SAY_OK(args->player->response_buffer))
-        LOG_ERROR("Error while sending OK to player");
+    SAY_OK(args->player->response_buffer);
     egg = malloc(sizeof(player_t));
     init_egg(egg, args->player->team, args->player->x, args->player->y);
     if (vec_push(args->players, egg) != BUF_OK)
@@ -60,15 +47,9 @@ void player_fork(pcmd_args_t *args)
 
 static void warn_player_eject(player_t *player, direction_t from)
 {
-    char *msg = NULL;
-    size_t len = 0;
     direction_t relative = (4 + (from - player->direction)) % 4;
 
-    len = snprintf(NULL, 0, "eject: %d", relative);
-    msg = malloc(sizeof(char) * (len + 1));
-    sprintf(msg, "eject: %d", relative);
-    if (!SAY(player->response_buffer, msg))
-        LOG_ERROR("Error while pushing eject message to player");
+    talkf(player->response_buffer, "eject: %d\n", relative);
 }
 
 static bool player_eject_step(pcmd_args_t *args, unsigned int *i)
@@ -94,10 +75,10 @@ void player_eject(pcmd_args_t *args)
 
     for (unsigned int i = 0; i < args->players->nmemb; i++)
         has_ejected = (has_ejected || player_eject_step(args, &i));
-    if (has_ejected && !SAY_OK(args->player->response_buffer))
-        LOG_ERROR("Error while sending OK to player");
-    else if (!has_ejected && !SAY_KO(args->player->response_buffer))
-        LOG_ERROR("Error while sending KO to player");
+    if (has_ejected)
+        SAY_OK(args->player->response_buffer);
+    else
+        SAY_KO(args->player->response_buffer);
 }
 
 void player_set(pcmd_args_t *args)
@@ -107,12 +88,10 @@ void player_set(pcmd_args_t *args)
 
     t = GET_TILE(args->map, args->player->x, args->player->y);
     if (!HAS_ITEM(args->player->inventory, args->item)) {
-        if (!SAY_KO(args->player->response_buffer))
-            LOG_ERROR("Error while sending KO to player");
+        SAY_KO(args->player->response_buffer);
         return;
     }
     i = TAKE_ITEM(args->player->inventory, args->item);
     ADD_ITEM(*t, i);
-    if (!SAY_OK(args->player->response_buffer))
-        LOG_ERROR("Error while sending OK to player");
+    SAY_OK(args->player->response_buffer);
 }

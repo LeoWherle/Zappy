@@ -6,7 +6,7 @@
 */
 
 #include "trantor.h"
-#include "serrorh.h"
+#include "trantor/string_utils.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -19,13 +19,13 @@ void init_trantor(trantor_t *trantor, trantor_params_t *params)
     trantor->params = *params;
     init_map(params->width, params->height, &trantor->map);
     trantor->players = vec_new(sizeof(player_t), destroy_player, NULL);
+    trantor->log = str_new();
 }
 
 void feed_player_line(
     player_t *player, const char *line)
 {
-    if (vec_push(player->pcmd_buffer, strdup(line)) != BUF_OK)
-        LOG_ERROR("Error while pushing line to player buffer");
+    talk(player->response_buffer, line);
 }
 
 // not implemented

@@ -7,15 +7,15 @@
 
 #include "trantor/pcmd_args.h"
 #include "trantor/map.h"
-#include "serrorh.h"
 #include "trantor/tile.h"
+#include "trantor/string_utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 
 const unsigned int NPLAYER_ELEV_REQ[7] = {1, 2, 2, 4, 4, 6, 6};
-const char ELEV_MSG[] = "Elevation underway\nCurrent level: %d";
+const char ELEV_MSG[] = "Elevation underway\nCurrent level: %d\n";
 
 static unsigned int count_players_on_tile(
     vector_t *players, player_t *invocator)
@@ -46,20 +46,16 @@ bool can_invocate(vector_t *players, player_t *invocator, map_t *map)
 static void elevate_players(pcmd_args_t *args)
 {
     char *msg = NULL;
-    size_t len = 0;
     player_t *p = NULL;
 
-    len = snprintf(NULL, 0, ELEV_MSG, args->player->elevation + 1);
-    msg = malloc(sizeof(char) * (len + 1));
-    sprintf(msg, ELEV_MSG, args->player->elevation + 1);
+    msg = aprintf(ELEV_MSG, args->player->elevation + 1);
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
         p = vec_at(args->players, i);
         if (!(p->x == args->player->x && p->y == args->player->y
             && p->elevation == args->player->elevation))
             continue;
         p->elevation++;
-        if (!SAY(p->response_buffer, msg))
-            LOG_ERROR("Error while pushing elevation message to player");
+        talk(p->response_buffer, msg);
         p->incantator = NULL;
     }
 }
@@ -67,8 +63,7 @@ static void elevate_players(pcmd_args_t *args)
 void player_incantation(pcmd_args_t *args)
 {
     if (!can_invocate(args->players, args->player, args->map)) {
-        if (!SAY_KO(args->player->response_buffer))
-            LOG_ERROR("Error while sending KO to player");
+        SAY_KO(args->player->response_buffer);
         return;
     }
     tile_invocate(GET_TILE(args->map, args->player->x, args->player->y),

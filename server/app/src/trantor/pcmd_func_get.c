@@ -5,10 +5,11 @@
 ** pmcd funcs source file
 */
 
+#include "buffer.h"
 #include "trantor/map.h"
 #include "trantor/pcmd_args.h"
-#include "serrorh.h"
 #include "trantor/tile.h"
+#include "trantor/string_utils.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -73,31 +74,34 @@ void player_look(pcmd_args_t *args)
     char *msg = NULL;
     size_t tnb = 0;
     tile_t **tiles = internal_player_look(args, &tnb);
-    size_t len = 2 + ((tnb - 1) * 2);
+    size_t len = 3 + ((tnb - 1) * 2);
 
     for (size_t i = 0; i < tnb; i++)
         len += get_tile_req_size(tiles[i]);
-    msg = malloc(sizeof(char) * (len + 1));
+    if (vec_reserve(str_to_vec(args->player->response_buffer), len) != BUF_OK)
+        return;
+    msg = STRING_END(args->player->response_buffer);
     len = sprintf(msg, "[");
     for (size_t i = 0; i < tnb; i++) {
         sprintf_tile(msg + len, tiles[i], &len);
         if (i != tnb - 1)
             len += sprintf(msg + len, ", ");
     }
-    len += sprintf(msg + len, "]");
-    if (!SAY(args->player->response_buffer, msg))
-        LOG_ERROR("Error while pushing to response buffer");
+    len += sprintf(msg + len, "]\n");
+    talk(args->player->response_buffer, msg);
 }
 
 void player_inventory(pcmd_args_t *args)
 {
     char *msg = NULL;
-    size_t len = 2 + 6;
+    size_t len = 2 + 6 + 1;
 
     for (unsigned int i = 0; i < 7; i++)
         len += snprintf(NULL, 0, "%s %d", ITEM_NAMES[i],
             args->player->inventory.items[i]);
-    msg = malloc(sizeof(char) * (len + 1));
+    if (vec_reserve(str_to_vec(args->player->response_buffer), len) != BUF_OK)
+        return;
+    msg = STRING_END(args->player->response_buffer);
     len = sprintf(msg, "[");
     for (unsigned int i = 0; i < 7; i++) {
         len += sprintf(msg + len, "%s %d", ITEM_NAMES[i],
@@ -105,21 +109,13 @@ void player_inventory(pcmd_args_t *args)
         if (i != 6)
             len += sprintf(msg + len, ", ");
     }
-    len += sprintf(msg + len, "]");
-    if (!SAY(args->player->response_buffer, msg))
-        LOG_ERROR("Error while pushing to response buffer");
+    len += sprintf(msg + len, "]\n");
+    talk(args->player->response_buffer, msg);
 }
 
 void player_co_num(pcmd_args_t *args)
 {
-    char *msg = NULL;
-    size_t len = 0;
-
-    len = snprintf(NULL, 0, "%d\n", args->cnb);
-    msg = malloc(sizeof(char) * (len + 1));
-    sprintf(msg, "%d\n", args->cnb);
-    if (!SAY(args->player->response_buffer, msg))
-        LOG_ERROR("Error while pushing to response buffer");
+    talkf(args->player->response_buffer, "%d\n", args->cnb);
 }
 
 void player_take(pcmd_args_t *args)
@@ -129,12 +125,10 @@ void player_take(pcmd_args_t *args)
 
     t = GET_TILE(args->map, args->player->x, args->player->y);
     if (!HAS_ITEM(*t, args->item)) {
-        if (!SAY_KO(args->player->response_buffer))
-            LOG_ERROR("Error while sending KO to player");
+        SAY_KO(args->player->response_buffer);
         return;
     }
     i = TAKE_ITEM(*t, args->item);
     ADD_ITEM(args->player->inventory, i);
-    if (!SAY_OK(args->player->response_buffer))
-        LOG_ERROR("Error while sending OK to player");
+    SAY_OK(args->player->response_buffer);
 }

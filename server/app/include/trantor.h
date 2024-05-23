@@ -13,7 +13,7 @@
 
 /**
  * @brief The trantor structure. This is the main structure of the server app.
- * It contains the map, the players, the log buffer and the last time the
+ * It contains the map, the players and the log buffer
  * server was updated.
  *
  * @param params the parameters of Trantor, see trantor/params.h
@@ -21,14 +21,12 @@
  * @param players a vector of player_t *
  * @param log a vector of char * containing the log of the server, destined to
  * the GUI
- * @param last_time the last time the server was updated
  */
 typedef struct trantor_s {
     trantor_params_t params;
     map_t map;
     vector_t *players;
-    vector_t *log;
-    double last_time;
+    string_t *log;
 } trantor_t;
 
 void init_trantor(trantor_t *trantor, trantor_params_t *params);
@@ -65,22 +63,23 @@ void feed_player_line(
 void gui_feed_trantor_line(trantor_t *trantor, const char *line);
 
 /**
- * @brief Actualize the server app to now. Will decrement ongoing actions with
- * a delta time. Some actions might be triggered, and the corresponding buffers
- * (players and log) will be fed.
+ * @brief Actualize the server app with delta. Will decrement ongoing actions
+ * with a delta time. Some actions might be triggered, and the corresponding
+ * buffers (players and log) will be fed.
  *
  * @param trantor a pointer to trantor
+ * @param delta the time passed since last time
  */
-void trantor_time_pass(trantor_t *trantor);
+void trantor_time_pass(trantor_t *trantor, double delta);
 
 /**
  * @brief returns the list of lines to send to a player
  * please empty them, i'll not do it
  */
-vector_t *get_player_buffer(player_t *player);
+string_t *get_player_buffer(player_t *player);
 
 /**
  * @brief returns the list of lines to send to the GUI
  * please empty them, i'll not do it
  */
-vector_t *get_gui_buffer(trantor_t *trantor);
+string_t *get_gui_buffer(trantor_t *trantor);

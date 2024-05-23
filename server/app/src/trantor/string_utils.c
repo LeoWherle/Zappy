@@ -46,3 +46,19 @@ void talkf(string_t *buf, const char *fmt, ...)
     va_end(args);
     free(str);
 }
+
+char *aprintf(const char *fmt, ...)
+{
+    va_list args;
+    int len = 0;
+    char *str = NULL;
+
+    va_start(args, fmt);
+    len = vsnprintf(NULL, 0, fmt, args);
+    if (len == -1)
+        return NULL;
+    str = malloc(sizeof(char) * (len + 1));
+    vsprintf(str, fmt, args);
+    va_end(args);
+    return str;
+}
