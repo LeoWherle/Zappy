@@ -8,6 +8,7 @@
 #pragma once
 
 #include "trantor/common.h"
+#include "trantor/item.h"
 
 #define PCMD_COUNT 13
 
@@ -27,9 +28,11 @@ typedef enum pcommand_e {
     INCANTATION_PCMD = 13
 } pcommand_t;
 
+#define PCMD_NEEDS_OBJ(c) (c == 11 || c == 12)
+
 typedef struct broadcast_buffer_s {
     len_t pos[2];
     char *msg;
 } broadcast_buffer_t;  // gneh
 
-pcommand_t parse_pcmd(const char *pcmd, char **arg);
+pcommand_t parse_pcmd(const char *pcmd, char **arg, item_t *item);

@@ -125,11 +125,16 @@ void player_co_num(pcmd_args_t *args)
 void player_take(pcmd_args_t *args)
 {
     item_t i;
+    tile_t *t;
 
+    t = GET_TILE(args->map, args->player->x, args->player->y);
+    if (!HAS_ITEM(*t, args->item)) {
+        if (!SAY_KO(args->player->response_buffer))
+            LOG_ERROR("Error while sending KO to player");
+        return;
+    }
+    i = TAKE_ITEM(*t, args->item);
+    ADD_ITEM(args->player->inventory, i);
     if (!SAY_OK(args->player->response_buffer))
         LOG_ERROR("Error while sending OK to player");
-    i = take_rand_item(GET_TILE(args->map, args->player->x, args->player->y));
-    if (i == NONE_ITEM)
-        return;
-    ADD_ITEM(args->player->inventory, i);
 }

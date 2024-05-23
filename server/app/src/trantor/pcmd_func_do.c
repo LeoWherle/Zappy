@@ -102,11 +102,18 @@ void player_eject(pcmd_args_t *args)
 void player_set(pcmd_args_t *args)
 {
     item_t i;
+    tile_t *t;
 
+    t = GET_TILE(args->map, args->player->x, args->player->y);
+    if (!HAS_ITEM(args->player->inventory, args->item)) {
+        if (!SAY_KO(args->player->response_buffer))
+            LOG_ERROR("Error while sending KO to player");
+        return;
+    }
+    i = TAKE_ITEM(args->player->inventory, args->item);
+    ADD_ITEM(*t, i);
     if (!SAY_OK(args->player->response_buffer))
         LOG_ERROR("Error while sending OK to player");
-    i = take_rand_item(&(args->player->inventory));
-    ADD_ITEM(*GET_TILE(args->map, args->player->x, args->player->y), i);
 }
 
 // not implemented

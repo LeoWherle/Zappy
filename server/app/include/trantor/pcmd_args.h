@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "trantor/item.h"
 #include "trantor/player.h"
 #include "trantor/map.h"
 
@@ -21,6 +22,7 @@ typedef struct pcmd_args_s {
     player_t *player;
     map_t *map;
     char *broadcast_msg;
+    item_t item;
     vector_t *players;
     unsigned int cnb;
 } pcmd_args_t;

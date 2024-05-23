@@ -20,6 +20,6 @@ pcmd_func_t COMMAND_FUNCS[PCMD_COUNT] = {
 
 void init_pcmd_executor(const char *pcmd, float f, pcmd_executor_t *res)
 {
-    res->command = parse_pcmd(pcmd, &(res->arg));
+    res->command = parse_pcmd(pcmd, &(res->arg), &(res->item));
     res->exec_time_left = PCOMMAND_TIMES[res->command] / f;
 }
