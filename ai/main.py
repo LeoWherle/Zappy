@@ -14,7 +14,7 @@ def run(args):
     ai = AI(args.n, serv, 0)
     while (not ai.dead and ai.lvl < 2):
         ai.incantation()
-        ai.take("food")
+        ai.take_all()
         ai.forward()
 
     ai.inventory()

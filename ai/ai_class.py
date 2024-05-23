@@ -105,6 +105,16 @@ class AI:
             logger.warning(f"Failed to take {obj}", self.id)
             return
         logger.info(f"Took {obj}", self.id)
+    
+    # Take all objects on a tile
+    def take_all(self):
+        if (self.dead):
+            logger.warning("AI is dead", self.id)
+            return
+        list = self.look()[0]
+        for elem in list:
+            if elem != "player":
+                self.take(elem)
 
     # Drop an object
     def drop(self, obj):
