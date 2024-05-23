@@ -85,6 +85,8 @@ void player_look(pcmd_args_t *args)
             len += sprintf(msg + len, ", ");
     }
     len += sprintf(msg + len, "]");
+    if (vec_push(args->player->response_buffer, msg) != BUF_OK)
+        LOG_ERROR("Error while pushing to response buffer");
 }
 
 void player_inventory(pcmd_args_t *args)
