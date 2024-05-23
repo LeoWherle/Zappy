@@ -27,10 +27,10 @@ void player_broadcast(pcmd_args_t *args)
             continue;
         sq = get_receiving_square(args->map, p->direction,
             args->player->coord, p->coord);
-        talkf(p->response_buffer, "message %d, %s\n",
-            sq, args->player->pcmd_exec.arg);
+        talkf(p->response_buffer, "message %d, %s\n", sq, args->broadcast_msg);
     }
     SAY_OK(args->player->response_buffer);
+    talkf(args->log, "pbc %d %s\n", args->player->n, args->broadcast_msg);
 }
 
 void player_fork(pcmd_args_t *args)
@@ -42,6 +42,7 @@ void player_fork(pcmd_args_t *args)
     init_egg(egg, args->player->team, args->player->coord);
     if (vec_push(args->players, egg) != BUF_OK)
         LOG_ERROR("Error while pushing egg to players");
+    talkf(args->log, "pfk %d\n", args->player->n);
 }
 
 static void warn_player_eject(player_t *player, direction_t from)
@@ -74,9 +75,10 @@ void player_eject(pcmd_args_t *args)
 
     for (unsigned int i = 0; i < args->players->nmemb; i++)
         has_ejected = (has_ejected || player_eject_step(args, &i));
-    if (has_ejected)
+    if (has_ejected) {
         SAY_OK(args->player->response_buffer);
-    else
+        talkf(args->log, "pex %d\n", args->player->n);
+    } else
         SAY_KO(args->player->response_buffer);
 }
 
@@ -93,4 +95,5 @@ void player_set(pcmd_args_t *args)
     i = TAKE_ITEM(args->player->inventory, args->item);
     ADD_ITEM(*t, i);
     SAY_OK(args->player->response_buffer);
+    talkf(args->log, "pdr %d %d\n", args->player->n, args->item);
 }

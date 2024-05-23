@@ -7,6 +7,7 @@
 
 #include "trantor.h"
 #include "trantor/map_fn.h"
+#include "trantor/string_utils.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -33,6 +34,9 @@ player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
         if (!temp->is_egg || temp->team != team)
             continue;
         hatch_egg(temp);
+        talkf(trantor->log, "pnw %d %d %d %d %d %s\n",
+            temp->n, temp->coord[0], temp->coord[1], temp->direction,
+            temp->elevation, team_name);
         return temp;
     }
     return NULL;
