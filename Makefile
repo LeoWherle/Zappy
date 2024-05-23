@@ -42,13 +42,13 @@ install-raylib:
 	$(MAKE) -C $(RAYLIB_PATH) clean
 	$(MAKE) -C $(RAYLIB_PATH) PLATFORM=PLATFORM_DESKTOP
 
-install-raylib-cpp:
+install-raylib-cpp-example:
 	@rm -rf $(RAYLIB_CPP_PATH)/build
 	@mkdir $(RAYLIB_CPP_PATH)/build
 	@cmake -B$(RAYLIB_CPP_PATH)/build -S$(RAYLIB_CPP_PATH)
 	$(MAKE) -C $(RAYLIB_CPP_PATH)/build
 
-setup: install-raylib-cpp install-raylib
+setup: install-raylib
 	$(MAKE) -C gui/ setup
 	@echo -e "$(GREEN)✓ Raylib installed sucessfully$(RESET)"
 
