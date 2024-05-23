@@ -13,19 +13,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// not implemented
-static void warn_player_broadcast(void)
+
+static void warn_player_broadcast(
+    player_t *player, const char *m, unsigned int sq)
 {
+    char *msg = NULL;
+    size_t len = 0;
+
+    len = snprintf(NULL, 0, "message %d, %s", sq, m);
+    msg = malloc(sizeof(char) * (len + 1));
+    sprintf(msg, "message %d, %s", sq, m);
+    if (vec_push(player->response_buffer, msg) != BUF_OK)
+        LOG_ERROR("Error while pushing broadcast message to player");
 }
 
-// CHANGE WITH CALCULATED TILE AND VECTOR FOREACH
 void player_broadcast(pcmd_args_t *args)
 {
+    player_t *p;
+    unsigned int sq = 0;
+
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
-        if (vec_at(args->players, i) == args->player)
+        p = vec_at(args->players, i);
+        if (p == args->player)
             continue;
-        warn_player_broadcast();
+        sq = get_receiving_square(args->map, p->direction,
+            (coord_t){args->player->x, args->player->y},
+            (coord_t){p->x, p->y});
+        warn_player_broadcast(p, args->player->pcmd_exec.arg, sq);
     }
+    if (!SAY_OK(args->player->response_buffer))
+        LOG_ERROR("Error while sending OK to player");
 }
 
 void player_fork(pcmd_args_t *args)

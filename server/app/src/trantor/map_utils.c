@@ -5,6 +5,7 @@
 ** map source file
 */
 
+#include "trantor/direction.h"
 #include "trantor/map.h"
 
 #include <math.h>
@@ -81,7 +82,7 @@ static void fill_u_bs(
     memcpy(u_bs, tmp, sizeof(tmp));
 }
 
-void get_true_closest_coord(
+static void get_true_closest_coord(
     map_t *map, coord_t a, coord_t b, unbounded_coord_t *res)
 {
     unbounded_coord_t u_a = {(int) a[0], (int) a[1]};
@@ -99,4 +100,33 @@ void get_true_closest_coord(
             (*res)[1] = u_bs[i][1];
         }
     }
+}
+
+static unsigned int get_world_receiving_square(
+    map_t *map, coord_t emiter, coord_t receiver)
+{
+    unbounded_coord_t u_emiter = {0};
+    float slope = 0;
+
+    if (emiter[0] == receiver[0] && emiter[1] == receiver[1])
+        return 0;
+    get_true_closest_coord(map, receiver, emiter, &u_emiter);
+    slope = (float) (u_emiter[1] - (int) receiver[1]) /
+        (float) (u_emiter[0] - (int) receiver[0]);
+    if (slope < -3 || slope > 3)
+        return emiter[1] > receiver[1] ? 1 : 5;
+    if (slope < -0.33)
+        return emiter[0] > receiver[0] ? 6 : 2;
+    if (slope < 0.33)
+        return emiter[0] > receiver[0] ? 7 : 3;
+    return emiter[1] > receiver[1] ? 8 : 4;
+}
+
+unsigned int get_receiving_square(
+    map_t *map, direction_t rdir, coord_t emiter, coord_t receiver)
+{
+    unsigned int world_square =
+        get_world_receiving_square(map, emiter, receiver);
+
+    return (world_square + rdir * 2) % 8;
 }
