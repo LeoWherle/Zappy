@@ -11,7 +11,7 @@ platformpth = $(subst /,$(PATHSEP),$1)
 
 # Set global macros
 buildDir := bin
-executable := app
+executable := zappy_gui
 target := $(buildDir)/$(executable)
 sources := $(call rwildcard,src/,*.cpp)
 objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
@@ -58,7 +58,7 @@ endif
 .PHONY: all setup submodules execute clean
 
 # Default target, compiles, executes and cleans
-all: $(target) execute clean
+all: $(target)
 
 # Sets up the project for compiling, generates includes and libs
 setup: include lib
@@ -83,6 +83,7 @@ lib: submodules
 # Link the program and create the executable
 $(target): $(objects)
 	$(CXX) $(objects) -o $(target) $(linkFlags)
+	mv $(target) .
 
 # Add all rules from dependency files
 -include $(depends)
@@ -92,10 +93,8 @@ $(buildDir)/%.o: src/%.cpp Makefile
 	$(MKDIR) $(call platformpth, $(@D))
 	$(CXX) -MMD -MP -c $(compileFlags) $< -o $@ $(CXXFLAGS)
 
-# Run the executable
-execute:
-	$(target) $(ARGS)
-
 # Clean up all relevant files
 clean:
+
+fclean: clean
 	$(RM) $(call platformpth, $(buildDir)/*)
