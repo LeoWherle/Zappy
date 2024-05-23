@@ -21,8 +21,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
+
+      - name: Checkout submodules
+        run: |
+          git submodule update --init --recursive
 
       - name: Run coding style checker
         run: |
