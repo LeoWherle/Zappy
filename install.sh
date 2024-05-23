@@ -10,7 +10,7 @@ make PLATFORM=PLATFORM_DESKTOP
 cd ../../../
 
 #Builds the raylib_cpp bindings
-cd gui/raylib_cpp
+cd gui/raylib-cpp
 rm -rf build
 mkdir build
 cd build
