@@ -94,6 +94,7 @@ jobs:
 
       - name: Checkout submodules
         run: |
+          git config --global --add safe.directory /__w/B-YEP-400-TLS-4-1-zappy-leo.wehrle/B-YEP-400-TLS-4-1-zappy-leo.wehrle
           git submodule update --init --recursive
 
       - name: Compile program
