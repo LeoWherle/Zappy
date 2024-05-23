@@ -31,22 +31,26 @@ RULE =
 ifeq ($(DEBUG), n)
 	CFLAGS += -O2
 	RULE = "DEBUG=n"
+	BUILD_PATH := $(BUILD_PATH)release/
 # used with make DEBUG=y
 else ifeq ($(DEBUG), y)
 	LDFLAGS += -fsanitize=address -fsanitize-address-use-after-scope
 	CFLAGS += -g3 -DDEBUG  -fsanitize=address
 	RULE = "DEBUG=y"
+	BUILD_PATH := $(BUILD_PATH)asan/
 else
 	CFLAGS += -g
+	BUILD_PATH := $(BUILD_PATH)debug/
 endif
 
 SRC_GUI = 	$(shell find src/ -name "*.cpp" -type f)
-OBJ_GUI = 	$(SRC_GUI:%.cpp=%.o)
+OBJ_GUI = 	$(SRC_GUI:%.cpp=$(BUILD_PATH)%.o)
 DEPS_GUI = 	$(OBJ_GUI:%.o=%.d)
 
 #LIBINC = $(addsuffix /include, $(addprefix -I, $(LIBS)))
 LIB_FLAGS = -Lraylib/src $(addprefix -l, $(LIBS))
 RAYLIB_FLAGS = -lGL -lm -lpthread -ldl -lrt -lX11
+RAYLIB_DIR = raylib/src
 
 CFLAGS += -W -Wall -Wextra
 
@@ -56,32 +60,32 @@ LDFLAGS += $(LIB_FLAGS) $(RAYLIB_FLAGS)
 CRITFLAGS = -lcriterion --coverage
 
 
-%.o: %.cpp
+$(BUILD_PATH)%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+all: app
 
-all: $(BIN)
-
-$(BIN): lib_build $(OBJ_GUI)
-	$(CC) -o $(BIN) $(OBJ_GUI) $(LDFLAGS)
+$(BUILD_PATH)$(BIN): lib_build $(OBJ_GUI)
+	$(CC) -o $(BUILD_PATH)$(BIN) $(OBJ_GUI) $(LDFLAGS)
 	@echo -e "$(GREEN)✓ Compiled $(BIN)$(RESET)"
 
-#lib_build:
-#	@for i in $(LIBS); do $(MAKE) -C $$i $(RULE); done
+app: $(BUILD_PATH)$(BIN)
+	cp $(BUILD_PATH)$(BIN) .
+
+lib_build:
+	$(MAKE) -C $(RAYLIB_DIR) PLATFORM=PLATFORM_DESKTOP
 
 clean:
-	@rm -f $(OBJ_GUI)
-	@rm -f $(DEPS_GUI)
-#	@for j in "DEBUG=n" "DEBUG=y" ""; do \
-	for i in $(LIBS); do $(MAKE) -C $$i clean $$j; done \
-	done
+	$(MAKE) -C $(RAYLIB_DIR) clean
+	@rm -f $(BUILD_DIR)asan $(BUILD_DIR)debug $(BUILD_DIR)release
 
 fclean: clean
-#	@for j in "DEBUG=n" "DEBUG=y" ""; do \
-	for i in $(LIBS); do $(MAKE) -C $$i fclean $$j; done \
-	done
 	@rm -f unit-tests
 	@rm -f $(BIN)
+	@rm -f $(BUILD_DIR)asan/$(BIN)
+	@rm -f $(BUILD_DIR)debug/$(BIN)
+	@rm -f $(BUILD_DIR)release/$(BIN)
 
 re: fclean all
 
