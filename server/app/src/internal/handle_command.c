@@ -15,7 +15,7 @@ static void read_command(serv_command_t *cmd, serv_context_t *context)
 {
     ssize_t red = 0;
 
-    if (vec_reserve(&cmd->read_buf, BUFFER_SIZE)) {
+    if (vec_reserve(str_to_vec(&cmd->read_buf), BUFFER_SIZE)) {
         LOG_WARN("Failed to reserve space in read buffer");
     }
     red = read(STDIN_FILENO, cmd->read_buf.items + cmd->read_buf.nmemb,
@@ -43,7 +43,7 @@ static void command_write(serv_command_t *cmd)
         LOG_ERROR("Failed to write to STDOUT");
         return;
     }
-    if (vec_erase(&cmd->write_buf, 0, written) != BUF_OK) {
+    if (str_erase(&cmd->write_buf, 0, written) != BUF_OK) {
         LOG_ERROR("Failed to erase written bytes from write buffer");
         return;
     }
@@ -52,7 +52,7 @@ static void command_write(serv_command_t *cmd)
 static void command_consume_buffer(serv_command_t *client, size_t consumed)
 {
     if (consumed > 0) {
-        if (vec_erase(&client->read_buf, 0, consumed) != BUF_OK) {
+        if (str_erase(&client->read_buf, 0, consumed) != BUF_OK) {
             LOG_ERROR("Failed to erase consumed bytes from read buffer");
         }
     }

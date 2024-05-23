@@ -36,7 +36,7 @@ size_t client_execute(
         return 0;
     }
     if (packet_list[packet->type].handle(server, client, packet, &result)) {
-        if (vec_append_array(&client->write_buf, &result, sizeof(result), 1)) {
+        if (str_push_bytes(&client->write_buf, &result, sizeof(result))) {
             LOG_ERROR("Failed to push response to write buffer");
             return 0;
         }

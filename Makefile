@@ -31,6 +31,9 @@ $(BIN_GUI):
 	@$(MAKE) -C $(FOLDER_GUI)
 	mv $(FOLDER_GUI)$(BIN_GUI) .
 
+build_lib:
+	@$(MAKE) -C $(FOLDER_GUI) setup
+
 clean:
 	@$(MAKE) -C $(FOLDER_AI) clean
 	@$(MAKE) -C $(FOLDER_SERVER) clean
@@ -38,8 +41,11 @@ clean:
 
 fclean:
 	@$(MAKE) -C $(FOLDER_AI) fclean
+	rm -f $(BIN_AI)
 	@$(MAKE) -C $(FOLDER_SERVER) fclean
+	rm -f $(BIN_SERVER)
 	@$(MAKE) -C $(FOLDER_GUI) fclean
+	rm -f $(BIN_GUI)
 
 re: fclean all
 

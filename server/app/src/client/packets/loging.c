@@ -20,7 +20,7 @@ bool packet_login(UNUSED server_t *server, client_t *client,
 }
 
 bool packet_logout(UNUSED server_t *server, client_t *client,
-    __attribute__((unused)) client_packet_t *packet, pck_server_user_t *result)
+    UNUSED client_packet_t *packet, pck_server_user_t *result)
 {
     LOG_INFO("Received logout command");
     if (client->logged_in == false) {

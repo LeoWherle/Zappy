@@ -20,11 +20,11 @@ static void client_create(server_t *server, int client_sd)
         .sd = client_sd,
     };
 
-    if (vec_init(&client.read_buf, sizeof(char), NULL, NULL) != BUF_OK) {
+    if (str_init(&client.read_buf, "") != BUF_OK) {
         LOG_ERROR("Failed to create client, read_buf");
         return;
     }
-    if (vec_init(&client.write_buf, sizeof(char), NULL, NULL) != BUF_OK) {
+    if (str_init(&client.write_buf, "") != BUF_OK) {
         LOG_ERROR("Failed to create client, write_buf");
         return;
     }

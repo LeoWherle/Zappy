@@ -1,24 +1,23 @@
 ##
 ## EPITECH PROJECT, 2024
-## B-YEP-400-TLS-4-1-zappy-leo.wehrle [WSL: Ubuntu]
+## Zappy
 ## File description:
 ## Makefile
 ##
 
+SRC =	main.py
 
-all: zappy_ai
+NAME = zappy_ai
 
-zappy_ai:
-	@echo -e "do nothing"
-	echo "zappy_ai" > zappy_ai
+$(NAME):
+	cp $(SRC) $(NAME)
+	chmod +x $(NAME)
 
-clean:
-	@echo -e "cleaning"
+all:	$(NAME)
 
 fclean:
-	@echo -e "deep cleaning"
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all zappy_ai clean fclean re
-.NOTPARALLEL: re
+.PHONY: all fclean re

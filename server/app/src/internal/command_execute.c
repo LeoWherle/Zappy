@@ -27,16 +27,15 @@ void command_help(server_t *server, serv_context_t *context, vector_t *args)
 
     (void) context;
     (void) args;
-    if (vec_append_array(
-            &server->command.write_buf, h, sizeof(h), sizeof(*h))) {
+    if (str_push_bytes(&server->command.write_buf, h, sizeof(h))) {
         LOG_ERROR("Failed to push response to write buffer");
     }
     for (size_t i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
-        if (vec_append_array(&server->command.write_buf, commands[i].cmd,
-                strlen(commands[i].cmd), sizeof(*commands[i].cmd))) {
+        if (str_push_bytes(&server->command.write_buf, commands[i].cmd,
+                strlen(commands[i].cmd))) {
             LOG_ERROR("Failed to push response to write buffer");
         }
-        if (vec_push(&server->command.write_buf, "\n")) {
+        if (str_push_char(&server->command.write_buf, '\n')) {
             LOG_ERROR("Failed to push response to write buffer");
         }
     }

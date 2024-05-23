@@ -24,6 +24,6 @@ const struct str_fn STR = {
     .insert_bytes = str_insert_bytes,
     .insert_cstr = str_insert_cstr,
     .insert_str = str_insert_str,
-    .as_vec = str_as_vec,
+    .as_vec = str_to_vec,
     .clear = str_clear,
 };
