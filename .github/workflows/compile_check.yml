@@ -50,9 +50,9 @@ jobs:
           git config --global --add safe.directory /__w/B-YEP-400-TLS-4-1-zappy-leo.wehrle/B-YEP-400-TLS-4-1-zappy-leo.wehrle
           git submodule update --init --recursive
 
-      - name: Install dependencies
-        run: |
-          sudo apt install libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev
+      # - name: Install dependencies
+      #   run: |
+      #     sudo apt install libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev
 
       - name: Compile program
         run: make; make fclean; make re
