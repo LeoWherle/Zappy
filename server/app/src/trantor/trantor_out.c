@@ -7,10 +7,7 @@
 
 #include "trantor.h"
 #include "trantor/map_fn.h"
-#include "trantor/pcmd.h"
-#include "trantor/pcmd_args.h"
 #include "trantor/player.h"
-#include "trantor/trantor_internal.h"
 #include "trantor/string_utils.h"
 #include "vector.h"
 
@@ -47,55 +44,23 @@ player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
     return NULL;
 }
 
-static void assign_invocator(vector_t *players, player_t *invocator)
+unsigned int count_team_egg(trantor_t *trantor, const char *team_name)
 {
-    player_t *p;
+    player_t *temp;
+    team_t team;
+    unsigned int count = 0;
+    int idx = get_team_index(&trantor->params, team_name);
 
-    for (unsigned int i = 0; i < players->nmemb; i++) {
-        p = vec_at(players, i);
-        if (COORD_EQ(p->coord, invocator->coord)
-            && p->elevation == invocator->elevation)
-            p->incantator = invocator;
-    }
-}
-
-static void start_new_task(trantor_t *trantor, player_t *player)
-{
-    player->busy = false;
-    if (player->pcmd_buffer->nmemb == 0)
-        return;
-    init_pcmd_executor(player->pcmd_buffer->items,
-        trantor->params.f, &player->pcmd_exec);
-    if (player->pcmd_exec.command == NONE_PCMD) {
-        SAY_KO(player->response_buffer);
-        return;
-    }
-    if (player->pcmd_exec.command == INCANTATION_PCMD) {
-        if (!can_invocate(trantor->players, player, &(trantor->map))) {
-            SAY_KO(player->response_buffer);
-            return;
-        }
-        assign_invocator(trantor->players, player);
-    }
-    player->busy = true;
-    pop_line(player->pcmd_buffer);
-}
-
-void trantor_time_pass(trantor_t *trantor, double delta)
-{
-    player_t *player;
-
+    if (idx == -1)
+        return 0;
+    team = (team_t) idx;
     for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
-        player = vec_at(trantor->players, i);
-        if (player->is_egg || player->incantator != NULL)
+        temp = vec_at(trantor->players, i);
+        if (!temp->is_egg || temp->team != team)
             continue;
-        player->pcmd_exec.exec_time_left -= delta;
-        if (player->busy && player->pcmd_exec.exec_time_left <= 0)
-            execute_pcmd(trantor, player);
-        if (!player->busy || player->pcmd_exec.exec_time_left <= 0) {
-            start_new_task(trantor, player);
-        }
+        count++;
     }
+    return count;
 }
 
 string_t *get_player_buffer(player_t *player)

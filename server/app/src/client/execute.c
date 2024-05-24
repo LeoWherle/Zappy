@@ -12,6 +12,7 @@
 #include "sstrings.h"
 #include "trantor.h"
 #include "trantor/player.h"
+#include "trantor/string_utils.h"
 #include "vector.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -37,15 +38,16 @@ static size_t get_next_packet(string_t *buf, size_t start)
  * <-- CLIENT - NUM \n
  * <-- X Y \n
  */
-static void client_send_start_info(client_t *client, player_t *player)
+static void client_send_start_info(
+    client_t *client, player_t *player, unsigned int cnb)
 {
     char msg[1024] = {0};
 
     if (player == NULL) {
-        // give client_num 0 && coords 0 0, as we failed to find a team
+        snprintf(msg, sizeof(msg), "0\n0 0\n");
     } else {
-        // snprintf(clientnum) (must be > 0)
-        // snprintf(msg, sizeof(msg), "%d %d\n", player->x, player->y);
+        snprintf(msg, sizeof(msg), "%d\n%d %d\n", cnb,
+            player->coord[0], player->coord[1]);
         client->player = player;
     }
     if (str_push_bytes(&client->write_buf, msg, strlen(msg))
@@ -76,9 +78,10 @@ static size_t client_get_connection(server_t *server, client_t *client)
     team_name = &data[next_packet];
     if (client->player == NULL) {
         LOG_DEBUG("Failed to find available team for client");
-        client->delete = true; // can be removed if we want to keep the client
+        client->delete = true;
     }
-    client_send_start_info(client, client->player);
+    client_send_start_info(client, client->player,
+        count_team_egg(&(server->trantor), team_name));
     return next_packet - 1;
 }
 

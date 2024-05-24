@@ -6,9 +6,9 @@
 */
 
 #include "trantor.h"
-#include "trantor/trantor_internal.h"
 #include "trantor/string_utils.h"
 #include "trantor/map_fn.h"
+#include "serrorh.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -33,4 +33,20 @@ void feed_player_line(
 void gui_feed_trantor_line(trantor_t *trantor, const char *line)
 {
     execute_gcmd(trantor, line);
+}
+
+void remove_player(trantor_t *trantor, player_t *player)
+{
+    player_t *other;
+    int idx = -1;
+
+    for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
+        other = vec_at(trantor->players, i);
+        if (other == player)
+            idx = i;
+        if (other->incantator == player)
+            other->incantator = NULL;
+    }
+    if (vec_remove(trantor->players, idx) != BUF_OK)
+        LOG_ERROR("Failed to remove player from vector");
 }

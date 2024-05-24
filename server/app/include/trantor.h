@@ -32,6 +32,16 @@ typedef struct trantor_s {
 void init_trantor(trantor_t *trantor, trantor_params_t *params);
 void free_trantor(trantor_t *trantor);
 
+
+/**
+ * @brief Destroy a player. This will free the player and remove it from the
+ * players vector, as well as unlocking potential freezed players.
+ *
+ * @param trantor a pointer to trantor
+ * @param player the player to destroy
+ */
+void remove_player(trantor_t *trantor, player_t *player);
+
 /**
  * @brief Find an available unhatched egg from a team. Will return NULL if no
  * egg is found. This will hatch the egg and init necessary player fields.
@@ -40,6 +50,15 @@ void free_trantor(trantor_t *trantor);
  * @param team the team name
  */
 player_t *hatch_team_egg(trantor_t *trantor, const char *team_name);
+
+/**
+ * @brief Count the number of eggs from a team
+ *
+ * @param trantor a pointer to trantor
+ * @param team_name the team name
+ * @return unsigned int the number of eggs
+ */
+unsigned int count_team_egg(trantor_t *trantor, const char *team_name);
 
 /**
  * @brief Feed a line to a player. We have no fucking idea what the player is
@@ -83,3 +102,7 @@ string_t *get_player_buffer(player_t *player);
  * please empty them, i'll not do it
  */
 string_t *get_gui_buffer(trantor_t *trantor);
+
+
+// internal
+void execute_gcmd(trantor_t *trantor, const char *gcmd);
