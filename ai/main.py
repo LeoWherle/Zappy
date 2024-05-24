@@ -5,7 +5,19 @@ from connection import ServerConnection
 from ai_class import AI
 import threading
 from messages import Logger
+from random import randint
 
+def random_move(ai):
+    random = randint(0, 3)
+    match random:
+        case 0:
+            ai.forward()
+        case 1:
+            ai.turn_right()
+            ai.forward()
+        case 2:
+            ai.turn_left()
+            ai.forward()
 
 def new_ai(args, logger, id):
     threads = []
@@ -20,9 +32,22 @@ def new_ai(args, logger, id):
             threads.append(threading.Thread(target=new_ai, args=(args, logger, id + 1)))
             threads[-1].start()
         ai.handle_broadcast()
-        ai.take("food")
-        ai.forward()
-        ai.broadcast("GoGoGadgetIncanto")
+        if (ai.lvl == 1):
+            ai.take("food")
+            if (ai.get_nb_player_on_tile() == 1):
+                ai.incantation()
+            random_move(ai)
+        else:
+            if (ai.get_nb_player_on_tile() == 1):
+                ai.take("food")
+                ai.take("deraumere")
+                ai.take("sibur")
+                ai.take("phiras")
+                random_move(ai)
+            else:
+                ai.take("food")
+                ai.drop_all()
+                ai.incantation()
 
     net.close_connection() # End of the program
     for thread in threads:
