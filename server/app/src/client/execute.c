@@ -46,12 +46,11 @@ static void client_send_start_info(
     if (player == NULL) {
         snprintf(msg, sizeof(msg), "0\n0 0\n");
     } else {
-        snprintf(msg, sizeof(msg), "%d\n%d %d\n", cnb,
-            player->coord[0], player->coord[1]);
+        snprintf(msg, sizeof(msg), "%d\n%d %d\n", cnb, player->coord[0],
+            player->coord[1]);
         client->player = player;
     }
-    if (str_push_bytes(&client->write_buf, msg, strlen(msg))
-        != BUF_OK) {
+    if (str_push_bytes(&client->write_buf, msg, strlen(msg)) != BUF_OK) {
         LOG_ERROR("Failed to push start info to write buffer");
     }
 }
@@ -74,14 +73,18 @@ static size_t client_get_connection(server_t *server, client_t *client)
         return 0;
     }
     data[next_packet - 1] = '\0';
-    client->player = hatch_team_egg(&server->trantor, team_name);
-    team_name = &data[next_packet];
-    if (client->player == NULL) {
-        LOG_DEBUG("Failed to find available team for client");
-        client->delete = true;
+    if (strcmp(team_name, "GRAPHIC")) {
+        client->is_gui = true;
+    } else {
+        client->player = hatch_team_egg(&server->trantor, team_name);
+        team_name = &data[next_packet];
+        if (client->player == NULL) {
+            LOG_DEBUG("Failed to find available team for client");
+            client->delete = true;
+        }
+        client_send_start_info(client, client->player,
+            count_team_egg(&(server->trantor), team_name));
     }
-    client_send_start_info(client, client->player,
-        count_team_egg(&(server->trantor), team_name));
     return next_packet - 1;
 }
 
@@ -110,7 +113,11 @@ static size_t client_process_data(client_t *client, player_t *player)
     next_packet = get_next_packet(&client->read_buf, 0);
     while (next_packet != 0) {
         data[next_packet - 1] = '\0';
-        feed_player_line(player, data);
+        if (client->is_gui) {
+            // feed_gui_line(data); // should pass some other thing.
+        } else {
+            feed_player_line(player, data);
+        }
         next_packet = get_next_packet(&client->read_buf, next_packet);
     }
     return next_packet - 1;
@@ -121,7 +128,7 @@ size_t client_execute(client_t *client, server_t *server)
     if (!client->read_buf.nmemb) {
         return 0;
     }
-    if (client->player == NULL) {
+    if (client->player == NULL && !client->is_gui) {
         if (!client->sent_welcome) {
             return client_send_welcome(client);
         } else {

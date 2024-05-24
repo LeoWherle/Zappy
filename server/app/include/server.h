@@ -48,6 +48,7 @@ typedef struct client_s {
     string_t write_buf;
     struct {
         bool sent_welcome;
+        bool is_gui;
         player_t *player;
     };
 } client_t;
@@ -98,23 +99,6 @@ void command_exit(server_t *server, serv_context_t *context, vector_t *args);
 void command_help(server_t *server, serv_context_t *context, vector_t *args);
 void command_ping(server_t *server, serv_context_t *context, vector_t *args);
 void command_log(server_t *server, serv_context_t *context, vector_t *args);
-
-/*************************** ACTIONS *****************************************/
-
-typedef struct packet_s {
-    char name[MAX_NAME_LENGTH + 1];
-    bool (*handle)(server_t *server, client_t *client, client_packet_t *packet,
-        pck_server_user_t *response);
-} packet_t;
-
-bool packet_login(server_t *server, client_t *client, client_packet_t *packet,
-    pck_server_user_t *response);
-bool packet_logout(server_t *server, client_t *client, client_packet_t *packet,
-    pck_server_user_t *response);
-
-bool packet_ping(server_t *server, client_t *client, client_packet_t *packet,
-    pck_server_user_t *response);
-
 
 // #define PACKET_SECTION_NAME     server_action
 

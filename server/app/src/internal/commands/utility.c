@@ -42,12 +42,8 @@ void command_exit(server_t *server, serv_context_t *context, vector_t *args)
 
 void command_ping(server_t *server, serv_context_t *context, vector_t *args)
 {
-    pck_server_user_t packet = {.type = SERVER_PONG};
-
     (void) context;
     (void) args;
-    LOG_INFO("Received ping command");
-    if (str_push_bytes(&server->command.write_buf, &packet, sizeof(packet))) {
-        LOG_ERROR("Failed to push response to write buffer");
-    }
+    (void) server;
+    LOG_INFO("PONG !");
 }
