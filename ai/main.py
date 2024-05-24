@@ -6,6 +6,7 @@ from ai_class import AI
 import threading
 from messages import Logger
 
+
 def new_ai(args, logger, id):
     threads = []
     net = ServerConnection(logger, args.h, args.p)
@@ -18,9 +19,10 @@ def new_ai(args, logger, id):
             ai.fork()
             threads.append(threading.Thread(target=new_ai, args=(args, logger, id + 1)))
             threads[-1].start()
-        ai.incantation()
+        ai.handle_broadcast()
         ai.take("food")
         ai.forward()
+        ai.broadcast("GoGoGadgetIncanto")
 
     net.close_connection() # End of the program
     for thread in threads:
