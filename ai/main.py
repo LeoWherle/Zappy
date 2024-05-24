@@ -1,58 +1,8 @@
 #!/usr/bin/env python3
 from sys import argv
 import argparse
-from connection import ServerConnection
-from ai_class import AI
-import threading
 from messages import Logger
-from random import randint
-
-def random_move(ai):
-    random = randint(0, 3)
-    match random:
-        case 0:
-            ai.forward()
-        case 1:
-            ai.turn_right()
-            ai.forward()
-        case 2:
-            ai.turn_left()
-            ai.forward()
-
-def new_ai(args, logger, id):
-    threads = []
-    net = ServerConnection(logger, args.h, args.p)
-    if not net.connect():
-        return 84
-
-    ai = AI(args.n, net, id)
-    while (not ai.dead):
-        if (ai.get_unused_slots() > 0):
-            ai.fork()
-            threads.append(threading.Thread(target=new_ai, args=(args, logger, id + 1)))
-            threads[-1].start()
-        ai.handle_broadcast()
-        if (ai.lvl == 1):
-            ai.take("food")
-            if (ai.get_nb_player_on_tile() == 1):
-                ai.incantation()
-            random_move(ai)
-        else:
-            if (ai.get_nb_player_on_tile() == 1):
-                ai.take("food")
-                ai.take("deraumere")
-                ai.take("sibur")
-                ai.take("phiras")
-                random_move(ai)
-            else:
-                ai.take("food")
-                ai.drop_all()
-                ai.incantation()
-
-    net.close_connection() # End of the program
-    for thread in threads:
-        thread.join()
-    return 0
+from ai import make_new_ai
 
 def run(args):
     log_level = {
@@ -63,7 +13,7 @@ def run(args):
         "ai" : True
     }
     logger = Logger(log_level)
-    return new_ai(args, logger, 0)
+    return make_new_ai(args, logger, 0)
 
 def get_args():
     parser = argparse.ArgumentParser(

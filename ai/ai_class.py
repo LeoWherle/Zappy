@@ -1,3 +1,5 @@
+import threading
+
 class AI:
     def __init__(self, team, net, id=0):
         self.net = net
@@ -60,12 +62,14 @@ class AI:
         self.net.logger.info(f"Broadcasted: {msg}", self.id)
 
     # Fork the AI
-    def fork(self):
+    def fork(self, func, args, threads):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
             return
         self.net.send("Fork", self)
         self.net.logger.info("Forked", self.id)
+        threads.append(threading.Thread(target=func, args=args))
+        threads[-1].start()
 
     # Get the nb of unused slots in the team
     def get_unused_slots(self):
