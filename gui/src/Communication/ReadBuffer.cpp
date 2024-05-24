@@ -32,9 +32,7 @@ auto ReadBuffer::fill_buffer(std::function<ssize_t(char *, uint32_t)> reader) ->
     if (_filled + _DEFAULT_SIZE > _buffer.size()) {
         _buffer.resize(_filled + _DEFAULT_SIZE);
     }
-    std::cout << "before" << std::endl;
     ssize_t read = reader(_buffer.data() + _filled, _buffer.size() - _filled);
-    std::cout << "after" << std::endl;
     if (read == -1) {
         throw ReadError("Error reading");
     } else if (read == 0 && _buffer.begin() + _filled == _buffer.end()) {

@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main_comm(int ac, char **av)
+int main(int ac, char **av)
 {
     if (ac < 3) {
         return 84;
@@ -41,14 +41,15 @@ int main_comm(int ac, char **av)
             stdInput.consume(stdinBuff.size());
         }
         if (inBuff.size() > 0) {
-            std::cout << "SERVER: " << inBuff << std::endl;
+            StdOutput.write_to_buffer("SERVER: ");
+            StdOutput.write_to_buffer(inBuff);
             in.consume(inBuff.size());
         }
     }
     return 0;
 }
 
-int main() {
+int main_1() {
     // Initialization
     int screenWidth = 800;
     int screenHeight = 450;
