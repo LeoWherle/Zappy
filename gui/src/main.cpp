@@ -1,7 +1,7 @@
 #include <raylib-cpp.hpp>
 
 #include "raylib-cpp.hpp"
-#include "Client.hpp"
+#include "Communication/Client.hpp"
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -31,7 +31,7 @@ int main_test_serv_comm(int ac, char **av)
             if (stdinBuff == tmp) {
                 out.write_to_buffer("ping");
             }
-            std::vector<std::uint8_t> tmp = {'e', 'x', 'i', 't'};
+            tmp = {'e', 'x', 'i', 't'};
             if (stdinBuff == tmp) {
                 run = false;
             }

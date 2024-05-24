@@ -5,12 +5,6 @@
 ** WriteBuffer
 */
 
-#pragma once
-
-#include <cstdint>
-#include <string>
-#include <unistd.h>
-#include <vector>
 #include "WriteBuffer.hpp"
 
 WriteBuffer::WriteBuffer(uint32_t size)
