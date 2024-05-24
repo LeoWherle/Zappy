@@ -1,92 +1,100 @@
-##
-## EPITECH PROJECT, 2024
-## B-YEP-400-TLS-4-1-zappy-leo.wehrle [WSL: Ubuntu]
-## File description:
-## Makefile
-##
+# Copyright (c) 2020-present Caps Collective & contributors
+# Originally authored by Jonathan Moallem (@jonjondev) & Aryeh Zinn (@Raelr)
+#
+# This code is released under an unmodified zlib license.
+# For conditions of distribution and use, please see:
+#     https://opensource.org/licenses/Zlib
 
-include config.mk
+# Define custom functions
+rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+platformpth = $(subst /,$(PATHSEP),$1)
 
-BEGINL		= 	\033[A
-CLEARL		= 	\033[2K
-COL_END		= 	\033[0m
-CLEAR_COL	=	\033[2K\033[A
-GRAY		=	\033[1;30m
-RED			=	\033[1;31m
-GREEN 		= 	\033[1;32m
-YELLOW		=	\033[1;33m
-BLUE		=	\033[1;34m
-PURPLE		=	\033[1;35m
-CYAN		=	\033[1;36m
-WHITE		=	\033[1;37m
+# Set global macros
+buildDir := bin
+executable := zappy_gui
+target := $(buildDir)/$(executable)
+sources := $(call rwildcard,src/,*.cpp)
+objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
+depends := $(patsubst %.o, %.d, $(objects))
+compileFlags := -std=c++17 -I include
+linkFlags = -L lib/$(platform) -l raylib
 
-RESET		=	\033[0m
-
-MAKE  = make --no-print-directory
-BUILD_PATH = build/
-CC = g++
-
-RULE =
-# used with make DEBUG=n
-ifeq ($(DEBUG), n)
-	CFLAGS += -O2
-	RULE = "DEBUG=n"
-# used with make DEBUG=y
-else ifeq ($(DEBUG), y)
-	LDFLAGS += -fsanitize=address -fsanitize-address-use-after-scope
-	CFLAGS += -g3 -DDEBUG  -fsanitize=address
-	RULE = "DEBUG=y"
+# Check for Windows
+ifeq ($(OS), Windows_NT)
+	# Set Windows macros
+	platform := Windows
+	CXX ?= g++
+	linkFlags += -Wl,--allow-multiple-definition -pthread -lopengl32 -lgdi32 -lwinmm -mwindows -static -static-libgcc -static-libstdc++
+	THEN := &&
+	PATHSEP := \$(BLANK)
+	MKDIR := -mkdir -p
+	RM := -del /q
+	COPY = -robocopy "$(call platformpth,$1)" "$(call platformpth,$2)" $3
 else
-	CFLAGS += -g
+	# Check for MacOS/Linux
+	UNAMEOS := $(shell uname)
+	ifeq ($(UNAMEOS), Linux)
+		# Set Linux macros
+		platform := Linux
+		CXX ?= g++
+		linkFlags += -l GL -l m -l pthread -l dl -l rt -l X11
+	endif
+	ifeq ($(UNAMEOS), Darwin)
+		# Set macOS macros
+		platform := macOS
+		CXX ?= clang++
+		linkFlags += -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
+	endif
+
+	# Set UNIX macros
+	THEN := ;
+	PATHSEP := /
+	MKDIR := mkdir -p
+	RM := rm -rf
+	COPY = cp $1$(PATHSEP)$3 $2
 endif
 
-SRC_GUI = 	$(shell find src/ -name "*.cpp" -type f)
-OBJ_GUI = 	$(SRC_GUI:%.cpp=%.o)
-DEPS_GUI = 	$(OBJ_GUI:%.o=%.d)
+# Lists phony targets for Makefile
+.PHONY: all setup submodules execute clean
 
-#LIBINC = $(addsuffix /include, $(addprefix -I, $(LIBS)))
-LIB_FLAGS = -Lraylib/src $(addprefix -l, $(LIBS))
-RAYLIB_FLAGS = -lGL -lm -lpthread -ldl -lrt -lX11
+# Default target, compiles, executes and cleans
+all: $(target)
 
-CFLAGS += -W -Wall -Wextra
+# Sets up the project for compiling, generates includes and libs
+setup: include lib
 
-CFLAGS += -Iraylib_cpp/include/
+# Pull and update the the build submodules
+submodules:
+	git submodule update --init --recursive --depth 1
 
-LDFLAGS += $(LIB_FLAGS) $(RAYLIB_FLAGS)
-CRITFLAGS = -lcriterion --coverage
+# Copy the relevant header files into includes
+include: submodules
+	$(MKDIR) $(call platformpth, ./include)
+	$(call COPY,raylib/src,./include,raylib.h)
+	$(call COPY,raylib/src,./include,raymath.h)
+	$(call COPY,raylib-cpp/include,./include,*.hpp)
 
+# Build the raylib static library file and copy it into lib
+lib: submodules
+	cd raylib/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
+	$(MKDIR) $(call platformpth, lib/$(platform))
+	$(call COPY,raylib/src,lib/$(platform),libraylib.a)
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+# Link the program and create the executable
+$(target): $(objects)
+	$(CXX) $(objects) -o $(target) $(linkFlags)
+	mv $(target) .
 
+# Add all rules from dependency files
+-include $(depends)
 
-all: $(BIN)
+# Compile objects to the build directory
+$(buildDir)/%.o: src/%.cpp Makefile
+	$(MKDIR) $(call platformpth, $(@D))
+	$(CXX) -MMD -MP -c $(compileFlags) $< -o $@ $(CXXFLAGS)
 
-$(BIN): lib_build $(OBJ_GUI)
-	$(CC) -o $(BIN) $(OBJ_GUI) $(LDFLAGS)
-	@echo -e "$(GREEN)✓ Compiled $(BIN)$(RESET)"
-
-#lib_build:
-#	@for i in $(LIBS); do $(MAKE) -C $$i $(RULE); done
-
+# Clean up all relevant files
 clean:
-	@rm -f $(OBJ_GUI)
-	@rm -f $(DEPS_GUI)
-#	@for j in "DEBUG=n" "DEBUG=y" ""; do \
-	for i in $(LIBS); do $(MAKE) -C $$i clean $$j; done \
-	done
 
 fclean: clean
-#	@for j in "DEBUG=n" "DEBUG=y" ""; do \
-	for i in $(LIBS); do $(MAKE) -C $$i fclean $$j; done \
-	done
-	@rm -f unit-tests
-	@rm -f $(BIN)
-
-re: fclean all
-
-#tests_run:
-#	@for i in $(LIBS); do $(MAKE) -C $$i tests_run; done
-
-.PHONY: all clean fclean re debug tests_run lib_build
-.NOTPARALLEL: re
+	$(RM) $(call platformpth, $(buildDir)/*)

@@ -9,24 +9,39 @@ class colors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-class logger:
+class Logger:
+    def __init__(self, log_level):
+        self.log_level = log_level
+        if self.log_level is None:
+            self.log_level = {
+                "info" : True,
+                "error" : True,
+                "warning" : True,
+                "server" : True,
+                "ai" : True
+            }
 
-    @staticmethod
-    def server(msg, id):
+    def server(self, msg, id):
+        if not self.log_level["server"]:
+            return
         print(colors.OKBLUE + f"SERVER for AI {id}:" + colors.ENDC, msg, end="")
 
-    @staticmethod
-    def ai(msg, id):
+    def ai(self, msg, id):
+        if not self.log_level["ai"]:
+            return
         print(colors.OKCYAN + f"AI {id}:" + colors.ENDC, msg, end="")
 
-    @staticmethod
-    def info(msg, id):
+    def info(self, msg, id):
+        if not self.log_level["info"]:
+            return
         print(colors.OKGREEN + f"INFO AI {id}:" + colors.ENDC, msg)
 
-    @staticmethod
-    def error(msg, id):
+    def error(self, msg, id):
+        if not self.log_level["error"]:
+            return
         print(colors.FAIL + f"ERROR AI {id}:" + colors.ENDC, msg)
 
-    @staticmethod
-    def warning(msg, id):
+    def warning(self, msg, id):
+        if not self.log_level["warning"]:
+            return
         print(colors.WARNING + f"WARNING AI {id}:" + colors.ENDC, msg)

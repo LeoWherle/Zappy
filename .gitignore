@@ -113,5 +113,11 @@ dkms.conf
 .vscode/*
 .cache/
 
+#GUI
+gui/include
+gui/lib
+gui/bin
+gui/.idea
+
 !.vscode/launch.json
 __pycache__/

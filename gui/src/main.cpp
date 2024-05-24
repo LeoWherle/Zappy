@@ -1,9 +1,4 @@
-/*
-** EPITECH PROJECT, 2024
-** zappy
-** File description:
-** main raylib
-*/
+#include <raylib-cpp.hpp>
 
 #include "raylib-cpp.hpp"
 #include "Client.hpp"
