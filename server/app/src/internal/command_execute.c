@@ -100,6 +100,9 @@ size_t command_execute(server_t *server, serv_context_t *context)
     char *cmd = server->command.read_buf.items;
     ssize_t len = strchrln(cmd, server->command.read_buf.nmemb);
 
+    if (len == 0) {
+        return 1;
+    }
     if (len > 0) {
         consumed = command_exec(server, context, cmd, len);
     }
