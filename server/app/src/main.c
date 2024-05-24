@@ -40,9 +40,11 @@ int main(int ac, char *av[])
     server_t server_data = {0};
     int ret = 0;
 
+    --ac;
+    ++av;
     if (!parse_args(ac, av, &server_data.trantor.params)) {
         printf("%s", USAGE);
-        return (84);
+        return 84;
     }
     LOG_TRACE("Starting server");
     init_logging("server.env");
