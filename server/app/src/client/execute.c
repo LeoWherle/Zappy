@@ -113,7 +113,11 @@ static size_t client_process_data(client_t *client, player_t *player)
     next_packet = get_next_packet(&client->read_buf, 0);
     while (next_packet != 0) {
         data[next_packet - 1] = '\0';
-        feed_player_line(player, data);
+        if (client->is_gui) {
+            // feed_gui_line(data); // should pass some other thing.
+        } else {
+            feed_player_line(player, data);
+        }
         next_packet = get_next_packet(&client->read_buf, next_packet);
     }
     return next_packet - 1;
@@ -124,7 +128,7 @@ size_t client_execute(client_t *client, server_t *server)
     if (!client->read_buf.nmemb) {
         return 0;
     }
-    if (client->player == NULL) {
+    if (client->player == NULL && !client->is_gui) {
         if (!client->sent_welcome) {
             return client_send_welcome(client);
         } else {
