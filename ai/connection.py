@@ -8,6 +8,7 @@ class ServerConnection:
         self.map_x = 0
         self.map_y = 0
         self.logger = logger
+        self.buffer = []
 
     # At the start of the program, connect to the server
     def connect(self):
@@ -29,21 +30,35 @@ class ServerConnection:
             ai_id = 0
         else:
             ai_id = ai.id
+        self.empty_buffer(ai)
         if (ai != None and ai.dead):
             return
         self.logger.ai(msg, ai_id)
         self.sock.sendall(msg.encode())
         response = self.sock.recv(1024).decode()
         self.logger.server(response, ai_id)
-        if response.__contains__("dead"):
-            self.logger.warning("The AI is dead", ai_id)
-            ai.dead = True
-        if response.__contains__("Elevation underway"):
-            ai.lvl += 1
-            response = self.sock.recv(1024).decode()
-            self.logger.server(response, ai_id)
-            self.logger.info(f"AI leveled up to {ai.lvl}", ai_id)
+        self.buffer += response.split("\n")
         return response
+    
+    def empty_buffer(self, ai):
+        for elem in self.buffer:
+            if elem == "dead":
+                ai.dead = True
+                self.logger.warning("The AI is dead", ai.id)
+            if elem == "Elevation underway":
+                ai.lvl += 1
+                response = self.sock.recv(1024).decode()
+                self.logger.server(response, ai.id)
+                self.logger.info(f"AI leveled up to {ai.lvl}", ai.id)
+            if elem.__contains__("eject"):
+                ai.last_eject = int(elem.split(":")[1])
+                self.logger.info(f"Ejected: K = {ai.last_eject}", ai.id)
+            if elem.__contains__("message"):
+                ai.broadcast_received.append((elem.removeprefix("message ").split(",")[0], elem.split(",")[1].removeprefix(" ")))
+                self.logger.info(f"Received broadcast K = {ai.broadcast_received[-1][0]}: {ai.broadcast_received[-1][1]}", ai.id)
+
+        self.buffer = []
+
     
     # At the start of the AI, send the team name to the server
     def send_team(self, team):

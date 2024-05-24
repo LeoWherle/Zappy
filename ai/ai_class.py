@@ -5,6 +5,8 @@ class AI:
         self.lvl = 1
         self.id = id
         self.dead = False
+        self.last_eject = None
+        self.broadcast_received = []
 
         team_slots_left = net.send_team(team)
         if (team_slots_left == -1):
@@ -87,7 +89,7 @@ class AI:
         if response.__contains__("ko"):
             self.net.logger.warning("Failed to eject", self.id)
             return
-        self.net.logger.info("Ejected", self.id)
+        self.net.logger.info("Ejection worked", self.id)
 
     # Incantation
     def incantation(self):
@@ -157,4 +159,12 @@ class AI:
             list = []
         return list
         
+    def handle_broadcast(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        for elem in self.broadcast_received:
+            if elem[1] == "GoGoGadgetIncanto":  # Example of broadcast usage
+                self.incantation()
+        self.broadcast_received = []
 
