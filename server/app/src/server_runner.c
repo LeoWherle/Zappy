@@ -7,6 +7,7 @@
 
 #include "serrorh.h"
 #include "server.h"
+#include "trantor.h"
 #include "vector.h"
 #include <bits/types/sigset_t.h>
 #include <errno.h>
@@ -15,6 +16,8 @@
 #include <stddef.h>
 #include <sys/select.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
 
 static sig_atomic_t global_running_state(bool set, bool value)
 {
@@ -108,19 +111,24 @@ static int init_signal_handling(serv_context_t *context)
 
 void server_run(server_t *server)
 {
+    double now = time(NULL);
+    double next = 0.0;
     serv_context_t context = {
         .max_sd = server->listen_sd,
         .running = true,
     };
 
-    if (init_signal_handling(&context)) {
+    srand(now);
+    if (init_signal_handling(&context))
         LOG_ERROR("Failed to initialize signal handling");
-    }
+    init_trantor(&server->trantor);
     while (context.running) {
         server_select(server, &context);
-        if (global_running_state(false, 0)) {
+        if (global_running_state(false, 0))
             return;
-        }
         server_handle_event(server, &context);
+        next = time(NULL);
+        trantor_time_pass(&server->trantor, next - now);
+        now = next;
     }
 }

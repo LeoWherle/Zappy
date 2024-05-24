@@ -52,7 +52,7 @@ typedef struct client_s {
     };
 } client_t;
 
-int server(server_t *server, const char *port_str);
+int server(server_t *server, int port);
 int server_listen(server_t *server, uint16_t port, int max_clients);
 server_t *server_create(void);
 int server_socket_init(server_t *server);

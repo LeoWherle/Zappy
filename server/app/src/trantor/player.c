@@ -19,6 +19,7 @@ void init_egg(player_t *player, team_t team, coord_t c)
     player->team = team;
     player->coord[0] = c[0];
     player->coord[1] = c[1];
+    player->incantator = NULL;
     player->n = last_n_given;
     last_n_given++;
 }

@@ -11,15 +11,10 @@
 #include "serrorh.h"
 
 #include <string.h>
-#include <stdlib.h>
-#include <time.h>
 
-
-void init_trantor(trantor_t *trantor, trantor_params_t *params)
+void init_trantor(trantor_t *trantor)
 {
-    srand(time(NULL));
-    trantor->params = *params;
-    init_map(params->width, params->height, &trantor->map);
+    init_map(trantor->params.width, trantor->params.height, &trantor->map);
     trantor->players = vec_new(sizeof(player_t), destroy_player, NULL);
     trantor->log = str_new();
 }

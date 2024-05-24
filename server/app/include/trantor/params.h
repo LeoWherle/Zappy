@@ -16,7 +16,7 @@
 #define MINIMUM_TEAMS 1
 
 typedef struct trantor_params_s {
-    unsigned int port;
+    int port;
     len_t width;
     len_t height;
     unsigned int teams;
@@ -25,6 +25,6 @@ typedef struct trantor_params_s {
     float f;
 } trantor_params_t;
 
-bool parse_args(int ac, char **av, trantor_params_t *params);
+
 void destroy_params(trantor_params_t *params);
 int get_team_index(trantor_params_t *params, const char *team_name);

@@ -6,19 +6,49 @@
 */
 
 #include "trantor/params.h"
+#include "serrorh.h"
 
 #include <stdlib.h>
 #include <string.h>
 
+// original idea by lucien :
+// return -1 if port is invalid else the port as an int (with strtol)
+static signed int get_port(const char *port)
+{
+    char *endptr = NULL;
+    long port_int = strtol(port, &endptr, 10);
+
+    if (port_int < 0 || port_int > 65535 || (*endptr) != '\0') {
+        LOG_ERROR("Invalid port: \"%s\"", port);
+        return -1;
+    }
+    return port_int;
+}
+
+static bool parse_port_arg(int *ac, char **args, trantor_params_t *params)
+{
+    signed int port = 0;
+
+    if (*ac < 2 || strcmp(args[0], "-p") != 0)
+        return false;
+    port = get_port(args[1]);
+    if (port == -1)
+        return false;
+    params->port = (unsigned int) port;
+    *ac -= 2;
+    *args += 2;
+    return true;
+}
+
 static bool parse_int_arg(int *ac, char **args, trantor_params_t *params)
 {
-    char flags[4][3] = {"-p", "-x", "-y", "-c"};
+    char flags[3][3] = {"-x", "-y", "-c"};
     unsigned int *values[] =
-        {&params->port, &params->width, &params->height, &params->players};
+        {&params->width, &params->height, &params->players};
 
     if (*ac < 2)
         return false;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
         if (strcmp(args[0], flags[i]) != 0)
             continue;
         *values[i] = atoi(args[1]);
@@ -66,6 +96,8 @@ bool parse_args(int ac, char **av, trantor_params_t *params)
         if (parse_float_arg(&ac, av + 1, params))
             continue;
         if (parse_str_arg(&ac, av + 1, params))
+            continue;
+        if (parse_port_arg(&ac, av + 1, params))
             continue;
         return false;
     }

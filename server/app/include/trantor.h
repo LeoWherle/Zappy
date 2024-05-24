@@ -29,7 +29,8 @@ typedef struct trantor_s {
     string_t *log;
 } trantor_t;
 
-void init_trantor(trantor_t *trantor, trantor_params_t *params);
+bool parse_args(int ac, char **av, trantor_params_t *params);
+void init_trantor(trantor_t *trantor);
 void free_trantor(trantor_t *trantor);
 
 

@@ -5,6 +5,7 @@
 ** trantor source file
 */
 
+#include "sstrings.h"
 #include "trantor.h"
 #include "trantor/map_fn.h"
 #include "trantor/player.h"
@@ -20,6 +21,7 @@ void free_trantor(trantor_t *trantor)
     free_map(&trantor->map);
     vec_delete(trantor->players);
     destroy_params(&trantor->params);
+    str_delete(trantor->log);
 }
 
 player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
