@@ -28,3 +28,8 @@ typedef struct trantor_params_s {
 
 void destroy_params(trantor_params_t *params);
 int get_team_index(trantor_params_t *params, const char *team_name);
+/**
+ * @brief returns a c_str from the vector, DO NOT Modify the params, after
+ * getting the c_string.
+ */
+const char *get_team_name(const trantor_params_t *params, team_t team_id);
