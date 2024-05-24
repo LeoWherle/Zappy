@@ -1,4 +1,4 @@
-# MyTeams
+# Zappy
 - **Contributors:**
   - [Léo Wehrle - Rentmeister](https://github.com/leoWherle)
   - [Théodore Magna](https://github.com/TheodoreEpitech)
@@ -14,11 +14,30 @@ The winning team is the first one where at least 6 players who reach the maximum
 
 
 
-## Install
+## Install & Build
+
+#### Ubuntu
 ```sh
-binary-names : zappy_server, zappy_ai, zappy_gui
-language : C, C++, (free choice for AI)
-compilation : via Makefile, including re, clean and fclean rules
+sudo apt install libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libwayland-dev libxkbcommon-dev
+```
+#### Arch
+```sh
+sudo pacman -S alsa-lib mesa libx11 libxrandr libxi libxcursor libxinerama
+```
+#### Fedora
+```sh
+sudo dnf install alsa-lib-devel mesa-libGL-devel libX11-devel libXrandr-devel libXi-devel libXcursor-devel libXinerama-devel libatomic
+```
+
+```sh
+make install
+```
+
+### Build binaries
+```sh
+make
+ls
+> zappy_server zappy_ai zappy_gui
 ```
 
 ## Documentation
