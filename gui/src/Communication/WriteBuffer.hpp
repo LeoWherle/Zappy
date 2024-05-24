@@ -13,8 +13,7 @@
 #include <vector>
 
 class WriteBuffer {
-private:
-    std::vector<uint8_t> _buffer;
+private:    std::string _buffer;
 
 public:
     // clang-format off
@@ -41,8 +40,6 @@ public:
     /***** Functions to append new data *****/
 
     auto write_to_buffer(const void *data, uint32_t size) -> void;
-
-    auto write_to_buffer(const std::vector<uint8_t> &data) -> void;
 
     auto write_to_buffer(const std::string &data) -> void;
 

@@ -15,7 +15,7 @@
 
 class ReadBuffer {
 private:
-    std::vector<uint8_t> _buffer;
+    std::string _buffer;
 
     uint32_t _pos;
     uint32_t _filled;
@@ -50,7 +50,7 @@ public:
     ~ReadBuffer() = default;
 
     auto capacity() const -> uint32_t;
-    auto buffer() const -> std::vector<uint8_t>;
+    auto buffer() const -> std::string;
 
     inline auto available() const -> uint32_t { return _filled - _pos; };
 
@@ -85,5 +85,5 @@ public:
      *    return read(fd, buffer, size);
      * };
      */
-    auto fill_buffer(std::function<ssize_t(uint8_t *, uint32_t)> reader) -> void;
+    auto fill_buffer(std::function<ssize_t(char *, uint32_t)> reader) -> void;
 };

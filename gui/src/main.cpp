@@ -1,4 +1,5 @@
 #include <raylib-cpp.hpp>
+#include <sstream>
 
 #include "raylib-cpp.hpp"
 #include "Communication/Client.hpp"
@@ -6,7 +7,7 @@
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
-int main_test_serv_comm(int ac, char **av)
+int main_comm(int ac, char **av)
 {
     if (ac < 3) {
         return 84;
@@ -14,7 +15,8 @@ int main_test_serv_comm(int ac, char **av)
     bool run = true;
     std::string ip = av[1];
     std::size_t port = atoi(av[2]);
-    connection::Client conn(1000000, ip, port);
+    connection::Client conn(100000, ip, port);
+    conn.setUpConnection();
     ReadBuffer stdInput;
     ReadBuffer in;
     WriteBuffer StdOutput;
@@ -22,26 +24,24 @@ int main_test_serv_comm(int ac, char **av)
 
     while (run) {
         conn.handleSelect(in, out, stdInput, StdOutput);
-        std::vector<std::uint8_t> stdinBuff = stdInput.buffer();
-        std::vector<std::uint8_t> inBuff = in.buffer();
+        std::string stdinBuff = stdInput.buffer();
+        std::string inBuff = in.buffer();
         int consummed = 0;
         std::vector<std::uint8_t> tmp;
         if (stdinBuff.size() > 0) {
-            std::vector<std::uint8_t> tmp = {'p', 'i', 'n', 'g'};
-            if (stdinBuff == tmp) {
-                out.write_to_buffer("ping");
+            if (stdinBuff == "GRAPHIC\n") {
+                out.write_to_buffer(stdinBuff);
             }
-            tmp = {'e', 'x', 'i', 't'};
-            if (stdinBuff == tmp) {
+            if (stdinBuff == "msz\n") {
+                out.write_to_buffer(stdinBuff);
+            }
+            if (stdinBuff == "exit\n") {
                 run = false;
             }
             stdInput.consume(stdinBuff.size());
         }
         if (inBuff.size() > 0) {
-            tmp = {'p', 'o', 'n', 'g'};
-            if (inBuff == tmp) {
-                StdOutput.write_to_buffer("Pong !");
-            }
+            std::cout << "SERVER: " << inBuff << std::endl;
             in.consume(inBuff.size());
         }
     }

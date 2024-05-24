@@ -22,11 +22,6 @@ auto WriteBuffer::write_to_buffer(const void *data, uint32_t size) -> void
     _buffer.insert(_buffer.end(), (uint8_t *) data, (uint8_t *) data + size);
 }
 
-auto WriteBuffer::write_to_buffer(const std::vector<uint8_t> &data) -> void
-{
-    _buffer.insert(_buffer.end(), data.begin(), data.end());
-}
-
 auto WriteBuffer::write_to_buffer(const std::string &data) -> void
 {
     _buffer.insert(_buffer.end(), data.begin(), data.end());
