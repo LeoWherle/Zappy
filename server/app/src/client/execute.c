@@ -38,7 +38,7 @@ static size_t get_next_packet(string_t *buf, size_t start)
  * <-- CLIENT - NUM \n
  * <-- X Y \n
  */
-static void client_send_start_info(
+static void cl_send_start(
     client_t *client, player_t *player, unsigned int cnb)
 {
     char msg[1024] = {0};
@@ -62,28 +62,26 @@ static void client_send_start_info(
  * <-- X Y \n
  * @return the number of bytes used from the read buffer
  */
-static size_t client_get_connection(server_t *server, client_t *client)
+static size_t client_get_connection(server_t *srv, client_t *cl)
 {
-    char *data = client->read_buf.items;
-    char *team_name = client->read_buf.items;
+    char *data = cl->read_buf.items;
+    char *tname = cl->read_buf.items;
     size_t next_packet = 0;
 
-    next_packet = get_next_packet(&client->read_buf, 0);
-    if (!next_packet) {
+    next_packet = get_next_packet(&cl->read_buf, 0);
+    if (!next_packet)
         return 0;
-    }
     data[next_packet - 1] = '\0';
-    if (strcmp(team_name, "GRAPHIC")) {
-        client->is_gui = true;
+    if (strcmp(tname, "GRAPHIC")) {
+        cl->is_gui = true;
     } else {
-        client->player = hatch_team_egg(&server->trantor, team_name);
-        team_name = &data[next_packet];
-        if (client->player == NULL) {
-            LOG_DEBUG("Failed to find available team for client");
-            client->delete = true;
+        cl->player = hatch_team_egg(&srv->trantor, tname);
+        tname = &data[next_packet];
+        if (cl->player == NULL) {
+            LOG_DEBUG("Failed to find available team for cl");
+            cl->delete = true;
         }
-        client_send_start_info(client, client->player,
-            count_team_egg(&(server->trantor), team_name));
+        cl_send_start(cl, cl->player, count_team_egg(&(srv->trantor), tname));
     }
     return next_packet - 1;
 }
@@ -105,7 +103,8 @@ static size_t client_send_welcome(client_t *client)
     return 0;
 }
 
-static size_t client_process_data(client_t *client, player_t *player)
+static size_t client_process_data(
+    client_t *client, player_t *player, trantor_t *trantor)
 {
     size_t next_packet = 0;
     char *data = client->read_buf.items;
@@ -114,7 +113,7 @@ static size_t client_process_data(client_t *client, player_t *player)
     while (next_packet != 0) {
         data[next_packet - 1] = '\0';
         if (client->is_gui) {
-            // feed_gui_line(data); // should pass some other thing.
+            gui_feed_trantor_line(trantor, data);
         } else {
             feed_player_line(player, data);
         }
@@ -135,6 +134,6 @@ size_t client_execute(client_t *client, server_t *server)
             return client_get_connection(server, client);
         }
     } else {
-        return client_process_data(client, client->player);
+        return client_process_data(client, client->player, &server->trantor);
     }
 }
