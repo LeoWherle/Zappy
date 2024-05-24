@@ -19,6 +19,7 @@ static const cmd_t commands[] = {
     {"ping", command_ping},
     {"help", command_help},
     {"log", command_log},
+    {"give", command_give},
 };
 
 void command_help(server_t *server, serv_context_t *context, vector_t *args)
