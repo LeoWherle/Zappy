@@ -27,6 +27,7 @@ typedef struct trantor_s {
     map_t map;
     vector_t *players;
     string_t *log;
+    int winning_team;
 } trantor_t;
 
 bool parse_args(int ac, char **av, trantor_params_t *params);
@@ -87,10 +88,12 @@ void gui_feed_trantor_line(trantor_t *trantor, const char *line);
  * with a delta time. Some actions might be triggered, and the corresponding
  * buffers (players and log) will be fed.
  *
+ * This will return true if trantor is still running, false when if game ended
+ *
  * @param trantor a pointer to trantor
  * @param delta the time passed since last time
  */
-void trantor_time_pass(trantor_t *trantor, double delta);
+bool trantor_time_pass(trantor_t *trantor, double delta);
 
 /**
  * @brief returns the list of lines to send to a player

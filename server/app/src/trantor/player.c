@@ -19,12 +19,11 @@ void init_egg(player_t *player, team_t team, coord_t c)
     player->team = team;
     player->coord[0] = c[0];
     player->coord[1] = c[1];
-    player->incantator = NULL;
     player->n = last_n_given;
     last_n_given++;
 }
 
-void hatch_egg(player_t *player)
+void hatch_egg(player_t *player, double f)
 {
     player->is_egg = false;
     player->direction = rand() % 4;
@@ -33,7 +32,10 @@ void hatch_egg(player_t *player)
     }
     player->elevation = 1;
     player->pcmd_buffer = str_new();
+    player->npcmd = 0;
     player->response_buffer = str_new();
+    player->incantator = NULL;
+    player->time_left = 1260.0 / f;
     player->busy = false;
 }
 

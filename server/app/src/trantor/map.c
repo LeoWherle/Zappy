@@ -55,6 +55,7 @@ void init_map(len_t width, len_t height, map_t *map)
     map->width = width;
     map->height = height;
     map->tiles = malloc(sizeof(tile_t) * width * height);
+    map->since_refill = 0.0;
     get_item_count(width, height, &item_tile);
     for (len_t i = 0; i < width * height; i++) {
         map->tiles[i] = (tile_t) {0};

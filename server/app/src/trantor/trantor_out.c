@@ -37,7 +37,8 @@ player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
         temp = vec_at(trantor->players, i);
         if (!temp->is_egg || temp->team != team)
             continue;
-        hatch_egg(temp);
+        hatch_egg(temp, trantor->params.f);
+        talkf(trantor->log, "ebo %d\n", temp->n);
         talkf(trantor->log, "pnw %d %d %d %d %d %s\n",
             temp->n, temp->coord[0], temp->coord[1], temp->direction,
             temp->elevation, team_name);

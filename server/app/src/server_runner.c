@@ -128,7 +128,7 @@ void server_run(server_t *server)
             return;
         server_handle_event(server, &context);
         next = time(NULL);
-        trantor_time_pass(&server->trantor, next - now);
+        context.running = trantor_time_pass(&server->trantor, next - now);
         now = next;
     }
 }

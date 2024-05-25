@@ -14,6 +14,7 @@ typedef struct map_s {
     len_t width;
     len_t height;
     tile_t *tiles;
+    double since_refill;
 } map_t;
 
 typedef len_t coord_t[2];
