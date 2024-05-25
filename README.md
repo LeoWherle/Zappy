@@ -1,4 +1,4 @@
-# MyTeams
+# Zappy
 - **Contributors:**
   - [Léo Wehrle - Rentmeister](https://github.com/leoWherle)
   - [Théodore Magna](https://github.com/TheodoreEpitech)

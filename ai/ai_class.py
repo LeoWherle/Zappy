@@ -1,3 +1,5 @@
+import threading
+
 class AI:
     def __init__(self, team, net, id=0):
         self.net = net
@@ -5,6 +7,8 @@ class AI:
         self.lvl = 1
         self.id = id
         self.dead = False
+        self.last_eject = None
+        self.broadcast_received = []
 
         team_slots_left = net.send_team(team)
         if (team_slots_left == -1):
@@ -58,12 +62,14 @@ class AI:
         self.net.logger.info(f"Broadcasted: {msg}", self.id)
 
     # Fork the AI
-    def fork(self):
+    def fork(self, func, args, threads):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
             return
         self.net.send("Fork", self)
         self.net.logger.info("Forked", self.id)
+        threads.append(threading.Thread(target=func, args=args))
+        threads[-1].start()
 
     # Get the nb of unused slots in the team
     def get_unused_slots(self):
@@ -87,18 +93,19 @@ class AI:
         if response.__contains__("ko"):
             self.net.logger.warning("Failed to eject", self.id)
             return
-        self.net.logger.info("Ejected", self.id)
+        self.net.logger.info("Ejection worked", self.id)
 
     # Incantation
     def incantation(self):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
-            return
+            return False
         response = self.net.send("Incantation", self)
         if response.__contains__("ko"):
             self.net.logger.warning("Failed to incant", self.id)
-            return
+            return False
         self.net.logger.info("Incanted", self.id)
+        return True
 
     # Take an object
     def take(self, obj):
@@ -132,11 +139,31 @@ class AI:
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
             return
-        response = self.net.send(f"Drop {obj}", self)
+        response = self.net.send(f"Set {obj}", self)
         if response.__contains__("ko"):
             self.net.logger.warning(f"Failed to drop {obj}", self.id)
             return
         self.net.logger.info(f"Dropped {obj}", self.id)
+
+    def drop_all(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        inv = self.inventory()
+        for key in inv:
+            if key != "food":
+                for i in range(inv[key]):
+                    self.drop(key)
+
+    def is_inv_empty(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        inv = self.inventory()
+        for key in inv:
+            if key != "food" and inv[key] > 0:
+                return False
+        return True
 
     # Look, return a list of the objects around the AI
     def look(self):
@@ -157,4 +184,29 @@ class AI:
             list = []
         return list
         
+    def handle_broadcast(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        for elem in self.broadcast_received:
+            if elem[1] == "GoGoGadgetIncanto":  # Example of broadcast usage
+                self.incantation()
+        self.broadcast_received = []
+
+    def get_nb_player_on_tile(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        list = self.look()
+        if list == None:
+            return
+        try:
+            list = list[0]
+            nb = 0
+            for elem in list:
+                if elem == "player":
+                    nb += 1
+            return nb
+        except:
+            return 0
 

@@ -1,31 +1,8 @@
 #!/usr/bin/env python3
 from sys import argv
 import argparse
-from connection import ServerConnection
-from ai_class import AI
-import threading
 from messages import Logger
-
-def new_ai(args, logger, id):
-    threads = []
-    net = ServerConnection(logger, args.h, args.p)
-    if not net.connect():
-        return 84
-
-    ai = AI(args.n, net, id)
-    while (not ai.dead):
-        if (ai.get_unused_slots() > 0):
-            ai.fork()
-            threads.append(threading.Thread(target=new_ai, args=(args, logger, id + 1)))
-            threads[-1].start()
-        ai.incantation()
-        ai.take("food")
-        ai.forward()
-
-    net.close_connection() # End of the program
-    for thread in threads:
-        thread.join()
-    return 0
+from ai import make_new_ai
 
 def run(args):
     log_level = {
@@ -36,7 +13,7 @@ def run(args):
         "ai" : True
     }
     logger = Logger(log_level)
-    return new_ai(args, logger, 0)
+    return make_new_ai(args, logger, 0)
 
 def get_args():
     parser = argparse.ArgumentParser(
