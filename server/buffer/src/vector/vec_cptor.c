@@ -53,3 +53,8 @@ buf_error_t vec_extend_with(vector_t *vec, const void *element, size_t n)
     vec->nmemb += n;
     return (BUF_OK);
 }
+
+bool vec_is_empty(vector_t *vec)
+{
+    return (vec->nmemb == 0);
+}
