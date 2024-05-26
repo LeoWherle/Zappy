@@ -72,6 +72,7 @@ server_t *server_create(void)
     if (server != NULL) {
         if (server_socket_init(server) < 0) {
             free(server);
+            return NULL;
         }
     }
     return server;
