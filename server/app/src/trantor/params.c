@@ -78,7 +78,7 @@ static bool parse_str_arg(int *ac, char ***args, trantor_params_t *params)
     if (strcmp((*args)[0], "-n") != 0)
         return false;
     while (*ac > 1 && (*args)[1][0] != '-') {
-        if (vec_push(params->team_names, strdup((*args)[1])) != BUF_OK)
+        if (vec_push(params->team_names, (*args)[1]) != BUF_OK)
             return false;
         *ac -= 1;
         *args += 1;
@@ -91,7 +91,7 @@ static bool parse_str_arg(int *ac, char ***args, trantor_params_t *params)
 
 bool parse_args(int ac, char **av, trantor_params_t *params)
 {
-    params->team_names = vec_new(sizeof(char *), free, NULL);
+    params->team_names = vec_new(sizeof(char *), NULL, NULL);
     if (ac < 3)
         return false;
     while (ac > 1) {
