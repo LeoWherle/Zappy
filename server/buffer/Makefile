@@ -25,7 +25,7 @@ BUILD_DIR = ../build/
 CC = gcc
 
 ifeq ($(DEBUG), n)
-	CFLAGS += -O2
+	CFLAGS += -O2 -march=native -mtune=native -flto -fwhole-program
 	RULE = "DEBUG=n"
 	BUILD_PATH := $(BUILD_DIR)release/
 # used with make DEBUG=y
@@ -53,6 +53,7 @@ OBJ_SRC_CRIT = $(SRC:%.c=$(BUILD_PATH)tests/$(NAME)/%.o)
 DEPS = 	$(OBJ:%.o=%.d)
 
 CFLAGS = -W -Wall -Wextra -Iinclude
+CFLAGS += -MMD -MP
 CRITFLAGS = -lcriterion --coverage
 
 $(BUILD_DIR)tests/$(NAME)/%.o: %.c
@@ -68,6 +69,8 @@ $(BUILD_PATH)$(LIBNAME): $(OBJ)
 	@echo -e "$(GREEN)✓ Compiled $(LIBNAME)$(RESET)"
 
 all:	$(LIBNAME)
+
+-include $(DEPS)
 
 clean:
 	@rm -f $(OBJ) *~ *.gcno *.gcda $(OBJ_SRC_CRIT) $(OBJ_CRIT) #*#

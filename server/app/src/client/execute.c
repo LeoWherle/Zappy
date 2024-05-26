@@ -6,14 +6,11 @@
 */
 
 #include "buffer.h"
-#include "packets.h"
 #include "serrorh.h"
 #include "server.h"
 #include "sstrings.h"
 #include "trantor.h"
 #include "trantor/player.h"
-#include "trantor/string_utils.h"
-#include "vector.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -23,12 +20,10 @@
 
 static size_t get_next_packet(string_t *buf, size_t start)
 {
-    size_t i = start;
-
-    for (; i < buf->nmemb; i++) {
-        if (((char *) buf->items)[i] == '\n') {
-            return i + 1;
-        }
+    char *newline =
+        memchr(((char *) buf->items) + start, '\n', buf->nmemb - start);
+    if (newline != NULL) {
+        return newline - (char *) buf->items + 1;
     }
     return 0;
 }
@@ -38,8 +33,7 @@ static size_t get_next_packet(string_t *buf, size_t start)
  * <-- CLIENT - NUM \n
  * <-- X Y \n
  */
-static void cl_send_start(
-    client_t *client, player_t *player, unsigned int cnb)
+static void cl_send_start(client_t *client, player_t *player, unsigned int cnb)
 {
     char msg[1024] = {0};
 
@@ -78,7 +72,7 @@ static size_t client_get_connection(server_t *srv, client_t *cl)
         cl->player = hatch_team_egg(&srv->trantor, tname);
         tname = &data[next_packet];
         if (cl->player == NULL) {
-            LOG_DEBUG("Failed to find available team for cl");
+            LOG_DEBUG("Failed to find available team name %s for cl", tname);
             cl->delete = true;
         }
         cl_send_start(cl, cl->player, count_team_egg(&(srv->trantor), tname));
