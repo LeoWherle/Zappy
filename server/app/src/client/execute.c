@@ -22,6 +22,7 @@ static size_t get_next_packet(string_t *buf, size_t start)
 {
     char *newline =
         memchr(((char *) buf->items) + start, '\n', buf->nmemb - start);
+
     if (newline != NULL) {
         return newline - (char *) buf->items + 1;
     }
