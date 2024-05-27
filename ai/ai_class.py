@@ -1,4 +1,5 @@
 import threading
+from random import randint
 from tools import is_a_number
 
 class AI:
@@ -282,6 +283,18 @@ class AI:
             return
         self.net.add_to_send("Left")
         self.net.logger.info("Turned left", self.id)
+
+    def move_random(self):
+        random = randint(0, 3)
+        match random:
+            case 0:
+                self.forward()
+            case 1:
+                self.turn_right()
+                self.forward()
+            case 2:
+                self.turn_left()
+                self.forward()
 
     # Broadcast a message
     def broadcast(self, msg):
