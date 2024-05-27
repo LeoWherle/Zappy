@@ -14,5 +14,6 @@ enum Kaillou {
     SIBUR = 3,
     MENDIANE = 4,
     PHIRAS = 5,
-    THYSTAME = 6
+    THYSTAME = 6,
+    NBKAILLOU = 7
 };
