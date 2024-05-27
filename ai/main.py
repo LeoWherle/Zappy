@@ -24,6 +24,7 @@ def get_args():
     parser.add_argument("-n", type=str, help="Name of the team", required=True)
     parser._option_string_actions.pop("-h", None)
     parser.add_argument("-h", type=str, help="Host of the server", required=True)
+    parser.add_argument("-t", help="Enable Multi threading", action='store_true')
     parser.print_usage = parser.print_help
 
     if len(argv) == 2 and argv[1] == "-h":

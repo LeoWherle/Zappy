@@ -68,8 +68,11 @@ class AI:
             return
         self.net.send("Fork", self)
         self.net.logger.info("Forked", self.id)
-        threads.append(threading.Thread(target=func, args=args))
-        threads[-1].start()
+        if (not args.t):
+            self.net.logger.info("Mutli threading is disabled, manually connect an AI", self.id)
+        if (args.t):
+            threads.append(threading.Thread(target=func, args=args))
+            threads[-1].start()
 
     # Get the nb of unused slots in the team
     def get_unused_slots(self):
