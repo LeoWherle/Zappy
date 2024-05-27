@@ -17,7 +17,7 @@ World::~World()
 {
 }
 
-void World::addPlayer(std::size_t id, std::size_t x, std::size_t y)
+void World::addPlayer(std::string &id, std::size_t x, std::size_t y)
 {
     for (auto &player : _players) {
         if (player == id) {
@@ -28,11 +28,23 @@ void World::addPlayer(std::size_t id, std::size_t x, std::size_t y)
     _players.push_back(Pikmin(x, y));
 }
 
-void World::removePlayer(std::size_t id)
+void World::removePlayer(std::string &id)
 {
     for (auto &player : _players) {
         if (player == id) {
             _players.erase(std::find(_players.begin(), _players.end(), player));
         }
     }
+}
+
+Pikmin &World::getPikmin(std::string &id)
+{
+    for (auto &player : _players) {
+        if (player == id) {
+            return player;
+        }
+    }
+    std::string stringId = id;
+    stringId += " is unknwown";
+    throw UnknownPlayer(stringId);
 }
