@@ -7,7 +7,8 @@
 
 #include "ActionHandler.hpp"
 
-ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams) : _pikmins(pikmins), _map(map), _teams(teams), _x(0), _y(0)
+ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams) :
+    _pikmins(pikmins), _map(map), _teams(teams), _x(0), _y(0)
 {
     _regexMap = std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>>({
         {std::regex("^msz (\\d+) (\\d+)$"), &ActionHandler::setmapSize},
@@ -27,7 +28,7 @@ ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &ma
         {std::regex("^pdi (\\d+)$"), &ActionHandler::pikminDie},
         {std::regex("^enw (\\d+) (\\d+) (\\d+) (\\d+)$"), &ActionHandler::layedEgg},
         {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
-        {std::regex("^edi (\\d+)$"), &ActionHandler::eggDie},
+        {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
     });
 }
 
@@ -122,21 +123,35 @@ void ActionHandler::pikminPickRessource(std::smatch &arg)
 
 void ActionHandler::pikminDie(std::smatch &arg)
 {
+    std::string pikminId = arg[1].str();
 
+    for (std::size_t i = 0; i < _pikmins.size(); i++) {
+        if (_pikmins[i] == pikminId) {
+            _pikmins[i].setAnimation(_animation.get("death"));
+        }
+    }
 }
 
 void ActionHandler::layedEgg(std::smatch &arg)
 {
+    std::string eggId = arg[1].str();
+    std::string pikminId = arg[2].str();
+    std::size_t x = std::atoi(arg[3].str().c_str());
+    std::size_t y = std::atoi(arg[4].str().c_str());
 
+    _pikmins.push_back(Pikmin(eggId, x, y));
+    _pikmins[_pikmins.size() - 1].setModel(_model.get("egg"));
+    _pikmins[_pikmins.size() - 1].setAnimation(_animation.get("egg"));
 }
 
 void ActionHandler::eggHatche(std::smatch &arg)
 {
+    std::string eggId = arg[1].str();
 
+    for (std::size_t i = 0; i < _pikmins.size(); i++) {
+        if (_pikmins[i] == eggId) {
+            _pikmins[i].setModel(_model.get("pikmin"));
+            _pikmins[i].setAnimation(_animation.get("birth"));
+        }
+    }
 }
-
-void ActionHandler::eggDie(std::smatch &arg)
-{
-
-}
-

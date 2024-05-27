@@ -7,16 +7,16 @@
 
 #pragma once
 
-#include <map>
 #include <string>
 #include <cstddef>
+#include <raylib-cpp.hpp>
 #include "Kaillou.hpp"
 
 class Pikmin {
     public:
         Pikmin(std::size_t x, std::size_t y);
         Pikmin(std::string &id, std::size_t x, std::size_t y);
-        ~Pikmin() = default;
+        ~Pikmin();
 
         void pickRock(Kaillou rock);
         void dropRock(Kaillou rock);
@@ -30,9 +30,18 @@ class Pikmin {
         inline bool operator==(const Pikmin &other) { return (_id == other._id); }
         inline bool operator==(const std::string &id) { return (_id == id); }
 
+        inline void setModel(Model *model) { _model = model; }
+        void setAnimation(std::string fileName);
+
+        void animationUpdate(void);
+
     private:
         std::size_t _x;
         std::size_t _y;
         std::string _id;
         std::map<Kaillou, std::size_t> _inventory;
+        Model *_model;
+        ModelAnimation *_anim;
+        int _animCount;
+        int _frameCount;
 };
