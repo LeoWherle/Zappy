@@ -10,13 +10,14 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "Kaillou.hpp"
 
 class Tile {
     public:
         Tile() {};
         ~Tile() = default;
-        void setRocks(std::map<std::string, std::size_t> &rocks);
+        inline void setRocks(std::map<Kaillou, std::size_t> &rocks) { _rocks = rocks; }
     protected:
     private:
-        std::map<std::string, std::size_t> _rocks;
+        std::map<Kaillou, std::size_t> _rocks;
 };

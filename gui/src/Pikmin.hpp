@@ -7,8 +7,10 @@
 
 #pragma once
 
+#include <map>
 #include <string>
 #include <cstddef>
+#include "Kaillou.hpp"
 
 class Pikmin {
     public:
@@ -16,6 +18,7 @@ class Pikmin {
         Pikmin(std::string &id, std::size_t x, std::size_t y);
         ~Pikmin() = default;
 
+        void pickRock(Kaillou rock);
         inline void setX(std::size_t val) { _x = val; }
         inline void setY(std::size_t val) { _y = val; }
         inline void setId(std::string &id) { _id = id; }
@@ -30,4 +33,5 @@ class Pikmin {
         std::size_t _x;
         std::size_t _y;
         std::string _id;
+        std::map<Kaillou, std::size_t> _inventory;
 };
