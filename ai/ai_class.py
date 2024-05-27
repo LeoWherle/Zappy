@@ -102,7 +102,7 @@ class AI:
     def get_unused_slots(self):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
-            return
+            return -1
         response = self.net.send_and_read("Connect_nbr", self).split("\n")
         team_slots_left = -1
         while (team_slots_left == -1):
@@ -180,6 +180,18 @@ class AI:
         for elem in object_list:
             if elem != "player":
                 self.take(elem)
+    
+    def take_all_food(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        object_list = self.look()
+        if object_list == None:
+            return
+        object_list = object_list[0]
+        for elem in object_list:
+            if elem == "food":
+                self.take(elem)
 
     def get_nb_player_on_tile(self):
         if (self.dead):
@@ -200,7 +212,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
             return
-        response = self.net.send(f"Set {obj}", self)
+        response = self.net.send_and_read(f"Set {obj}", self)
         status = False
         while (not status):
             for elem in response.split("\n"):
