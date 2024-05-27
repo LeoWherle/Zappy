@@ -174,7 +174,7 @@ class AI:
             self.net.logger.warning("AI is dead", self.id)
             return
         object_list = self.look()
-        if object_list == None:
+        if object_list == None or object_list == []:
             return
         object_list = object_list[0]
         for elem in object_list:
@@ -186,7 +186,7 @@ class AI:
             self.net.logger.warning("AI is dead", self.id)
             return
         object_list = self.look()
-        if object_list == None:
+        if object_list == None or object_list == []:
             return
         object_list = object_list[0]
         for elem in object_list:
@@ -198,7 +198,7 @@ class AI:
             self.net.logger.warning("AI is dead", self.id)
             return
         object_list = self.look()
-        if object_list == None:
+        if object_list == None or object_list == []:
             return
         object_list = object_list[0]
         nb = 0
