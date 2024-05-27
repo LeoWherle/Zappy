@@ -25,11 +25,14 @@ class AI:
     def inventory(self):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
-            return
+            return None
         response = self.net.send_and_read("Inventory", self)
         inventory = None
         while (inventory == None):
             for elem in response.split("\n"):
+                if elem == "dead":
+                    self.dead = True
+                    return None
                 if elem.startswith("["):
                     inventory = response.split("[")[1].split(",")
                 else:
@@ -52,6 +55,9 @@ class AI:
         look = None
         while (look == None):
             for elem in response.split("\n"):
+                if elem == "dead":
+                    self.dead = True
+                    return None
                 if elem.startswith("["):
                     look = response.split("[")[1].split(",")
                 else:
@@ -76,6 +82,9 @@ class AI:
         response = self.net.send_and_read("Fork", self)
         while (not status):
             for elem in response.split("\n"):
+                if elem == "dead":
+                    self.dead = True
+                    return
                 if elem == "ok":
                     status = True
                 else:
@@ -98,6 +107,9 @@ class AI:
         team_slots_left = -1
         while (team_slots_left == -1):
             for elem in response:
+                if elem == "dead":
+                    self.dead = True
+                    return -1
                 if is_a_number(elem):
                     team_slots_left = int(elem)
                 else:
@@ -116,6 +128,9 @@ class AI:
         status = False
         while (not status):
             for elem in response.split("\n"):
+                if elem == "dead":
+                    self.dead = True
+                    return False
                 if elem == "ko":
                     self.net.logger.warning("Failed to incant", self.id)
                     return False
@@ -136,8 +151,11 @@ class AI:
             return
         response = self.net.send_and_read(f"Take {obj}", self)
         status = False
-        while (not status):
+        while (not status and not self.dead):
             for elem in response.split("\n"):
+                if elem == "dead":
+                    self.dead = True
+                    return False
                 if elem == "ko":
                     self.net.logger.warning(f"Failed to take {obj}", self.id)
                     return False
@@ -186,6 +204,9 @@ class AI:
         status = False
         while (not status):
             for elem in response.split("\n"):
+                if elem == "dead":
+                    self.dead = True
+                    return False
                 if elem == "ko":
                     self.net.logger.warning(f"Failed to drop {obj}", self.id)
                     return False
@@ -203,6 +224,8 @@ class AI:
             self.net.logger.warning("AI is dead", self.id)
             return
         inv = self.inventory()
+        if inv == None:
+            return
         for key in inv:
             if key != "food":
                 for _ in range(inv[key]):
@@ -213,6 +236,8 @@ class AI:
             self.net.logger.warning("AI is dead", self.id)
             return
         inv = self.inventory()
+        if inv == None:
+            return False
         for key in inv:
             if key != "food" and inv[key] > 0:
                 return False
@@ -266,7 +291,8 @@ class AI:
     #        Handle responses         #
     #---------------------------------#
 
-    def handle_broadcast(self, broadcast_received):
+    # Change this function to handle more messages
+    def handle_broadcast(self, broadcast_received, k):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
             return

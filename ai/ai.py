@@ -17,27 +17,23 @@ def move_random(ai):
             ai.forward()
 
 # Change the function to change the AI logic
+def make_ai_actions(ai, threads, args, logger):
+    if (ai.get_unused_slots() > 0):
+        ai.fork(make_new_ai, (args, logger, ai.id + 1), threads)
+
+    ai.incantation()
+    ai.take("food")
+    move_random(ai)
+
+
 def start_ai_logic(ai, threads, args, logger):
     while (not ai.dead):
-        if (ai.get_unused_slots() > 0):
-            ai.fork(make_new_ai, (args, logger, ai.id + 1), threads)
-
-        if (ai.lvl == 1):
-            ai.take("food")
-            if (ai.get_nb_player_on_tile() == 1):
-                ai.incantation()
-            move_random(ai)
-        else:
-            if (ai.get_nb_player_on_tile() == 1):
-                ai.take("food")
-                ai.take("deraumere")
-                ai.take("sibur")
-                ai.take("phiras")
-                move_random(ai)
-            else:
-                ai.take("food")
-                ai.drop_all()
-                ai.incantation()
+        if (ai.is_elevating):
+            ai.net.empty_buffer(ai)
+            continue
+        
+        make_ai_actions(ai, threads, args, logger)
+        
         ai.net.send_buffer(ai)
         ai.net.empty_buffer(ai)
 

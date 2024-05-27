@@ -37,8 +37,9 @@ class ServerConnection:
         self.logger.ai(msg, ai_id)
         self.sock.sendall(msg.encode())
         response = self.sock.recv(1024).decode()
-        self.logger.server(response, ai_id)
-        self.add_to_read(response)
+        if (response != ""):
+            self.logger.server(response, ai_id)
+            self.add_to_read(response)
         return response
     
     def send_buffer(self, ai):
@@ -62,34 +63,48 @@ class ServerConnection:
     def add_to_read(self, response):
         self.out_buffer += response
 
-    def read(self, ai):
-        response = self.sock.recv(1024).decode()
-        self.logger.server(response, ai.id)
-        self.add_to_read(response)
+    def read_with_timeout(self):
+        try:
+            response = self.sock.recv(1024).decode()
+        except TimeoutError:
+            return ""
+        return response
+
+    def read(self, ai, timeout=False):
+        if (timeout):
+            self.sock.settimeout(0.1)
+            response = self.read_with_timeout()
+            self.sock.settimeout(None)
+        else:
+            response = self.sock.recv(1024).decode()
+        if (response != ""):
+            self.logger.server(response, ai.id)
+            self.add_to_read(response)
         return response
     
     def empty_buffer(self, ai):
-        self.read(ai)
+        ai.net.read(ai, timeout=True)
         for elem in self.out_buffer.split("\n"):
             if elem == "dead":
                 ai.dead = True
                 self.logger.warning("The AI is dead", ai.id)
-            if elem == "Elevation underway":
-                ai.is_elevating = True
-                while (ai.is_elevating):  # Wait for the AI to finish its elevation
-                    ai.net.read(ai)
-                    ai.net.empty_buffer(ai)
+                self.out_buffer = ""
+                return
             if elem.startswith("Current level"):
                 ai.lvl = int(elem.split(":")[1])
                 self.logger.server(elem, ai.id)
                 self.logger.info(f"AI leveled up to {ai.lvl}", ai.id)
-                self.is_elevating = False
+                ai.is_elevating = False
             if elem.startswith("eject"):
                 ai.last_eject = int(elem.split(":")[1])
                 self.logger.info(f"Ejected: K = {ai.last_eject}", ai.id)
             if elem.startswith("message"):
-                self.logger.info(f"Received broadcast K = {ai.broadcast_received[-1][0]}: {ai.broadcast_received[-1][1]}", ai.id)
-                ai.handle_broadcast(elem.removeprefix("message ").split(",")[0], elem.split(",")[1].removeprefix(" "))
+                k = elem.removeprefix("message ").split(",")[0]
+                message = elem.split(",")[1].removeprefix(" ")
+                self.logger.info(f"Received broadcast K = {k}: {message}", ai.id)
+                ai.handle_broadcast(message, k)
+            if elem == "Elevation underway":
+                ai.is_elevating = True
 
         self.out_buffer = ""
 
