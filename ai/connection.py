@@ -61,6 +61,10 @@ class ServerConnection:
         self.in_buffer += msg
 
     def add_to_read(self, response):
+        if (response == ""):
+            return
+        if (response[-1] != '\n'):
+            response += '\n'
         self.out_buffer += response
 
     def read_with_timeout(self):
