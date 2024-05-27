@@ -8,7 +8,9 @@ class ServerConnection:
         self.map_x = 0
         self.map_y = 0
         self.logger = logger
-        self.buffer = []
+        self.out_buffer = ""
+        self.in_buffer = ""
+        self.multi_threading = False
 
     # At the start of the program, connect to the server
     def connect(self):
@@ -23,51 +25,88 @@ class ServerConnection:
         self.sock = sock
         return True
 
-    def send(self, msg, ai):
+    def send_and_read(self, msg, ai):
         if (msg[-1] != '\n'):
             msg += '\n'
         if (ai == None):
             ai_id = 0
         else:
             ai_id = ai.id
-        self.empty_buffer(ai)
         if (ai != None and ai.dead):
             return
         self.logger.ai(msg, ai_id)
         self.sock.sendall(msg.encode())
         response = self.sock.recv(1024).decode()
         self.logger.server(response, ai_id)
-        self.buffer += response.split("\n")
+        self.add_to_read(response)
+        return response
+    
+    def send_buffer(self, ai):
+        if (ai == None):
+            ai_id = 0
+        else:
+            ai_id = ai.id
+        if (ai != None and ai.dead):
+            return
+        for msg in self.in_buffer.split("\n"):
+            self.logger.ai(msg, ai_id)
+        self.sock.sendall(self.in_buffer.encode())
+        self.in_buffer = ""
+        return ai_id
+    
+    def add_to_send(self, msg):
+        if (msg[-1] != '\n'):
+            msg += '\n'
+        self.in_buffer += msg
+
+    def add_to_read(self, response):
+        self.out_buffer += response
+
+    def read(self, ai):
+        response = self.sock.recv(1024).decode()
+        self.logger.server(response, ai.id)
+        self.add_to_read(response)
         return response
     
     def empty_buffer(self, ai):
-        for elem in self.buffer:
+        self.read(ai)
+        for elem in self.out_buffer.split("\n"):
             if elem == "dead":
                 ai.dead = True
                 self.logger.warning("The AI is dead", ai.id)
             if elem == "Elevation underway":
-                ai.lvl += 1
-                response = self.sock.recv(1024).decode()
-                self.logger.server(response, ai.id)
+                ai.is_elevating = True
+                while (ai.is_elevating):  # Wait for the AI to finish its elevation
+                    ai.net.read(ai)
+                    ai.net.empty_buffer(ai)
+            if elem.startswith("Current level"):
+                ai.lvl = int(elem.split(":")[1])
+                self.logger.server(elem, ai.id)
                 self.logger.info(f"AI leveled up to {ai.lvl}", ai.id)
-            if elem.__contains__("eject"):
+                self.is_elevating = False
+            if elem.startswith("eject"):
                 ai.last_eject = int(elem.split(":")[1])
                 self.logger.info(f"Ejected: K = {ai.last_eject}", ai.id)
-            if elem.__contains__("message"):
-                ai.broadcast_received.append((elem.removeprefix("message ").split(",")[0], elem.split(",")[1].removeprefix(" ")))
+            if elem.startswith("message"):
                 self.logger.info(f"Received broadcast K = {ai.broadcast_received[-1][0]}: {ai.broadcast_received[-1][1]}", ai.id)
+                ai.handle_broadcast(elem.removeprefix("message ").split(",")[0], elem.split(",")[1].removeprefix(" "))
 
-        self.buffer = []
+        self.out_buffer = ""
 
     
     # At the start of the AI, send the team name to the server
     def send_team(self, team):
-        infos = self.send(team, None).split("\n")
-        if (infos[0] == "ko"):
-            self.logger.error(f"No space left in team {team}", -1)
-            return -1
-        self.map_x = int(infos[1].split(" ")[0])
-        self.map_y = int(infos[1].split(" ")[1])
+        response = self.send_and_read(team, None)
+        for elem in response.split("\n"):
+            if elem == "ko":
+                self.logger.warning(f"No space left in team {team}", -1)
+                return -1
+            else:
+                infos = response.split("\n")
+                break
+        coord = infos[1].split(" ")
+        self.map_x = int(coord[0])
+        self.map_y = int(coord[1])
         return int(infos[0])
 
     # At the end of the program, close the connection

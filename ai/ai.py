@@ -22,7 +22,6 @@ def start_ai_logic(ai, threads, args, logger):
         if (ai.get_unused_slots() > 0):
             ai.fork(make_new_ai, (args, logger, ai.id + 1), threads)
 
-        ai.handle_broadcast()
         if (ai.lvl == 1):
             ai.take("food")
             if (ai.get_nb_player_on_tile() == 1):
@@ -39,12 +38,15 @@ def start_ai_logic(ai, threads, args, logger):
                 ai.take("food")
                 ai.drop_all()
                 ai.incantation()
+        ai.net.send_buffer(ai)
+        ai.net.empty_buffer(ai)
 
 def make_new_ai(args, logger, id):
     threads = []
     net = ServerConnection(logger, args.h, args.p) # AI Connection to Server
     if not net.connect():
         return 84
+    net.multi_threading = args.t
 
     ai = AI(args.n, net, id) # AI Creation
     start_ai_logic(ai, threads, args, logger) # AI Logic
