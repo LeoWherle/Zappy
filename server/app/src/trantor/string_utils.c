@@ -58,6 +58,8 @@ char *aprintf(const char *fmt, ...)
     if (len == -1)
         return NULL;
     str = malloc(sizeof(char) * (len + 1));
+    if (!str)
+        return NULL;
     vsprintf(str, fmt, args);
     va_end(args);
     return str;

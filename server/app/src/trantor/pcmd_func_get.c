@@ -36,6 +36,8 @@ static tile_t **internal_player_look(pcmd_args_t *args, size_t *lenbuf)
     for (unsigned int i = 0; i < args->player->elevation; i++)
         len += i * 2 + 1;
     tiles = malloc(sizeof(tile_t *) * len);
+    if (!tiles)
+        return NULL;
     *lenbuf = len;
     tiles[0] = unbounded_tile_get(args->map, start[0], start[1]);
     len = 1;
@@ -79,8 +81,10 @@ void player_look(pcmd_args_t *args)
 
     for (size_t i = 0; i < tnb; i++)
         len += get_tile_req_size(tiles[i]);
-    if (vec_reserve(str_to_vec(args->player->response_buffer), len) != BUF_OK)
+    if (vec_reserve(str_to_vec(args->player->response_buffer), len) != BUF_OK) {
+        free(tiles);
         return;
+    }
     msg = STRING_END(args->player->response_buffer);
     len = sprintf(msg, "[");
     for (size_t i = 0; i < tnb; i++) {
@@ -88,6 +92,7 @@ void player_look(pcmd_args_t *args)
         if (i != tnb - 1)
             len += sprintf(msg + len, ", ");
     }
+    free(tiles);
     len += sprintf(msg + len, "]\n");
     talk(args->player->response_buffer, msg);
 }

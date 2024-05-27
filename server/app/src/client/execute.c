@@ -11,6 +11,7 @@
 #include "sstrings.h"
 #include "trantor.h"
 #include "trantor/player.h"
+#include "trantor/string_utils.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -36,18 +37,11 @@ static size_t get_next_packet(string_t *buf, size_t start)
  */
 static void cl_send_start(client_t *client, player_t *player, unsigned int cnb)
 {
-    char msg[1024] = {0};
-
-    if (player == NULL) {
-        snprintf(msg, sizeof(msg), "0\n0 0\n");
-    } else {
-        snprintf(msg, sizeof(msg), "%d\n%d %d\n", cnb, player->coord[0],
-            player->coord[1]);
-        client->player = player;
-    }
-    if (str_push_bytes(&client->write_buf, msg, strlen(msg)) != BUF_OK) {
-        LOG_ERROR("Failed to push start info to write buffer");
-    }
+    if (player == NULL)
+        talk(&client->write_buf, "0\n0 0\n");
+    else
+        talkf(&client->write_buf, "%d\n%d %d\n",
+            cnb, player->coord[0], player->coord[1]);
 }
 
 /**
@@ -55,6 +49,23 @@ static void cl_send_start(client_t *client, player_t *player, unsigned int cnb)
  * --> TEAM - NAME \n
  * <-- CLIENT - NUM \n
  * <-- X Y \n
+ * @return the number of bytes used from the read buffer
+ */
+static void player_get_connection(
+    server_t *srv, client_t *cl, const char *tname)
+{
+    cl->player = hatch_team_egg(&srv->trantor, tname);
+    if (cl->player == NULL) {
+        LOG_DEBUG("Failed to find available team name %s for cl", tname);
+        cl->delete = true;
+    }
+    cl_send_start(cl, cl->player, count_team_egg(&(srv->trantor), tname));
+}
+
+/**
+ * @brief Handles new clients, graphic or not
+ * Expect the client's team name
+ *
  * @return the number of bytes used from the read buffer
  */
 static size_t client_get_connection(server_t *srv, client_t *cl)
@@ -67,17 +78,10 @@ static size_t client_get_connection(server_t *srv, client_t *cl)
     if (!next_packet)
         return 0;
     data[next_packet - 1] = '\0';
-    if (strcmp(tname, "GRAPHIC")) {
+    if (strcmp(tname, "GRAPHIC"))
         cl->is_gui = true;
-    } else {
-        cl->player = hatch_team_egg(&srv->trantor, tname);
-        tname = &data[next_packet];
-        if (cl->player == NULL) {
-            LOG_DEBUG("Failed to find available team name %s for cl", tname);
-            cl->delete = true;
-        }
-        cl_send_start(cl, cl->player, count_team_egg(&(srv->trantor), tname));
-    }
+    else
+        player_get_connection(srv, cl, tname);
     return next_packet - 1;
 }
 

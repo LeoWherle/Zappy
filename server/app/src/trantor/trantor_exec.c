@@ -33,20 +33,20 @@ static int winning_team(vector_t *players, unsigned int teams)
 {
     vector_t tcounts = {0};
     player_t *p;
+    unsigned int i = 0;
 
     if (vec_init(&tcounts, sizeof(unsigned int), NULL, NULL) != BUF_OK
         || vec_reserve(&tcounts, teams) != BUF_OK)
         return -1;
-    for (unsigned int i = 0; i < players->nmemb; i++) {
+    for (; i < players->nmemb; i++) {
         p = vec_at(players, i);
         if (p->team >= teams)
             continue;
         ((unsigned int *)tcounts.items)[p->team]++;
     }
-    for (unsigned int i = 0; i < tcounts.nmemb; i++) {
-        if (((unsigned int *)tcounts.items)[i] >= 6)
+    for (i = 0; i < tcounts.nmemb; i++)
+        if (((unsigned int *) tcounts.items)[i] >= 6)
             return i;
-    }
     vec_delete(&tcounts);
     return -1;
 }
