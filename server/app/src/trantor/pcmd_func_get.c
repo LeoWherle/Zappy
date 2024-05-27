@@ -25,20 +25,13 @@ const char *ITEM_NAMES[7] = {
     "thystame"
 };
 
-static tile_t **internal_player_look(pcmd_args_t *args, size_t *lenbuf)
+static void fill_tiles(pcmd_args_t *args, tile_t **tiles)
 {
     direction_t ray_dir = (args->player->direction + 1) % 4;
     unbounded_coord_t start =
         {(int) args->player->coord[0], (int) args->player->coord[0]};
-    tile_t **tiles;
     size_t len = 1;
 
-    for (unsigned int i = 0; i < args->player->elevation; i++)
-        len += i * 2 + 1;
-    tiles = malloc(sizeof(tile_t *) * len);
-    if (!tiles)
-        return NULL;
-    *lenbuf = len;
     tiles[0] = unbounded_tile_get(args->map, start[0], start[1]);
     len = 1;
     for (unsigned int i = 0; i < args->player->elevation; i++) {
@@ -48,6 +41,20 @@ static tile_t **internal_player_look(pcmd_args_t *args, size_t *lenbuf)
             (ray_t){{start[0], start[1]}, ray_dir}, i * 2 + 1, tiles + len);
         len += i * 2 + 1;
     }
+}
+
+static tile_t **internal_player_look(pcmd_args_t *args, size_t *lenbuf)
+{
+    tile_t **tiles;
+    size_t len = 1;
+
+    for (unsigned int i = 0; i < args->player->elevation; i++)
+        len += i * 2 + 1;
+    tiles = malloc(sizeof(tile_t *) * len);
+    if (!tiles)
+        return NULL;
+    *lenbuf = len;
+    fill_tiles(args, tiles);
     return tiles;
 }
 
@@ -72,19 +79,12 @@ static void sprintf_tile(char *msg, tile_t *tile, size_t *len)
     }
 }
 
-void player_look(pcmd_args_t *args)
+static void player_look_msg(
+    pcmd_args_t *args, size_t tnb, tile_t **tiles)
 {
     char *msg = NULL;
-    size_t tnb = 0;
-    tile_t **tiles = internal_player_look(args, &tnb);
-    size_t len = 3 + ((tnb - 1) * 2);
+    size_t len = 0;
 
-    for (size_t i = 0; i < tnb; i++)
-        len += get_tile_req_size(tiles[i]);
-    if (vec_reserve(str_to_vec(args->player->response_buffer), len) != BUF_OK) {
-        free(tiles);
-        return;
-    }
     msg = STRING_END(args->player->response_buffer);
     len = sprintf(msg, "[");
     for (size_t i = 0; i < tnb; i++) {
@@ -95,6 +95,22 @@ void player_look(pcmd_args_t *args)
     free(tiles);
     len += sprintf(msg + len, "]\n");
     talk(args->player->response_buffer, msg);
+}
+
+void player_look(pcmd_args_t *args)
+{
+    size_t tnb = 0;
+    tile_t **tiles = internal_player_look(args, &tnb);
+    size_t len = 3 + ((tnb - 1) * 2);
+
+    for (size_t i = 0; i < tnb; i++)
+        len += get_tile_req_size(tiles[i]);
+    if (vec_reserve(
+        str_to_vec(args->player->response_buffer), len) != BUF_OK) {
+        free(tiles);
+        return;
+    }
+    player_look_msg(args, tnb, tiles);
 }
 
 void player_inventory(pcmd_args_t *args)
