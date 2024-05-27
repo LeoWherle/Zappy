@@ -37,10 +37,10 @@ void talkf(string_t *buf, const char *fmt, ...)
 
     va_start(args, fmt);
     len = vsnprintf(NULL, 0, fmt, args);
-    if (len == -1)
+    if (len == -1 || vec_reserve(str_to_vec(buf), len + 1) != BUF_OK) {
+        va_end(args);
         return;
-    if (vec_reserve(str_to_vec(buf), len + 1) != BUF_OK)
-        return;
+    }
     str = buf->items + buf->nmemb;
     vsprintf(str, fmt, args);
     va_end(args);
@@ -55,11 +55,15 @@ char *aprintf(const char *fmt, ...)
 
     va_start(args, fmt);
     len = vsnprintf(NULL, 0, fmt, args);
-    if (len == -1)
+    if (len == -1) {
+        va_end(args);
         return NULL;
+    }
     str = malloc(sizeof(char) * (len + 1));
-    if (!str)
+    if (!str) {
+        va_end(args);
         return NULL;
+    }
     vsprintf(str, fmt, args);
     va_end(args);
     return str;
