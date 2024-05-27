@@ -19,6 +19,7 @@ class Pikmin {
         ~Pikmin() = default;
 
         void pickRock(Kaillou rock);
+        void dropRock(Kaillou rock);
         inline void setX(std::size_t val) { _x = val; }
         inline void setY(std::size_t val) { _y = val; }
         inline void setId(std::string &id) { _id = id; }

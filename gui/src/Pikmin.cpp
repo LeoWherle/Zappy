@@ -45,3 +45,10 @@ void Pikmin::pickRock(Kaillou rock)
         _inventory[rock]++;
     }
 }
+
+void Pikmin::dropRock(Kaillou rock)
+{
+    if (_inventory.find(rock) != _inventory.end()) {
+        _inventory[rock]--;
+    }
+}
