@@ -105,15 +105,17 @@ class ServerConnection:
             if elem.startswith("eject"):
                 ai.last_eject = int(elem.split(":")[1])
                 self.logger.info(f"Ejected: K = {ai.last_eject}", ai.id)
-            if elem.startswith("message"):
+            if elem.startswith("message") and not ai.block_k_reception:
                 k = elem.removeprefix("message ").split(",")[0]
                 message = elem.split(",")[1].removeprefix(" ")
                 self.logger.info(f"Received broadcast K = {k}: {message}", ai.id)
                 ai.handle_broadcast(message, k)
+                ai.block_k_reception = True
             if elem == "Elevation underway":
                 ai.is_elevating = True
 
         self.out_buffer = ""
+        ai.block_k_reception = False
 
     
     # At the start of the AI, send the team name to the server

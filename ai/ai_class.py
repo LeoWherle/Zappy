@@ -2,6 +2,8 @@ import threading
 from random import randint
 from tools import is_a_number
 
+needs_for_lvl_6 = {"linemate": 6, "deraumere": 4, "sibur": 5, "mendiane": 3, "phiras": 3, "thystame": 0}
+
 class AI:
     def __init__(self, team, net, id=0):
         self.net = net
@@ -11,6 +13,9 @@ class AI:
         self.dead = False
         self.is_elevating = False
         self.last_eject = None
+        self.random = True
+        self.stop = False
+        self.block_k_reception = False
 
         team_slots_left = net.send_team(team)
         if (team_slots_left == -1):
@@ -197,10 +202,10 @@ class AI:
     def get_nb_player_on_tile(self):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
-            return
+            return -1
         object_list = self.look()
         if object_list == None:
-            return
+            return -1
         object_list = object_list[0]
         nb = 0
         for elem in object_list:
@@ -255,6 +260,33 @@ class AI:
             if key != "food" and inv[key] > 0:
                 return False
         return True
+    
+    def is_enought_for_lvl(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        inv = self.inventory()
+        if inv == None:
+            return False
+        for key in inv:
+            if key != "food" and inv[key] < needs_for_lvl_6[key]:
+                return False
+        return True
+    
+    def share_food(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        inv = self.inventory()
+        if inv == None:
+            return
+        leftovers = inv["food"] - 10
+        if leftovers < 0:
+            for _ in range(-leftovers):
+                self.take("food")
+        else:
+            for _ in range(leftovers):
+                self.drop("food")
     
     #---------------------------------#
     #        Send without read        #
@@ -312,6 +344,19 @@ class AI:
         self.net.add_to_send("Eject")
         self.net.logger.info("Ejection sended", self.id)
     
+    def go_to_broadcast(self, k):
+        if (k == 0):
+            return
+
+        if (k == 5 ):
+            self.turn_right()
+            self.turn_right()
+        if (k < 5 and k > 1):
+            self.turn_left()
+        if (k > 5):
+            self.turn_right()
+        self.forward()
+    
     #---------------------------------#
     #        Handle responses         #
     #---------------------------------#
@@ -322,4 +367,12 @@ class AI:
             self.net.logger.warning("AI is dead", self.id)
             return
         if broadcast_received == "GoGoGadgetIncanto": # Example of broadcast usage
+            self.incantation()
+        if self.random and broadcast_received == "lvl6":
+            self.random = False
+        if not self.random and broadcast_received == "lvl6" and not self.stop:
+            self.go_to_broadcast(int(k))
+        if not self.random and broadcast_received == "elevate":
+            self.stop = True
+            self.drop_all()
             self.incantation()

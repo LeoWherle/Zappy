@@ -1,24 +1,37 @@
 from connection import ServerConnection
 from ai_class import AI
 import threading
+from time import sleep
 
 nb_thread = 0 # (temporary) Global variable to limit the number of AI on map
 
 # Change the function to change the AI logic
 def make_ai_actions(ai, threads, args, logger):
     global nb_thread # (temporary) Global variable to limit the number of AI on map
-    if (ai.get_unused_slots() > 0 and nb_thread < 5):
+
+    if (ai.get_unused_slots() > 0 and nb_thread < 9):
         nb_thread += 1
         ai.fork(make_new_ai, (args, logger, ai.id + 1), threads)
 
-    if (ai.incantation()):
-        ai.move_random()
-    if (ai.get_nb_player_on_tile() == 1):
-        ai.take_all()
-        ai.move_random()
-    else:
-        ai.drop_all()
+    if (ai.lvl == 1):
+        ai.incantation()
+    if (ai.is_enought_for_lvl() and ai.random):
+        if (ai.get_nb_player_on_tile() >= 6):
+            ai.broadcast("elevate")
+        else:
+            ai.broadcast("lvl6")
+            ai.look()
+            ai.look() # To delay broadcast
+            ai.look()
 
+    elif(ai.random):
+        ai.move_random()
+
+    if (not ai.stop):
+        ai.take_all()
+    else:
+        ai.share_food()
+    
 
 def start_ai_logic(ai, threads, args, logger):
     while (not ai.dead):
@@ -31,8 +44,9 @@ def start_ai_logic(ai, threads, args, logger):
         ai.net.send_buffer(ai)
 
 def make_new_ai(args, logger, id):
-    threads = []
     global nb_thread # (temporary) Global variable to limit the number of AI on map
+
+    threads = []
     net = ServerConnection(logger, args.h, args.p) # AI Connection to Server
     if not net.connect():
         return 84
