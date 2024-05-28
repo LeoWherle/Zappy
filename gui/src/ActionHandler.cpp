@@ -38,7 +38,7 @@ ActionHandler::~ActionHandler()
 
 bool ActionHandler::operator()(std::string &action)
 {
-    for (auto regex : _regexMap) {
+    for (auto &regex : _regexMap) {
         std::smatch match;
         if (std::regex_match(action, match, regex.first)) {
             (this->*regex.second)(match);
