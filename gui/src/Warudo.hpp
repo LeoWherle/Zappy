@@ -18,7 +18,7 @@ class Warudo {
     public:
         Warudo(int timeout, std::string &ip, std::size_t port);
         ~Warudo();
-        void handleCommunucation(void);
+        void handleCommunication(void);
         void loop(void);
 
     private:

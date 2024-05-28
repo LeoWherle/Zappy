@@ -22,12 +22,12 @@ Warudo::~Warudo()
 void Warudo::loop()
 {
     while (_run) {
-        handleCommunucation();
+        handleCommunication();
         // some shit
     }
 }
 
-void Warudo::handleCommunucation(void)
+void Warudo::handleCommunication(void)
 {
     _client.handleSelect(_in, _out, _stdInput, _StdOutput);
     std::string stdinBuff = _stdInput.buffer();
