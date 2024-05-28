@@ -1,7 +1,6 @@
 from connection import ServerConnection
 from ai_class import AI
 import threading
-from time import sleep
 
 nb_thread = 0 # (temporary) Global variable to limit the number of AI on map
 
@@ -13,8 +12,6 @@ def make_ai_actions(ai, threads, args, logger):
         nb_thread += 1
         ai.fork(make_new_ai, (args, logger, ai.id + 1), threads)
 
-    if (ai.lvl == 1):
-        ai.incantation()
     if (ai.is_enought_for_lvl() and ai.random):
         if (ai.get_nb_player_on_tile() >= 6):
             ai.broadcast("elevate")
@@ -31,6 +28,13 @@ def make_ai_actions(ai, threads, args, logger):
         ai.take_all()
     else:
         ai.share_food()
+
+    if (ai.food_supply):
+        if ai.get_nb_player_on_tile() >= 6:
+            ai.drop_all_food()
+        else:
+            ai.take_all_food()
+            ai.move_random()
     
 
 def start_ai_logic(ai, threads, args, logger):

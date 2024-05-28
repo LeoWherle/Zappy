@@ -16,6 +16,7 @@ class AI:
         self.random = True
         self.stop = False
         self.block_k_reception = False
+        self.food_supply = False
 
         team_slots_left = net.send_team(team)
         if (team_slots_left == -1):
@@ -249,6 +250,16 @@ class AI:
                 for _ in range(inv[key]):
                     self.drop(key)
 
+    def drop_all_food(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return
+        inv = self.inventory()
+        if inv == None:
+            return
+        for _ in range(inv["food"]):
+            self.drop("food")
+
     def is_inv_empty(self):
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
@@ -287,6 +298,15 @@ class AI:
         else:
             for _ in range(leftovers):
                 self.drop("food")
+
+    def get_food_nbr(self):
+        if (self.dead):
+            self.net.logger.warning("AI is dead", self.id)
+            return -1
+        inv = self.inventory()
+        if inv == None:
+            return -1
+        return inv["food"]
     
     #---------------------------------#
     #        Send without read        #
@@ -366,13 +386,15 @@ class AI:
         if (self.dead):
             self.net.logger.warning("AI is dead", self.id)
             return
-        if broadcast_received == "GoGoGadgetIncanto": # Example of broadcast usage
-            self.incantation()
         if self.random and broadcast_received == "lvl6":
             self.random = False
         if not self.random and broadcast_received == "lvl6" and not self.stop:
             self.go_to_broadcast(int(k))
         if not self.random and broadcast_received == "elevate":
-            self.stop = True
-            self.drop_all()
-            self.incantation()
+            if not self.food_supply and self.get_nb_player_on_tile() >= 6:
+                self.stop = True
+                self.drop_all()
+                self.incantation()
+            else:
+                self.food_supply = True
+
