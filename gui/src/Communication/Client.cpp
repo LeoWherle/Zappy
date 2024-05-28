@@ -11,7 +11,7 @@
 #include "Client.hpp"
 
 namespace connection {
-    Client::Client(int timeout, std::string &ip, int port)
+    Client::Client(int timeout, std::string &ip, std::size_t port)
     {
         _timeout.tv_sec = timeout / 1000000;
         _timeout.tv_usec = timeout % 1000000;
@@ -32,7 +32,7 @@ namespace connection {
             throw Client::ConnectionExecption("Can't create socket");
         }
         if (connect(_socket, (struct sockaddr *) &_sockAddr, sizeof(_sockAddr)) < 0) {
-            throw Client::ConnectionExecption("Can't connect to unix socket");
+            throw Client::ConnectionExecption("Can't connect to socket");
         }
     }
 
