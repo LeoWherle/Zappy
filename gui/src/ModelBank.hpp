@@ -14,7 +14,7 @@ class ModelBank
 {
 public:
     ModelBank(void) = default;
-    ~ModelBank(void) = default;
+    ~ModelBank(void);
 
     Model *get(std::string ressourceName);
 

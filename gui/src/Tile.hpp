@@ -14,9 +14,11 @@
 
 class Tile {
     public:
-        Tile() {};
+        Tile();
         ~Tile() = default;
         inline void setRocks(std::map<Kaillou, std::size_t> &rocks) { _rocks = rocks; }
+        void addRock(Kaillou rock);
+        void removeRock(Kaillou rock);
     protected:
     private:
         std::map<Kaillou, std::size_t> _rocks;

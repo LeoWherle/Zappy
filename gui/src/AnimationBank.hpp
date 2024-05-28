@@ -14,8 +14,8 @@
 class AnimationBank
 {
 public:
-    AnimationBank(/* args */);
-    ~AnimationBank();
+    AnimationBank() = default;
+    ~AnimationBank() = default;
 
     std::string get(std::string ressourceName);
 

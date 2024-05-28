@@ -11,6 +11,14 @@ static const std::map<std::string, std::pair<std::string, std::string>> nameFile
     {"egg", {"", ""}}
 });
 
+ModelBank::~ModelBank(void)
+{
+    for (auto i : _models) {
+        UnloadModel(i.second.model);
+        UnloadTexture(i.second.texture);
+    }
+}
+
 Model *ModelBank::get(std::string ressourceName)
 {
     if (_models.find(ressourceName) == _models.end()) {
