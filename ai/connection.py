@@ -1,5 +1,7 @@
 import socket
 
+reading_size = 8192
+
 class ServerConnection:
     def __init__(self, logger, host, port=4242):
         self.host = host
@@ -18,11 +20,12 @@ class ServerConnection:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((self.host, self.port))
-            self.logger.server(sock.recv(1024).decode(), 0)
+            self.logger.server(sock.recv(reading_size).decode(), 0)
         except Exception as e:
             self.logger.error(f"Failed to connect to server: {e}", 0)
             return False
         self.sock = sock
+        self.logger.ai("Connected to the server\n", 0)
         return True
 
     def send_and_read(self, msg, ai):
@@ -36,7 +39,7 @@ class ServerConnection:
             return
         self.logger.ai(msg, ai_id)
         self.sock.sendall(msg.encode())
-        response = self.sock.recv(1024).decode()
+        response = self.sock.recv(reading_size).decode()
         if (response != ""):
             self.logger.server(response, ai_id)
             self.add_to_read(response)
@@ -69,7 +72,7 @@ class ServerConnection:
 
     def read_with_timeout(self):
         try:
-            response = self.sock.recv(1024).decode()
+            response = self.sock.recv(reading_size).decode()
         except TimeoutError:
             return ""
         return response
@@ -80,7 +83,7 @@ class ServerConnection:
             response = self.read_with_timeout()
             self.sock.settimeout(None)
         else:
-            response = self.sock.recv(1024).decode()
+            response = self.sock.recv(reading_size).decode()
         if (response != ""):
             self.logger.server(response, ai.id)
             self.add_to_read(response)
