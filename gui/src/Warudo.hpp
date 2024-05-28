@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include "Client.hpp"
-#include "WriteBuffer.hpp"
-#include "ReadBuffer.hpp"
+#include "Communication/Client.hpp"
+#include "Communication/WriteBuffer.hpp"
+#include "Communication/ReadBuffer.hpp"
 #include "ActionHandler.hpp"
 #include "Pikmin.hpp"
 #include "Tile.hpp"
