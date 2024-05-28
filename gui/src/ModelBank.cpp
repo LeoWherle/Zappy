@@ -13,9 +13,9 @@ static const std::map<std::string, std::pair<std::string, std::string>> nameFile
 
 ModelBank::~ModelBank(void)
 {
-    for (auto i : _models) {
-        UnloadModel(i.second.model);
-        UnloadTexture(i.second.texture);
+    for (auto &[key, value] : _models) {
+        UnloadModel(value.model);
+        UnloadTexture(value.texture);
     }
 }
 
