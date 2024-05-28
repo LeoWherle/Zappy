@@ -7,30 +7,31 @@
 
 #pragma once
 
-#include <map>
 #include <string>
 #include <cstddef>
+#include <raylib-cpp.hpp>
+#include <map>
 #include "Kaillou.hpp"
 
 class Pikmin {
-    enum Direction {
-        NORTH = 1,
-        SOUTH = 3,
-        EST = 2,
-        WEST = 4
-    };
-
     public:
-        Pikmin(std::size_t x, std::size_t y);
+        enum Direction {
+            NORTH = 1,
+            SOUTH = 3,
+            EST = 2,
+            WEST = 4
+        };
+
+        enum State {
+            ALIVE,
+            EJECT,
+            DYING
+        };
         Pikmin(std::string &id, std::size_t x, std::size_t y);
-        Pikmin(std::string &id, std::size_t level, std::size_t x, std::size_t y);
-        ~Pikmin() = default;
+        ~Pikmin();
 
         void pickRock(Kaillou rock);
         void dropRock(Kaillou rock);
-        void eject();
-        void startIncantation();
-        void failIncantation();
         void levelUp();
 
         inline void setX(std::size_t val) { _x = val; }
@@ -52,6 +53,14 @@ class Pikmin {
         inline bool operator==(const Pikmin &other) { return (_id == other._id); }
         inline bool operator==(const std::string &id) { return (_id == id); }
 
+        inline void setModel(Model *model) { _model = model; }
+        void setAnimation(std::string fileName);
+
+        bool animationUpdate(void);
+
+        inline State getStatus(void) { return _status; }
+        inline void setStatus(State newStatus) { _status = newStatus; }
+
     private:
         std::size_t _x;
         std::size_t _y;
@@ -59,6 +68,10 @@ class Pikmin {
         std::size_t _direction;
         std::size_t _level;
         std::string _team;
-        bool _incant;
         std::map<Kaillou, std::size_t> _inventory;
+        Model *_model;
+        ModelAnimation *_anim;
+        int _animCount;
+        int _frameCount;
+        State _status;
 };

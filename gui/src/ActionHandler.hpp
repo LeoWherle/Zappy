@@ -11,6 +11,8 @@
 #include <vector>
 #include "Pikmin.hpp"
 #include "Tile.hpp"
+#include "AnimationBank.hpp"
+#include "ModelBank.hpp"
 
 class ActionHandler
 {
@@ -39,7 +41,6 @@ private:
     void pikminDie(std::smatch &arg);
     void layedEgg(std::smatch &arg);
     void eggHatche(std::smatch &arg);
-    void eggDie(std::smatch &arg);
 
     std::vector<Pikmin> &_pikmins;
     std::vector<Tile> &_map;
@@ -47,4 +48,6 @@ private:
     std::size_t _x;
     std::size_t _y;
     std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>> _regexMap;
+    ModelBank _model;
+    AnimationBank _animation;
 };

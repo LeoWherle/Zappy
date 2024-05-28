@@ -25,7 +25,7 @@ void World::addPlayer(std::string &id, std::size_t x, std::size_t y)
             return;
         }
     }
-    _players.push_back(Pikmin(x, y));
+    _players.push_back(Pikmin(id, x, y));
 }
 
 void World::removePlayer(std::string &id)
