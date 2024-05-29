@@ -41,7 +41,10 @@ else
 endif
 
 SRC 	=	src/err_log.c \
-			src/err_env.c
+			src/err_env.c \
+			src/assert.c \
+			src/load_env.c \
+			src/log_file.c \
 
 
 CRIT_LIST	=	\
