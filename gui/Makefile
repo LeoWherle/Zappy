@@ -73,10 +73,12 @@ include: submodules
 	$(call COPY,raylib/src,./include,raylib.h)
 	$(call COPY,raylib/src,./include,raymath.h)
 	$(call COPY,raylib-cpp/include,./include,*.hpp)
+	$(call COPY,raygui/src,./include,raygui.h)
 
 # Build the raylib static library file and copy it into lib
 lib: submodules
-	cd raylib/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
+	cd raylib/src $(THEN) \
+	RAYLIB_MODULE_RAYGUI=TRUE "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
 	$(MKDIR) $(call platformpth, lib/$(platform))
 	$(call COPY,raylib/src,lib/$(platform),libraylib.a)
 
