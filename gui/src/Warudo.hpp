@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <raylib-cpp.hpp>
 #include "Communication/Client.hpp"
 #include "Communication/WriteBuffer.hpp"
 #include "Communication/ReadBuffer.hpp"
@@ -20,8 +21,14 @@ class Warudo {
         ~Warudo();
         void handleCommunication(void);
         void loop(void);
+        void updateGraphic(void);
 
     private:
+
+        void updatePikmin(void);
+        void updateTile(void);
+        void updateUI(void);
+
         std::vector<Pikmin> _pikmins;
         std::vector<Tile> _map;
         std::vector<std::string> _teams;
@@ -33,4 +40,6 @@ class Warudo {
         WriteBuffer _StdOutput;
         WriteBuffer _out;
         bool _run;
+
+        Camera _cam;
 };

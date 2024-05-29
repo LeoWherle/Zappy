@@ -25,6 +25,7 @@ class Pikmin {
         enum State {
             ALIVE,
             EJECT,
+            EGG,
             DYING
         };
         Pikmin(std::string &id, std::size_t x, std::size_t y);
@@ -54,6 +55,7 @@ class Pikmin {
         inline bool operator==(const std::string &id) { return (_id == id); }
 
         inline void setModel(Model *model) { _model = model; }
+        inline Model &getModel(void) { return *_model; }
         void setAnimation(std::string fileName);
 
         bool animationUpdate(void);
