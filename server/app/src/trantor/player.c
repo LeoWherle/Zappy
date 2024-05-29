@@ -37,6 +37,8 @@ void hatch_egg(player_t *player, double f)
     player->incantator = NULL;
     player->time_left = 1260.0 / f;
     player->busy = false;
+    player->pcmd_exec.command = 0;
+    player->pcmd_exec.exec_time_left = 0;
 }
 
 void destroy_player(void *player)

@@ -50,13 +50,13 @@ int main(int ac, char *av[])
     server_t server_data = {0};
     int ret = 0;
 
+    LOG_TRACE("Starting server");
     --ac;
     ++av;
     if (!parse_args(ac, av, &server_data.trantor.params)) {
         printf("%s\n", USAGE);
         return 84;
     }
-    LOG_TRACE("Starting server");
     ret = server(&server_data, server_data.trantor.params.port) != 0;
     ret = ret ? 84 : 0;
     server_teardown(&server_data);

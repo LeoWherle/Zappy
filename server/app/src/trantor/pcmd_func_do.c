@@ -37,6 +37,7 @@ void player_fork(pcmd_args_t *args)
 {
     player_t *egg = NULL;
 
+    printf("FORKING MY MAN\n");
     SAY_OK(args->player->response_buffer);
     egg = malloc(sizeof(player_t));
     init_egg(egg, args->player->team, args->player->coord);

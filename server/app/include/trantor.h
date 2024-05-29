@@ -110,3 +110,4 @@ string_t *get_gui_buffer(trantor_t *trantor);
 
 // internal
 void execute_gcmd(trantor_t *trantor, const char *gcmd);
+unsigned int count_idxteam_egg(trantor_t *trantor, team_t t);

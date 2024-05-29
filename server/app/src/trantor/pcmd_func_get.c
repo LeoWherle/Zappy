@@ -86,14 +86,14 @@ static void player_look_msg(
     size_t len = 0;
 
     msg = STRING_END(args->player->response_buffer);
-    len = sprintf(msg, "[");
+    len = sprintf(msg, "[ ");
     for (size_t i = 0; i < tnb; i++) {
         sprintf_tile(msg + len, tiles[i], &len);
         if (i != tnb - 1)
             len += sprintf(msg + len, ", ");
     }
     free(tiles);
-    len += sprintf(msg + len, "]\n");
+    len += sprintf(msg + len, " ]\n");
     talk(args->player->response_buffer, msg);
 }
 
@@ -124,14 +124,14 @@ void player_inventory(pcmd_args_t *args)
     if (vec_reserve(str_to_vec(args->player->response_buffer), len) != BUF_OK)
         return;
     msg = STRING_END(args->player->response_buffer);
-    len = sprintf(msg, "[");
+    len = sprintf(msg, "[ ");
     for (unsigned int i = 0; i < 7; i++) {
         len += sprintf(msg + len, "%s %d", ITEM_NAMES[i],
             args->player->inventory.items[i]);
         if (i != 6)
             len += sprintf(msg + len, ", ");
     }
-    len += sprintf(msg + len, "]\n");
+    len += sprintf(msg + len, " ]\n");
     talk(args->player->response_buffer, msg);
 }
 
