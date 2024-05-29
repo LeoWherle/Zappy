@@ -19,17 +19,23 @@ class Warudo {
     public:
         Warudo(int timeout, std::string &ip, std::size_t port);
         ~Warudo();
+
+        void setUp(void);
         void handleCommunication(void);
         void loop(void);
         void updateGraphic(void);
 
     private:
+        void setUpServer(void);
+        void setUpMap(void);
 
         void updatePikmin(void);
         void updateTile(void);
         void updateUI(void);
 
         std::vector<Pikmin> _pikmins;
+        std::size_t _x;
+        std::size_t _y;
         std::vector<Tile> _map;
         std::vector<std::string> _teams;
         ActionHandler _handler;

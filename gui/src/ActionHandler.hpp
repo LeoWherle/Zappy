@@ -17,7 +17,7 @@
 class ActionHandler
 {
 public:
-    ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams);
+    ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams, std::size_t &x, std::size_t &y);
     ~ActionHandler();
 
     bool operator()(std::string &action);
@@ -45,8 +45,8 @@ private:
     std::vector<Pikmin> &_pikmins;
     std::vector<Tile> &_map;
     std::vector<std::string> &_teams;
-    std::size_t _x;
-    std::size_t _y;
+    std::size_t &_x;
+    std::size_t &_y;
     std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>> _regexMap;
     ModelBank _model;
     AnimationBank _animation;

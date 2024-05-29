@@ -5,19 +5,71 @@
 ** Warudo
 */
 
+#include <cstring>
 #include "Warudo.hpp"
 
 Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
-    _handler (ActionHandler(_pikmins, _map, _teams)),
+    _handler (ActionHandler(_pikmins, _map, _teams, _x, _y)),
     _client (connection::Client(timeout, ip, port))
 {
-    _client.setUpConnection();
     _run = true;
     InitWindow(1920, 1080, "Zapikmin");
 }
 
 Warudo::~Warudo()
 {
+}
+
+void Warudo::setUpServer(void)
+{
+    _client.setUpConnection();
+    bool connected = false;
+    std::cout << "Connecting to the server..." << std::endl;
+    while (!connected) {
+        _client.handleSelect(_in, _out, _stdInput, _StdOutput);
+        std::string inBuff = _in.buffer();
+        if (inBuff.size() > 0) {
+            std::string delimiter = "\n";
+            auto end = inBuff.find(delimiter);
+            std::string tmp = inBuff.substr(0, end);
+            if (tmp == "WELCOME") {
+                connected = true;
+                _out.write_to_buffer("GRAPHIC\n");
+            }
+            _in.consume(end + 1);
+        }
+    }
+    std::cout << "Connected to the server..." << std::endl;
+}
+
+void Warudo::setUpMap(void)
+{
+    std::cout << "Creating the map..." << std::endl;
+    _out.write_to_buffer("msz\n");
+    bool mapReady = false;
+    while (!mapReady) {
+        _client.handleSelect(_in, _out, _stdInput, _StdOutput);
+        std::string inBuff = _in.buffer();
+        if (inBuff.size() > 0) {
+            std::string delimiter = "\n";
+            auto end = inBuff.find(delimiter);
+            std::string tmp = inBuff.substr(0, end);
+            if (std::strncmp(tmp.c_str(), "msz", 3) == 0) {
+                _handler(tmp);
+                mapReady = true;
+            }
+            _in.consume(end + 1);
+        }
+    }
+    std::cout << "Map ready" << std::endl;
+}
+
+void Warudo::setUp(void)
+{
+    std::cout << "Initializing the world ..." << std::endl;
+    setUpServer();
+    setUpMap();
+    std::cout << "World initialized" << std::endl;
 }
 
 void Warudo::loop()
@@ -41,8 +93,8 @@ void Warudo::handleCommunication(void)
         consumed += 6;
     }
     if (inBuff.size() > 0) {
-        std::size_t consume = 0;;
-        std::string delimiter = "=";
+        std::size_t consume = 0;
+        std::string delimiter = "\n";
         auto end = inBuff.find(delimiter);
         while (end != std::string::npos) {
             std::string tmp = inBuff.substr(0, end);
@@ -74,7 +126,13 @@ void Warudo::updateGraphic(void)
 
     BeginDrawing();
 
-    ClearBackground(BLUE);
+    std::size_t index = 0;
+    ClearBackground(BLACK);
+    for (auto tile : _map) {
+            DrawRectangle((index % _x) * 60, (index / _x) * 60, 60, 60, WHITE);
+            DrawRectangleLines((index % _x) * 60, (index / _x) * 60, 60, 60, GRAY);  // NOTE: Uses QUADS internally, not lines
+    }
+
 
     BeginMode3D(_cam);
 
@@ -104,5 +162,5 @@ void Warudo::updateTile(void)
 
 void Warudo::updateUI(void)
 {
-    // put some blazing bullshit later
+    // put some blazing bullshit latere
 }
