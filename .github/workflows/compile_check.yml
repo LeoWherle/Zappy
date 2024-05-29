@@ -71,6 +71,7 @@ jobs:
           error_messages["C-A4"]="Global variables and function unused outside of the file must be declared as static"
 
           check.sh $(pwd)/$DIR $(pwd)
+          LOGFILE=coding-style-reports.log
           while IFS= read -r line; do
             file=$(echo "$line" | awk -F ':' '{print $1}')
             line_number=$(echo "$line" | awk -F ':' '{print $2}')
@@ -78,8 +79,8 @@ jobs:
             message=$(echo "$line" | awk -F ':' '{print $4}')
             custom_message="${error_messages[$message]:-Unknown Error}"
             echo "::error file=$DIR/$file,line=$line_number::$severity $message $custom_message"
-          done < coding-style-reports.log
-          line_count=$(wc -l coding-style-reports.log | awk '{print $1}')
+          done < $LOGFILE
+          line_count=$(wc -l $LOGFILE | awk '{print $1}')
           if [ "$line_count" -gt 0 ]; then
             echo "::error::Too many style errors (skill issue)"
             exit 1
