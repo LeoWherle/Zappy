@@ -6,6 +6,7 @@
 */
 
 #include "buffer.h"
+#include "serrorh.h"
 #include "sstrings.h"
 #include "trantor.h"
 #include "trantor/item.h"
@@ -71,7 +72,7 @@ static void execute_pcmd(trantor_t *trantor, player_t *player)
     args.broadcast_msg = executor->arg;
     args.item = executor->item;
     args.players = trantor->players;
-    args.cnb = trantor->params.players;
+    args.cnb = count_idxteam_egg(trantor, player->team);
     args.log = trantor->log;
     COMMAND_FUNCS[executor->command](&args);
     player->busy = false;
@@ -115,7 +116,7 @@ static void start_invocation(
 static void start_new_task(trantor_t *trantor, player_t *player)
 {
     player->busy = false;
-    if (player->pcmd_buffer->nmemb == 0)
+    if (player->npcmd == 0)
         return;
     init_pcmd_executor(player->pcmd_buffer->items,
         trantor->params.f, &player->pcmd_exec);
@@ -181,5 +182,5 @@ bool trantor_time_pass(trantor_t *trantor, double delta)
     for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
         player_time_pass(trantor, delta, vec_at(trantor->players, i), &i);
     }
-    return (trantor->winning_team == -1 && trantor->players->nmemb > 0);
+    return (trantor->winning_team == -1);
 }

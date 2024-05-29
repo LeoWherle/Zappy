@@ -40,14 +40,14 @@ int main(int ac, char *av[])
     server_t server_data = {0};
     int ret = 0;
 
+    init_logging("server.env");
+    LOG_TRACE("Starting server");
     --ac;
     ++av;
     if (!parse_args(ac, av, &server_data.trantor.params)) {
         printf("%s", USAGE);
         return 84;
     }
-    LOG_TRACE("Starting server");
-    init_logging("server.env");
     ret = server(&server_data, server_data.trantor.params.port) != 0;
     ret = ret ? 84 : 0;
     server_teardown(&server_data);

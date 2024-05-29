@@ -43,6 +43,7 @@ int log_msg(enum LogLevel level, const char *__restrict format, ...)
         ret += vfprintf(stdout, format, args);
         ret += fprintf(stdout, "\n");
         va_end(args);
+        fflush(stdout);
     }
     return ret;
 }

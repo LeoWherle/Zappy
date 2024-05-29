@@ -10,6 +10,7 @@
 #include "trantor.h"
 #include "vector.h"
 #include <bits/types/sigset_t.h>
+#include <bits/types/struct_timeval.h>
 #include <errno.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -50,6 +51,9 @@ static void fdset_append_clients(server_t *server, serv_context_t *context)
 
 static void server_select(server_t *server, serv_context_t *context)
 {
+    struct timespec timeout = {0};
+
+    timeout.tv_nsec = 2 * 1e7;
     FD_ZERO(&context->readfds);
     FD_ZERO(&context->writefds);
     FD_SET(server->listen_sd, &context->readfds);
@@ -60,7 +64,7 @@ static void server_select(server_t *server, serv_context_t *context)
     context->max_sd = server->listen_sd;
     fdset_append_clients(server, context);
     context->nready = pselect(context->max_sd + 1, &context->readfds,
-        &context->writefds, NULL, NULL, &context->mask);
+        &context->writefds, NULL, &timeout, &context->mask);
     if (context->nready < 0 && errno != EINTR) {
         LOG_ERROR("select failed");
     }
@@ -68,9 +72,6 @@ static void server_select(server_t *server, serv_context_t *context)
 
 static void server_handle_event(server_t *server, serv_context_t *context)
 {
-    if (context->nready <= 0) {
-        return;
-    }
     if (FD_ISSET(server->listen_sd, &context->readfds)) {
         context->nready--;
         server_accept(server);
@@ -109,26 +110,35 @@ static int init_signal_handling(serv_context_t *context)
     return 0;
 }
 
+static void server_run_step(server_t *server, struct timespec *now)
+{
+    struct timespec next;
+    double delta = 0.0;
+    serv_context_t context = {.max_sd = server->listen_sd, .running = true};
+
+    server_select(server, &context);
+    if (global_running_state(false, 0))
+        return;
+    server_handle_event(server, &context);
+    clock_gettime(CLOCK_MONOTONIC, &next);
+    delta = (next.tv_sec - now->tv_sec)
+        + (next.tv_nsec - now->tv_nsec) / 1e9;
+    if (delta < 0.1)
+        return;
+    context.running = trantor_time_pass(&server->trantor, delta);
+    *now = next;
+}
+
 void server_run(server_t *server)
 {
-    double now = time(NULL);
-    double next = 0.0;
-    serv_context_t context = {
-        .max_sd = server->listen_sd,
-        .running = true,
-    };
+    struct timespec now;
+    serv_context_t context = {.max_sd = server->listen_sd, .running = true};
 
-    srand(now);
+    srand(time(NULL));
     if (init_signal_handling(&context))
         LOG_ERROR("Failed to initialize signal handling");
+    clock_gettime(CLOCK_MONOTONIC, &now);
     init_trantor(&server->trantor);
-    while (context.running) {
-        server_select(server, &context);
-        if (global_running_state(false, 0))
-            return;
-        server_handle_event(server, &context);
-        next = time(NULL);
-        context.running = trantor_time_pass(&server->trantor, next - now);
-        now = next;
-    }
+    while (context.running)
+        server_run_step(server, &now);
 }
