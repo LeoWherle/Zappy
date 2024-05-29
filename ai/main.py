@@ -12,6 +12,9 @@ def run(args):
         "server" : True,
         "ai" : True
     }
+    if args.nolog:
+        for key in log_level.keys():
+            log_level[key] = False
     logger = Logger(log_level)
     return make_new_ai(args, logger, 0)
 
@@ -25,6 +28,7 @@ def get_args():
     parser._option_string_actions.pop("-h", None)
     parser.add_argument("-h", type=str, help="Host of the server", required=True)
     parser.add_argument("-t", help="Enable Multi threading", action='store_true')
+    parser.add_argument("-nolog", help="Disable logs", action='store_true')
     parser.print_usage = parser.print_help
 
     if len(argv) == 2 and argv[1] == "-h":

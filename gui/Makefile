@@ -83,7 +83,7 @@ lib: submodules
 # Link the program and create the executable
 $(target): $(objects)
 	$(CXX) $(objects) -o $(target) $(linkFlags)
-	mv $(target) .
+	cp $(target) .
 
 # Add all rules from dependency files
 -include $(depends)
