@@ -265,7 +265,7 @@ void ActionHandler::layedEgg(std::smatch &arg)
     std::size_t y = std::atoi(arg[4].str().c_str());
 
     _pikmins.push_back(Pikmin(eggId, x, y));
-    _pikmins[_pikmins.size() - 1].setStatus(Pikmin::State::ALIVE);
+    _pikmins[_pikmins.size() - 1].setStatus(Pikmin::State::EGG);
     _pikmins[_pikmins.size() - 1].setModel(_model.get("egg"));
     _pikmins[_pikmins.size() - 1].setAnimation(_animation.get("egg"));
 }
@@ -278,6 +278,7 @@ void ActionHandler::eggHatche(std::smatch &arg)
         if (_pikmins[i] == eggId) {
             _pikmins[i].setModel(_model.get("pikmin"));
             _pikmins[i].setAnimation(_animation.get("birth"));
+            _pikmins[i].setStatus(Pikmin::State::ALIVE);
         }
     }
 }
