@@ -75,7 +75,7 @@ void Warudo::setUp(void)
 void Warudo::loop()
 {
     while (_run && !WindowShouldClose()) {
-        handleCommunication();
+   //     handleCommunication();
         updateGraphic();
     }
 }
@@ -96,6 +96,7 @@ void Warudo::handleCommunication(void)
         std::size_t consume = 0;
         std::string delimiter = "\n";
         auto end = inBuff.find(delimiter);
+        std::cout << "block" << std::endl;
         while (end != std::string::npos) {
             std::string tmp = inBuff.substr(0, end);
             _handler(tmp);
@@ -103,6 +104,7 @@ void Warudo::handleCommunication(void)
             end = inBuff.find(delimiter);
             consume += end;
         }
+        std::cout << "unblock" << std::endl;
         _in.consume(consume);
     }
 
@@ -129,8 +131,9 @@ void Warudo::updateGraphic(void)
     std::size_t index = 0;
     ClearBackground(BLACK);
     for (auto tile : _map) {
-            DrawRectangle((index % _x) * 60, (index / _x) * 60, 60, 60, WHITE);
-            DrawRectangleLines((index % _x) * 60, (index / _x) * 60, 60, 60, GRAY);  // NOTE: Uses QUADS internally, not lines
+        DrawRectangle((index % _x) * 60, (index / _x) * 60, 60, 60, WHITE);
+        DrawRectangleLines((index % _x) * 60, (index / _x) * 60, 60, 60, GRAY);  // NOTE: Uses QUADS internally, not lines
+        index++;
     }
 
 

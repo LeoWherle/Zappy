@@ -16,7 +16,7 @@ int main(int ac, char **av)
     }
     std::string adress = av[1];
     std::size_t port = std::atoi(av[2]);
-    Warudo warudo(0, adress, port);
+    Warudo warudo(100, adress, port);
     warudo.setUp();
     warudo.loop();
     return 0;
