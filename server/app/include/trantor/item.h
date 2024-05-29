@@ -17,3 +17,5 @@ typedef enum item_e {
     PHIRAS_ITEM = 6,
     THYSTAME_ITEM = 7
 } item_t;
+
+item_t get_item_type(const char *item);

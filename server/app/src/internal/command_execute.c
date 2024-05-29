@@ -8,6 +8,7 @@
 #include "serrorh.h"
 #include "server.h"
 #include "vector.h"
+#include "vector/macros.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
@@ -83,6 +84,9 @@ static size_t command_exec(
         return len + 1;
     }
     tokenize_command(cmd, len, &args);
+    for (size_t i = 0; i < args.nmemb; i++) {
+        LOG_DEBUG("arg[%lu]: %s", i, *(char **) VEC_AT(&args, i));
+    }
     for (size_t i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
         if (!strncmp(cmd, commands[i].cmd, len)) {
             commands[i].func(server, context, &args);

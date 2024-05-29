@@ -16,7 +16,7 @@ typedef struct give_data_s {
     quant_t amount;
 } give_data_t;
 
-typedef void (*value_cmd_t)(server_t *, serv_context_t *, vector_t *args);
+typedef void (*value_cmd_t)(server_t *, vector_t *args);
 
 /**
  * @brief give target -callback
@@ -31,13 +31,13 @@ typedef struct give_cmd_s {
 } give_cmd_t;
 
 // give all | give @a
-void give_all(server_t *serv, serv_context_t *contx, vector_t *args);
+void give_all(server_t *serv, vector_t *args);
 
 // give random | give @r
-void give_random(server_t *serv, serv_context_t *contx, vector_t *args);
+void give_random(server_t *serv, vector_t *args);
 
 // give player <id> | give @p <id>
-void give_player(server_t *serv, serv_context_t *contx, vector_t *args);
+void give_player(server_t *serv, vector_t *args);
 
 // give team <name> | give @t <name>
-void give_team(server_t *serv, serv_context_t *contx, vector_t *args);
+void give_team(server_t *serv, vector_t *args);
