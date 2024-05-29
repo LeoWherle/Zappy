@@ -6,10 +6,10 @@
 */
 
 #ifndef SERRORH_H_
-#define SERRORH_H_
+    #define SERRORH_H_
 
-#include <stdbool.h>
-#include <stdio.h>
+    #include <stdbool.h>
+    #include <stdio.h>
 
 #ifndef ERRORHANDLING_H_
     #define ERRORHANDLING_H_

@@ -12,16 +12,16 @@
 #include <sys/cdefs.h>
 #include <unistd.h>
 
-const char USAGE[] =
-    ("USAGE: ./zappy_server -p port -x width -y height "
-     "-n name1 name2 ... -c clientsNb -f freq\n"
-     "option description\n"
-     "    -p port port number\n"
-     "    -x width width of the world\n"
-     "    -y height height of the world\n"
-     "    -n name1 name2 .. . name of the team\n"
-     "    -c clientsNb number of authorized clients per team\n"
-     "    -f freq reciprocal of time unit for execution of actions");
+const char USAGE[] = (
+    "USAGE: ./zappy_server -p port -x width -y height "
+    "-n name1 name2 ... -c clientsNb -f freq\n"
+    "option description\n"
+    "    -p port port number\n"
+    "    -x width width of the world\n"
+    "    -y height height of the world\n"
+    "    -n name1 name2 .. . name of the team\n"
+    "    -c clientsNb number of authorized clients per team\n"
+    "    -f freq reciprocal of time unit for execution of actions");
 
 static void server_teardown(server_t *server)
 {
@@ -41,6 +41,7 @@ void prog_constructors(void)
 {
     void (*f)(void) = pre_load_env;
     void (*g)(void) = post_load_env;
+
     f();
     g();
 }
