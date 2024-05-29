@@ -37,18 +37,26 @@ void player_fork(pcmd_args_t *args)
 {
     player_t *egg = NULL;
 
+    printf("FORKING MY MAN\n");
     SAY_OK(args->player->response_buffer);
     egg = malloc(sizeof(player_t));
     init_egg(egg, args->player->team, args->player->coord);
     if (vec_push(args->players, egg) != BUF_OK)
         LOG_ERROR("Error while pushing egg to players");
     talkf(args->log, "pfk %d\n", args->player->n);
+    talkf(args->log, "enw %d %d %d %d\n", egg->n, args->player->n,
+        egg->coord[0], egg->coord[1]);
 }
 
-static void warn_player_eject(player_t *player, direction_t from)
+static void warn_player_eject(
+    player_t *player, direction_t from, string_t *log)
 {
     direction_t relative = (4 + (from - player->direction)) % 4;
 
+    if (player->is_egg) {
+        talkf(log, "edi %d\n", player->n);
+        return;
+    }
     talkf(player->response_buffer, "eject: %d\n", relative);
 }
 
@@ -61,9 +69,9 @@ static bool player_eject_step(pcmd_args_t *args, unsigned int *i)
     tmp = vec_at(args->players, *i);
     if (COORD_EQ(tmp->coord, args->player->coord))
         return false;
+    warn_player_eject(tmp, (args->player->direction + 2) % 4, args->log);
     if (!tmp->is_egg) {
         player_move(tmp, args->map, args->player->direction);
-        warn_player_eject(tmp, (args->player->direction + 2) % 4);
     } else if (vec_delete_at(args->players, *i) == BUF_OK)
         (*i)--;
     return true;

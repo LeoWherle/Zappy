@@ -15,7 +15,8 @@ void talk(string_t *buf, const char *msg);
 
 void pop_line(string_t *buf);
 
-void talkf(string_t *buf, const char *fmt, ...);
+__attribute__((__format__(printf, 2, 3))) void talkf(
+    string_t *buf, const char *fmt, ...);
 
 char *aprintf(const char *fmt, ...);
 

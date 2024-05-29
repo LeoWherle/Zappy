@@ -16,7 +16,7 @@ target := $(buildDir)/$(executable)
 sources := $(call rwildcard,src/,*.cpp)
 objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
 depends := $(patsubst %.o, %.d, $(objects))
-compileFlags := -std=c++17 -I include
+compileFlags := -std=c++17 -I include -I src
 linkFlags = -L lib/$(platform) -l raylib
 
 # Check for Windows
@@ -83,7 +83,7 @@ lib: submodules
 # Link the program and create the executable
 $(target): $(objects)
 	$(CXX) $(objects) -o $(target) $(linkFlags)
-	mv $(target) .
+	cp $(target) .
 
 # Add all rules from dependency files
 -include $(depends)

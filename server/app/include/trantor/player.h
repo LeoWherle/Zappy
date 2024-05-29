@@ -28,13 +28,15 @@ struct player_s {
     tile_t inventory;
     elevation_t elevation;
     string_t *pcmd_buffer; // stores received commands
+    unsigned int npcmd;
     string_t *response_buffer; // stores responses
     bool busy;
     pcmd_executor_t pcmd_exec;
     player_t *incantator;
     unsigned int n;
+    double time_left;
 };
 
 void init_egg(player_t *player, team_t team, coord_t c);
-void hatch_egg(player_t *player);
+void hatch_egg(player_t *player, double f);
 void destroy_player(void *player);

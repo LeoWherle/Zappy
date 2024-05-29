@@ -68,4 +68,6 @@ void player_incantation(pcmd_args_t *args)
     tile_invocate(CGET_TILE(args->map, args->player->coord),
         args->player->elevation);
     elevate_players(args);
+    talkf(args->log, "pie %d %d %d\n", args->player->coord[0],
+        args->player->coord[1], args->player->elevation);
 }
