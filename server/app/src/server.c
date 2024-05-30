@@ -6,7 +6,6 @@
 */
 
 #include "server.h"
-#include "common.h"
 #include "serrorh.h"
 #include "vector.h"
 #include <stdbool.h>
@@ -37,13 +36,11 @@ static int server_init(server_t *server)
     return 0;
 }
 
-int server(server_t *server, const char *port_str)
+int server(server_t *server, int port)
 {
     if (server_init(server) < 0)
         return 1;
-    server->port = get_port(port_str);
-    if (server->port < 0)
-        return 1;
+    server->port = port;
     if (server_listen(server, server->port, MAX_CLIENTS) < 0) {
         LOG_ERROR("Failed to listen on port %d", server->port);
         return 1;
