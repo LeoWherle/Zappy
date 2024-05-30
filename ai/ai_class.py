@@ -21,9 +21,10 @@ class AI:
         self.is_elevating = False
         self.last_eject = None
         self.random = True
-        self.stop = False
         self.block_k_reception = False
         self.food_supply = False
+        self.king = False
+        self.choosen_ones = False
 
         team_slots_left = net.send_team(team)
         if (team_slots_left == -1):
@@ -308,7 +309,7 @@ class AI:
         inv = self.inventory()
         if inv is None:
             return
-        leftovers = inv["food"] - 10
+        leftovers = inv["food"] - 15
         if leftovers < 0:
             for _ in range(-leftovers):
                 self.take("food")
@@ -405,13 +406,16 @@ class AI:
             return
         if self.random and broadcast_received == "lvl6":
             self.random = False
-        if not self.random and broadcast_received == "lvl6" and not self.stop:
+        if not self.random and broadcast_received == "lvl6":
             self.go_to_broadcast(int(k))
-        if not self.random and broadcast_received == "elevate":
-            if self.get_nb_player_on_tile() >= 6:
-                self.stop = True
+        if broadcast_received == "elevate":
+            self.random = False
+            if not self.choosen_ones and self.get_nb_player_on_tile() >= 6:
+                self.choosen_ones = True
+            
+            if self.choosen_ones:
+                self.share_food()
                 self.drop_all()
                 self.incantation()
             else:
                 self.food_supply = True
-

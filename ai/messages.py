@@ -42,7 +42,7 @@ class Logger:
         msg (str): The message to log.
         ai_id (str): The ID of the AI.
         """
-        if not self.log_level["server"]:
+        if not self.log_level["server"] or msg == "":
             return
         print(OKBLUE + f"SERVER for AI {ai_id}:" + ENDC, msg, end="")
 
@@ -54,7 +54,7 @@ class Logger:
         msg (str): The message to log.
         ai_id (str): The ID of the AI.
         """
-        if not self.log_level["ai"]:
+        if not self.log_level["ai"] or msg == "":
             return
         print(OKCYAN + f"AI {ai_id}:" + ENDC, msg, end="")
 
@@ -66,7 +66,7 @@ class Logger:
         msg (str): The message to log.
         ai_id (str): The ID of the AI.
         """
-        if not self.log_level["info"]:
+        if not self.log_level["info"] or msg == "":
             return
         print(OKGREEN + f"INFO AI {ai_id}:" + ENDC, msg)
 
@@ -78,7 +78,7 @@ class Logger:
         msg (str): The message to log.
         ai_id (str): The ID of the AI.
         """
-        if not self.log_level["error"]:
+        if not self.log_level["error"] or msg == "":
             return
         print(FAIL + f"ERROR AI {ai_id}:" + ENDC, msg)
 
@@ -90,6 +90,6 @@ class Logger:
         msg (str): The message to log.
         ai_id (str): The ID of the AI.
         """
-        if not self.log_level["warning"]:
+        if not self.log_level["warning"] or msg == "":
             return
         print(WARNING + f"WARNING AI {ai_id}:" + ENDC, msg)
