@@ -13,7 +13,7 @@
 class ModelBank
 {
 public:
-    ModelBank(void) = default;
+    ModelBank(void);
     ~ModelBank(void);
 
     raylib::Model *get(std::string ressourceName);
@@ -40,4 +40,5 @@ public:
 
 private:
     std::map<std::string, texturedModel> _models;
+    raylib::Model _default;
 };

@@ -56,6 +56,8 @@ void Pikmin::dropRock(Kaillou rock)
 
 void Pikmin::setAnimation(std::string fileName)
 {
+    if (fileName == "")
+        return;
     if (_anim.size() > 0) {
         for (auto &anim : _anim) {
             anim.Unload();
