@@ -41,11 +41,14 @@ static void add_item(len_t i, tile_t *item_tile, map_t *map)
 // recursive to ensure all items are added
 static void add_all_ressources(map_t *map, tile_t *item_tile)
 {
-    for (len_t i = 0; i < map->width * map->height; i++) {
-        add_item(i, item_tile, map);
+    int total_items = 1;
+
+    while (total_items > 0) {
+        for (len_t i = 0; i < map->width * map->height; i++) {
+            add_item(i, item_tile, map);
+        }
+        total_items = get_total_items(item_tile);
     }
-    if (get_total_items(item_tile) > 0)
-        add_all_ressources(map, item_tile);
 }
 
 void init_map(len_t width, len_t height, map_t *map)
@@ -58,7 +61,7 @@ void init_map(len_t width, len_t height, map_t *map)
     map->since_refill = 0.0;
     get_item_count(width, height, &item_tile);
     for (len_t i = 0; i < width * height; i++) {
-        map->tiles[i] = (tile_t) {0};
+        map->tiles[i] = (tile_t){0};
     }
     add_all_ressources(map, &item_tile);
 }
