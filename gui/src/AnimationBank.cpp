@@ -8,17 +8,22 @@
 #include "AnimationBank.hpp"
 
 //animation name | animation file name
-static const std::map<std::string, std::string> nameFile({
-    {"egg", {"", ""}}
+static const std::map<std::string, std::pair<std::string, float>> nameFile({
+    {"egg", {"", 1.0f}}
 });
 
 std::string AnimationBank::get(std::string ressourceName)
 {
-    if (_anims.find(ressourceName) == _anims.end()) {
-        if (nameFile.find(ressourceName) == nameFile.end()) {
-            return "";
-        }
-        _anims[ressourceName] = nameFile.at(ressourceName);
+    if (nameFile.find(ressourceName) == nameFile.end()) {
+        return "";
     }
-    return _anims[ressourceName];
+    return nameFile.at(ressourceName).first;
+}
+
+float AnimationBank::getFps(std::string ressourceName)
+{
+    if (nameFile.find(ressourceName) == nameFile.end()) {
+        return 1.0f;
+    }
+    return nameFile.at(ressourceName).second;
 }

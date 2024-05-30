@@ -7,8 +7,8 @@
 
 #include "ActionHandler.hpp"
 
-ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams, std::size_t &x, std::size_t &y):
-    _pikmins(pikmins), _map(map), _teams(teams), _x(x), _y(y)
+ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams, std::pair<std::size_t, std::size_t> &size, float &timeMult):
+    _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult)
 {
     _x = 0;
     _y = 0;
@@ -31,6 +31,7 @@ ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &ma
         {std::regex("^enw (\\d+) (\\d+) (\\d+) (\\d+)$"), &ActionHandler::layedEgg},
         {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
         {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
+        {std::regex("^sgt (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
     });
 }
 
@@ -100,11 +101,14 @@ void ActionHandler::setPikminPosition(std::smatch &arg)
     for (auto &player : _pikmins) {
         if (player == id) {
             if ((player.getX() != x || player.getY() != y) && player.getStatus() != Pikmin::State::EJECT) {
+                player.setPositionVector(raylib::Vector3(player.getX(), 0, player.getY()));
                 player.setAnimation(_animation.get("walk"));
+                player.setMotionVector(raylib::Vector3(player.getX() - x, 0, player.getY() - y));
             }
             player.setX(x);
             player.setY(y);
             player.setDirection(orientation);
+            player.setRotation(90 * orientation);
         }
     }
 }
@@ -283,4 +287,11 @@ void ActionHandler::eggHatche(std::smatch &arg)
             _pikmins[i].setStatus(Pikmin::State::ALIVE);
         }
     }
+}
+
+void ActionHandler::setTimeMult(std::smatch &arg)
+{
+    float newMult = std::atof(arg[1].str().c_str());
+
+    _timeMult = newMult;
 }

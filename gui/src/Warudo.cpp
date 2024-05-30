@@ -10,7 +10,8 @@
 #include <chrono>
 
 Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
-    _handler (ActionHandler(_pikmins, _map, _teams, _x, _y)),
+    _size(0, 0), _x(_size.first), _y(_size.second), _timeMult(0.0f),
+    _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
     _client (connection::Client(timeout, ip, port))
 {
     _run = true;
@@ -83,7 +84,7 @@ void Warudo::loop()
         //handleCommunication();
         prevTime = curTime;
         curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        _delta = (prevTime - curTime) / 1000;
+        _delta = (prevTime - curTime) / 1000 / _timeMult;
         updateGraphic();
     }
 }
@@ -159,7 +160,7 @@ void Warudo::updateGraphic(void)
 void Warudo::updatePikmin(void)
 {
     for (auto &pikmin : _pikmins) {
-        pikmin.animationUpdate();
+        pikmin.animationUpdate(_delta);
         pikmin.drawModel(_delta);
     }
 }
