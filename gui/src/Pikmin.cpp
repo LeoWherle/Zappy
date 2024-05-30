@@ -105,5 +105,9 @@ void Pikmin::drawModel(float delta)
             _motionVector = raylib::Vector3::Zero();
         }
     }
-    _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
+    if (_model) {
+        _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
+    } else {
+        DrawCube(_position, _scale.x, _scale.y, _scale.z, _colorMod);
+    }
 }

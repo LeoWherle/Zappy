@@ -13,8 +13,6 @@ static const std::map<std::string, std::pair<std::string, std::string>> nameFile
 
 ModelBank::ModelBank(void)
 {
-    _default = Model();
-    _default.SetMeshes(new raylib::Mesh(raylib::Mesh::Cube(1, 1, 1)));
 }
 
 ModelBank::~ModelBank(void)
@@ -29,7 +27,7 @@ raylib::Model *ModelBank::get(std::string ressourceName)
 {
     if (_models.find(ressourceName) == _models.end()) {
         if (nameFile.find(ressourceName) == nameFile.end()) {
-            return &_default;
+            return nullptr;
             //throw ModelBank::InvalidModel(ressourceName);
         }
         _models[ressourceName] = {raylib::Model(nameFile.at(ressourceName).first), raylib::Texture2D(nameFile.at(ressourceName).first)};
