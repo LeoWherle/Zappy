@@ -164,6 +164,14 @@ void Warudo::updateGraphic(void)
                     }
                     index++;
                 }
+                for (auto &player : _pikmins) {
+                    player.drawModel(_delta);
+                    if (player.animationUpdate(_delta)) {
+                        // dunno
+                    } else {
+                        // dunno
+                    }
+                }
 
             EndMode3D();
 
