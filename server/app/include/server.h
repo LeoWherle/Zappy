@@ -99,6 +99,7 @@ void command_exit(server_t *server, serv_context_t *context, vector_t *args);
 void command_help(server_t *server, serv_context_t *context, vector_t *args);
 void command_ping(server_t *server, serv_context_t *context, vector_t *args);
 void command_log(server_t *server, serv_context_t *context, vector_t *args);
+void command_give(server_t *server, serv_context_t *context, vector_t *args);
 
 // #define PACKET_SECTION_NAME     server_action
 

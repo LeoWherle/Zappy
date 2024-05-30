@@ -7,6 +7,8 @@
 
 #include "trantor/params.h"
 #include "serrorh.h"
+#include "trantor/common.h"
+#include "vector.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -43,8 +45,8 @@ static bool parse_port_arg(int *ac, char ***args, trantor_params_t *params)
 static bool parse_int_arg(int *ac, char ***args, trantor_params_t *params)
 {
     char flags[3][3] = {"-x", "-y", "-c"};
-    unsigned int *values[] =
-        {&params->width, &params->height, &params->players};
+    unsigned int *values[] = {
+        &params->width, &params->height, &params->players};
 
     if (*ac < 2)
         return false;
@@ -116,8 +118,13 @@ void destroy_params(trantor_params_t *params)
 int get_team_index(trantor_params_t *params, const char *team_name)
 {
     for (unsigned int i = 0; i < params->team_names->nmemb; i++) {
-        if (strcmp(team_name, (char *)vec_at(params->team_names, i)) == 0)
+        if (strcmp(team_name, (char *) vec_at(params->team_names, i)) == 0)
             return i;
     }
     return -1;
+}
+
+const char *get_team_name(const trantor_params_t *params, team_t team_id)
+{
+    return (const char *) vec_at(params->team_names, (size_t) team_id);
 }

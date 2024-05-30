@@ -8,6 +8,7 @@
 #include "serrorh.h"
 #include "server.h"
 #include "vector.h"
+#include "vector/macros.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h>
@@ -19,6 +20,7 @@ static const cmd_t commands[] = {
     {"ping", command_ping},
     {"help", command_help},
     {"log", command_log},
+    {"give", command_give},
 };
 
 void command_help(server_t *server, serv_context_t *context, vector_t *args)
@@ -82,6 +84,9 @@ static size_t command_exec(
         return len + 1;
     }
     tokenize_command(cmd, len, &args);
+    for (size_t i = 0; i < args.nmemb; i++) {
+        LOG_TRACE("arg[%lu]: %s", i, *(char **) VEC_AT(&args, i));
+    }
     for (size_t i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
         if (!strncmp(cmd, commands[i].cmd, len)) {
             commands[i].func(server, context, &args);
@@ -100,6 +105,9 @@ size_t command_execute(server_t *server, serv_context_t *context)
     char *cmd = server->command.read_buf.items;
     ssize_t len = strchrln(cmd, server->command.read_buf.nmemb);
 
+    if (len == 0) {
+        return 1;
+    }
     if (len > 0) {
         consumed = command_exec(server, context, cmd, len);
     }

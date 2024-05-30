@@ -8,6 +8,7 @@
 #include "packets.h"
 #include "serrorh.h"
 #include "server.h"
+#include "sstrings.h"
 #include <string.h>
 
 static const char *level_str[] = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
@@ -45,5 +46,7 @@ void command_ping(server_t *server, serv_context_t *context, vector_t *args)
     (void) context;
     (void) args;
     (void) server;
-    LOG_INFO("PONG !");
+    if (str_push_cstr(&server->command.write_buf, "Pong !\n")) {
+        LOG_ERROR("Failed to append \"Pong !\" to write buffer");
+    }
 }
