@@ -29,6 +29,9 @@ class Pikmin {
             DYING
         };
         Pikmin(std::string &id, std::size_t x, std::size_t y);
+        Pikmin() = delete;
+        Pikmin(const Pikmin &) = delete;
+        Pikmin(Pikmin &&) = default;
         ~Pikmin();
 
         void pickRock(Kaillou rock);

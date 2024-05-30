@@ -7,9 +7,11 @@
 
 #include "ActionHandler.hpp"
 
-ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams) :
-    _pikmins(pikmins), _map(map), _teams(teams), _x(0), _y(0)
+ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams, std::size_t &x, std::size_t &y):
+    _pikmins(pikmins), _map(map), _teams(teams), _x(x), _y(y)
 {
+    _x = 0;
+    _y = 0;
     _regexMap = std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>>({
         {std::regex("^msz (\\d+) (\\d+)$"), &ActionHandler::setmapSize},
         {std::regex("^bct (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+) (\\d+)$"), &ActionHandler::setTileContent},
