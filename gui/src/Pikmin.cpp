@@ -22,16 +22,21 @@ Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y)
     };
     _id = id;
     _model = nullptr;
-    _anim = nullptr;
     _animCount = 0;
     _frameCount = 0;
     _direction = 1;
     _level = 1;
+    _position = raylib::Vector3(x, 0, y);
+    _motionVector = raylib::Vector3(0, 0, 0);
+    _scale = raylib::Vector3(1, 1, 1);
+    _colorMod = raylib::Color::White();
 }
 
 Pikmin::~Pikmin()
 {
-    UnloadModelAnimations(_anim, _animCount);
+    for (auto &anim : _anim) {
+        anim.Unload();
+    }
 }
 
 
@@ -51,19 +56,21 @@ void Pikmin::dropRock(Kaillou rock)
 
 void Pikmin::setAnimation(std::string fileName)
 {
-    if (_anim) {
-        UnloadModelAnimations(_anim, _animCount);
+    if (_anim.size() > 0) {
+        for (auto &anim : _anim) {
+            anim.Unload();
+        }
         _animCount = 0;
     }
-    _anim = LoadModelAnimations(fileName.c_str(), &_animCount);
+    _anim = raylib::ModelAnimation::Load(fileName.c_str());
 }
 
 bool Pikmin::animationUpdate(void)
 {
-    if (_model == nullptr || _anim == nullptr) {
+    if (_model == nullptr || _anim.size() == 0) {
         return false;
     }
-    UpdateModelAnimation(*_model, _anim[0], _frameCount);
+    _model->UpdateAnimation(_anim[0], _frameCount);
     _frameCount++;
     if (_frameCount > _anim[0].frameCount) {
         _frameCount = 0;
@@ -75,4 +82,9 @@ bool Pikmin::animationUpdate(void)
 void Pikmin::levelUp()
 {
     _level++;
+}
+
+void Pikmin::drawModel(float delta)
+{
+    _model->Draw(_position, _scale, _colorMod);
 }

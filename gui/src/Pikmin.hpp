@@ -54,8 +54,8 @@ class Pikmin {
         inline bool operator==(const Pikmin &other) { return (_id == other._id); }
         inline bool operator==(const std::string &id) { return (_id == id); }
 
-        inline void setModel(Model *model) { _model = model; }
-        inline Model &getModel(void) { return *_model; }
+        inline void setModel(raylib::Model *model) { _model = model; }
+        void drawModel(float delta);
         void setAnimation(std::string fileName);
 
         bool animationUpdate(void);
@@ -71,9 +71,14 @@ class Pikmin {
         std::size_t _level;
         std::string _team;
         std::map<Kaillou, std::size_t> _inventory;
-        Model *_model;
-        ModelAnimation *_anim;
+        raylib::Model *_model;
+        std::vector<raylib::ModelAnimation> _anim;
         int _animCount;
         int _frameCount;
         State _status;
+
+        raylib::Vector3 _position;
+        raylib::Vector3 _motionVector;
+        raylib::Vector3 _scale;
+        raylib::Color _colorMod;
 };

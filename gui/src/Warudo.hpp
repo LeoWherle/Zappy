@@ -42,4 +42,6 @@ class Warudo {
         bool _run;
 
         Camera _cam;
+
+        float _delta;
 };
