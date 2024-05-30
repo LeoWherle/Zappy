@@ -12,11 +12,11 @@ needs_for_lvl_6 = {"linemate": 6,
 DEATH_MESSAGE = "AI is dead"
 
 class AI:
-    def __init__(self, team, net, id=0):
+    def __init__(self, team, net):
         self.net = net
         self.team = team
         self.lvl = 1
-        self.id = id
+        self.id = randint(1, 10000)
         self.dead = False
         self.is_elevating = False
         self.last_eject = None

@@ -29,7 +29,7 @@ def run(args):
         for key in log_level:
             log_level[key] = False
     logger = Logger(log_level)
-    return make_new_ai(args, logger, 0)
+    return make_new_ai(args, logger)
 
 def get_args():
     """

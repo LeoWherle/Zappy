@@ -22,7 +22,7 @@ def make_ai_actions(ai_instance, threads, args, logger):
 
     if ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
         NB_THREAD += 1
-        ai_instance.fork(make_new_ai, (args, logger, ai_instance.id + 1), threads)
+        ai_instance.fork(make_new_ai, (args, logger), threads)
 
     if ai_instance.is_enought_for_lvl() and ai_instance.random:
         if ai_instance.get_nb_player_on_tile() >= 6:
@@ -69,7 +69,7 @@ def start_ai_logic(ai_instance, threads, args, logger):
         ai_instance.net.send_buffer(ai_instance)
 
 
-def make_new_ai(args, logger, ai_id):
+def make_new_ai(args, logger):
     """
     This function creates a new AI.
 
@@ -89,7 +89,7 @@ def make_new_ai(args, logger, ai_id):
         return 84
     net.multi_threading = args.t
 
-    ai_instance = AI(args.n, net, ai_id)  # AI Creation
+    ai_instance = AI(args.n, net)  # AI Creation
     start_ai_logic(ai_instance, threads, args, logger)  # AI Logic
     net.close_connection()  # End of the AI
     NB_THREAD -= 1
