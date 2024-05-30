@@ -5,8 +5,10 @@ This is the main module. It contains the main function to run the application.
 
 import sys
 import argparse
+import json
 from messages import Logger
 from ai import make_new_ai
+from color import *
 
 def run(args):
     """
@@ -19,15 +21,22 @@ def run(args):
     AI: The new AI.
     """
     log_level = {
-        "info" : True,
-        "error" : True,
-        "warning" : True,
-        "server" : True,
-        "ai" : True
-    }
+            "info" : True,
+            "error" : True,
+            "warning" : True,
+            "server" : True,
+            "ai" : True
+        }
     if args.nolog:
         for key in log_level:
             log_level[key] = False
+    else:
+        try:
+            with open("ai_env.json", "r") as file:
+                config = json.load(file)
+                log_level = config["loglevel"]
+        except Exception as _: # pylint: disable=broad-except
+            print(FAIL + "Failed to load config file, using default log level" + ENDC)
     logger = Logger(log_level)
     return make_new_ai(args, logger)
 
