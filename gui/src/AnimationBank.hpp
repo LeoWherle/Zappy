@@ -18,6 +18,7 @@ public:
     ~AnimationBank() = default;
 
     std::string get(std::string ressourceName);
+    float getFps(std::string ressourceName);
 
     class InvalidAnimation : public std::exception
     {
@@ -34,5 +35,4 @@ public:
         std::string _str;
     };
 private:
-    std::map<std::string, std::string> _anims;
 };

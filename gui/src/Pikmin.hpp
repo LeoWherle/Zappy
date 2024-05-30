@@ -29,6 +29,9 @@ class Pikmin {
             DYING
         };
         Pikmin(std::string &id, std::size_t x, std::size_t y);
+        Pikmin() = delete;
+        Pikmin(const Pikmin &) = delete;
+        Pikmin(Pikmin &&) = default;
         ~Pikmin();
 
         void pickRock(Kaillou rock);
@@ -54,14 +57,20 @@ class Pikmin {
         inline bool operator==(const Pikmin &other) { return (_id == other._id); }
         inline bool operator==(const std::string &id) { return (_id == id); }
 
-        inline void setModel(Model *model) { _model = model; }
-        inline Model &getModel(void) { return *_model; }
+        inline void setModel(raylib::Model *model) { _model = model; }
+        void drawModel(float delta);
         void setAnimation(std::string fileName);
+        inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
 
-        bool animationUpdate(void);
+        bool animationUpdate(float delta);
 
         inline State getStatus(void) { return _status; }
         inline void setStatus(State newStatus) { _status = newStatus; }
+
+        inline void setMotionVector(raylib::Vector3 newVect) { _motionVector = newVect; }
+        inline void setPositionVector(raylib::Vector3 newPos) { _position = newPos; }
+
+        inline void setRotation(float rotation) { _rotation = rotation; }
 
     private:
         std::size_t _x;
@@ -71,9 +80,20 @@ class Pikmin {
         std::size_t _level;
         std::string _team;
         std::map<Kaillou, std::size_t> _inventory;
-        Model *_model;
-        ModelAnimation *_anim;
+        raylib::Model *_model;
+        std::vector<raylib::ModelAnimation> _anim;
         int _animCount;
         int _frameCount;
         State _status;
+
+        raylib::Vector3 _position;
+        raylib::Vector3 _motionVector;
+        raylib::Vector3 _rotationAxis;
+        float _rotation;
+        raylib::Vector3 _scale;
+        raylib::Color _colorMod;
+
+        float _cumulatedTime;
+        float _animationTime;
+        float _walkTime;
 };

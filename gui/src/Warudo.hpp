@@ -34,10 +34,12 @@ class Warudo {
         void updateUI(void);
 
         std::vector<Pikmin> _pikmins;
-        std::size_t _x;
-        std::size_t _y;
+        std::pair<std::size_t, std::size_t> _size;
         std::vector<Tile> _map;
         std::vector<std::string> _teams;
+        std::size_t &_x;
+        std::size_t &_y;
+        float _timeMult;
         ActionHandler _handler;
 
         connection::Client _client;
@@ -48,4 +50,6 @@ class Warudo {
         bool _run;
 
         raylib::Camera3D _cam;
+
+        float _delta;
 };

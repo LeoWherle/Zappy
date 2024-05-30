@@ -7,13 +7,16 @@
 
 #include <cstring>
 #include "Warudo.hpp"
+#include <chrono>
 
 Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
-    _handler (ActionHandler(_pikmins, _map, _teams, _x, _y)),
+    _size(0, 0), _x(_size.first), _y(_size.second), _timeMult(0.0f),
+    _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
     _client (connection::Client(timeout, ip, port))
 {
     _run = true;
     InitWindow(1920, 1080, "Zapikmin");
+    SetTargetFPS(60);
 }
 
 Warudo::~Warudo()
@@ -80,8 +83,14 @@ void Warudo::setUp(void)
 
 void Warudo::loop()
 {
+    auto prevTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    auto curTime = prevTime;
+
     while (_run && !WindowShouldClose()) {
         handleCommunication();
+        prevTime = curTime;
+        curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        _delta = (prevTime - curTime) / 1000 / _timeMult;
         updateGraphic();
     }
 }
@@ -156,8 +165,8 @@ void Warudo::updateGraphic(void)
 void Warudo::updatePikmin(void)
 {
     for (auto &pikmin : _pikmins) {
-        pikmin.animationUpdate();
-        Model &model = pikmin.getModel();
+        pikmin.animationUpdate(_delta);
+        pikmin.drawModel(_delta);
     }
 }
 

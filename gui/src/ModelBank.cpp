@@ -7,9 +7,15 @@
 
 #include "ModelBank.hpp"
 
+// model name | <model file | texture file>
 static const std::map<std::string, std::pair<std::string, std::string>> nameFile({
-    {"egg", {"", ""}}
 });
+
+ModelBank::ModelBank(void)
+{
+    _default = Model();
+    _default.SetMeshes(new raylib::Mesh(raylib::Mesh::Cube(1, 1, 1)));
+}
 
 ModelBank::~ModelBank(void)
 {
@@ -19,15 +25,14 @@ ModelBank::~ModelBank(void)
     }
 }
 
-Model *ModelBank::get(std::string ressourceName)
+raylib::Model *ModelBank::get(std::string ressourceName)
 {
     if (_models.find(ressourceName) == _models.end()) {
         if (nameFile.find(ressourceName) == nameFile.end()) {
-            throw ModelBank::InvalidModel(ressourceName);
+            return &_default;
+            //throw ModelBank::InvalidModel(ressourceName);
         }
-        _models[ressourceName] = {Model(), Texture2D()};
-        _models[ressourceName].model = LoadModel(nameFile.at(ressourceName).first.c_str());
-        _models[ressourceName].texture = LoadTexture(nameFile.at(ressourceName).first.c_str());
+        _models[ressourceName] = {raylib::Model(nameFile.at(ressourceName).first), raylib::Texture2D(nameFile.at(ressourceName).first)};
         SetMaterialTexture(&_models[ressourceName].model.materials[0], MATERIAL_MAP_DIFFUSE, _models[ressourceName].texture);
     }
     return &_models[ressourceName].model;
