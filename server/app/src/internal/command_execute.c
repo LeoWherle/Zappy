@@ -85,7 +85,7 @@ static size_t command_exec(
     }
     tokenize_command(cmd, len, &args);
     for (size_t i = 0; i < args.nmemb; i++) {
-        LOG_DEBUG("arg[%lu]: %s", i, *(char **) VEC_AT(&args, i));
+        LOG_TRACE("arg[%lu]: %s", i, *(char **) VEC_AT(&args, i));
     }
     for (size_t i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
         if (!strncmp(cmd, commands[i].cmd, len)) {

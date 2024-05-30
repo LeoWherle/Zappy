@@ -12,7 +12,7 @@
 #include "vector.h"
 
 typedef struct give_data_s {
-    item_t item_type;
+    item_t type;
     quant_t amount;
 } give_data_t;
 

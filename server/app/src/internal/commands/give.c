@@ -25,13 +25,12 @@ give_cmd_t targets[] = {
     {"team", 't', give_team},
 };
 
-static void give_player_ressource(
-    player_t *player, item_t type, size_t quantity)
+static void give_player_ressource(player_t *player, give_data_t *item)
 {
-    player->inventory.items[type] += quantity;
+    player->inventory.items[item->type] += item->amount;
 }
 
-static bool fetch_give_data(give_data_t *data, vector_t *args)
+static bool fetch_give_data(give_data_t *data, vector_t *args, size_t arg_pos)
 {
     char *item = NULL;
 
@@ -39,13 +38,13 @@ static bool fetch_give_data(give_data_t *data, vector_t *args)
         LOG_ERROR("Expected: give @target <resource> <quantity>");
         return false;
     }
-    item = VEC_STR(args, 0);
-    data->item_type = get_item_type(item);
-    if (data->item_type == NONE_ITEM) {
+    item = VEC_STR(args, arg_pos + 0);
+    data->type = get_item_type(item);
+    if (data->type == NONE_ITEM) {
         LOG_ERROR("Invalid resource: %.*s", (int) strlen(item), item);
         return false;
     }
-    data->amount = atoi(VEC_STR(args, 1));
+    data->amount = strtoul(*(char **) VEC_STR(args, arg_pos + 1), NULL, 10);
     return true;
 }
 
@@ -55,11 +54,10 @@ void give_all(server_t *serv, vector_t *args)
 
     if (args->nmemb != 2)
         return (void) LOG_ERROR("Expected: give @a <resource> quantity");
-    if (fetch_give_data(&item, args))
+    if (fetch_give_data(&item, args, 0))
         return;
     for (size_t i = 0; i < serv->trantor.players->nmemb; i++) {
-        give_player_ressource(
-            VEC_AT(serv->trantor.players, i), item.item_type, item.amount);
+        give_player_ressource(VEC_AT(serv->trantor.players, i), &item);
     }
     LOG_INFO("Gave %d %*.s to %lu players", item.amount,
         (int) strlen(VEC_STR(args, 0)), VEC_STR(args, 0),
@@ -73,14 +71,13 @@ void give_random(server_t *serv, vector_t *args)
 
     if (args->nmemb != 2)
         return (void) LOG_ERROR("Expected: give @r <resource> quantity");
-    if (fetch_give_data(&item, args))
+    if (fetch_give_data(&item, args, 0))
         return;
     if (serv->trantor.players->nmemb != 0) {
         return (void) LOG_ERROR("No players to give resources to");
     }
     random = rand() % serv->trantor.players->nmemb;
-    give_player_ressource(
-        VEC_AT(serv->trantor.players, random), item.item_type, item.amount);
+    give_player_ressource(VEC_AT(serv->trantor.players, random), &item);
 }
 
 static bool player_find_by_id(const void *player, void *id)
@@ -97,15 +94,13 @@ void give_player(server_t *serv, vector_t *args)
 
     if (args->nmemb != 3)
         return (void) LOG_ERROR("Expected: give @p <id> <resource> quantity");
-    id = atoi(*(const char **) VEC_AT(args, 0));
-    if (vec_erase(args, 0, 1) != BUF_OK)
-        return;
-    if (fetch_give_data(&item, args))
+    id = strtoul(*(const char **) VEC_STR(args, 0), NULL, 10);
+    if (fetch_give_data(&item, args, 1))
         return;
     playr = vec_find_arg(serv->trantor.players, player_find_by_id, &id);
     if (playr == NULL)
         return (void) LOG_ERROR("Player not found: %lu", id);
-    give_player_ressource(playr, item.item_type, item.amount);
+    give_player_ressource(playr, &item);
 }
 
 void give_team(server_t *serv, vector_t *args)
@@ -120,13 +115,12 @@ void give_team(server_t *serv, vector_t *args)
     team_id = get_team_index(&serv->trantor.params, VEC_STR(args, 0));
     if (team_id == -1)
         return (void) LOG_ERROR("Invalid team: %s", VEC_STR(args, 0));
-    if (fetch_give_data(&item, args))
+    if (fetch_give_data(&item, args, 1))
         return;
     for (size_t i = 0; i < serv->trantor.players->nmemb; i++) {
         playr = VEC_AT(serv->trantor.players, i);
         if (playr->team == (team_t) team_id)
-            give_player_ressource(
-                VEC_AT(serv->trantor.players, i), item.item_type, item.amount);
+            give_player_ressource(VEC_AT(serv->trantor.players, i), &item);
     }
 }
 
