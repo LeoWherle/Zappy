@@ -131,7 +131,7 @@ static size_t client_process_data(
 // simply takes whats in player->response buffer and puts its in the client one
 static void client_process_output(client_t *client, player_t *player)
 {
-    if (player->response_buffer->nmemb <= 0)
+    if (player->response_buffer->nmemb == 0)
         return;
     if (str_push_str(&client->write_buf, player->response_buffer) != BUF_OK)
         return;

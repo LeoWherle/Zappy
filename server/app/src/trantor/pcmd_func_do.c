@@ -27,7 +27,7 @@ void player_broadcast(pcmd_args_t *args)
             continue;
         sq = get_receiving_square(args->map, p->direction,
             args->player->coord, p->coord);
-        talkf(p->response_buffer, "message %d, %s\n", sq, args->broadcast_msg);
+        talkf(p->response_buffer, "message %d, %s", sq, args->broadcast_msg);
     }
     SAY_OK(args->player->response_buffer);
     talkf(args->log, "pbc %d %s\n", args->player->n, args->broadcast_msg);
@@ -37,7 +37,6 @@ void player_fork(pcmd_args_t *args)
 {
     player_t *egg = NULL;
 
-    printf("FORKING MY MAN\n");
     SAY_OK(args->player->response_buffer);
     egg = malloc(sizeof(player_t));
     init_egg(egg, args->player->team, args->player->coord);

@@ -50,7 +50,7 @@ void init_trantor(trantor_t *trantor)
 void feed_player_line(
     player_t *player, const char *line)
 {
-    if (player->npcmd > 10)
+    if (player->npcmd > 10 || player->is_dead)
         return;
     talkf(player->pcmd_buffer, "%s\n", line);
     player->npcmd++;
@@ -64,17 +64,14 @@ void gui_feed_trantor_line(trantor_t *trantor, const char *line)
 void remove_player(trantor_t *trantor, player_t *player)
 {
     player_t *other;
-    int idx = -1;
 
     for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
         other = vec_at(trantor->players, i);
-        if (other == player)
-            idx = i;
         if (other->incantator == player)
             other->incantator = NULL;
     }
-    if (vec_remove(trantor->players, idx) != BUF_OK)
-        LOG_ERROR("Failed to remove player from vector");
+    talk(player->response_buffer, "dead\n");
+    player->is_dead = true;
     talkf(trantor->log, "pdi %d\n", player->n);
 }
 

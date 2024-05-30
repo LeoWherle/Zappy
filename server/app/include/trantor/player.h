@@ -35,6 +35,7 @@ struct player_s {
     player_t *incantator;
     unsigned int n;
     double time_left;
+    bool is_dead;
 };
 
 void init_egg(player_t *player, team_t team, coord_t c);

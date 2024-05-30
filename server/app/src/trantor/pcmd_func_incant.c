@@ -25,6 +25,8 @@ static unsigned int count_players_on_tile(
 
     for (unsigned int i = 0; i < players->nmemb; i++) {
         p = vec_at(players, i);
+        if (p->is_egg || p->is_dead)
+            continue;
         if (COORD_EQ(p->coord, invocator->coord)
             && p->elevation == invocator->elevation)
             count++;

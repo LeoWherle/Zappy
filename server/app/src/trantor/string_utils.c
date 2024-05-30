@@ -43,6 +43,7 @@ void talkf(string_t *buf, const char *fmt, ...)
     if (len == -1 ||
         vec_reserve(str_to_vec(buf), (size_t) (len + 1)) != BUF_OK) {
         va_end(args);
+        va_end(args2);
         return;
     }
     str = ((char *) buf->items) + buf->nmemb;

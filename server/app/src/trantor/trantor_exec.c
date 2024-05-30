@@ -116,8 +116,9 @@ static void start_invocation(
 static void start_new_task(trantor_t *trantor, player_t *player)
 {
     player->busy = false;
-    if (player->npcmd == 0)
+    if (player->npcmd == 0 || player->is_dead || player->is_egg)
         return;
+    LOG_TRACE("Starting new task for player %d", player->n);
     init_pcmd_executor(player->pcmd_buffer->items,
         trantor->params.f, &player->pcmd_exec);
     if (player->pcmd_exec.command == NONE_PCMD) {
@@ -157,16 +158,14 @@ static bool death_from_hunger(trantor_t *trantor, player_t *player)
     }
 }
 
-void player_time_pass(
-    trantor_t *trantor, double delta, player_t *player, unsigned int *i)
+static void player_time_pass(
+    trantor_t *trantor, double delta, player_t *player)
 {
-    if (player->is_egg)
+    if (player->is_egg || player->is_dead)
         return;
     player->time_left -= delta;
-    if (player->time_left <= 0 && death_from_hunger(trantor, player)) {
-        (*i)--;
+    if (player->time_left <= 0 && death_from_hunger(trantor, player))
         return;
-    }
     if (player->incantator != NULL)
         return;
     player->pcmd_exec.exec_time_left -= delta;
@@ -180,7 +179,7 @@ bool trantor_time_pass(trantor_t *trantor, double delta)
 {
     try_refill_map(trantor, delta);
     for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
-        player_time_pass(trantor, delta, vec_at(trantor->players, i), &i);
+        player_time_pass(trantor, delta, vec_at(trantor->players, i));
     }
     return (trantor->winning_team == -1);
 }

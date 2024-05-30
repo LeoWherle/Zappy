@@ -21,7 +21,7 @@ const char *PCOMMAND_LINES[PCMD_COUNT] = {
 static item_t get_item_type(const char *item)
 {
     for (int i = 0; i < 7; i++) {
-        if (strcmp(item, ITEM_NMES[i]) == 0)
+        if (strncmp(item, ITEM_NMES[i], strlen(ITEM_NMES[i])) == 0)
             return i + 1;
     }
     return NONE_ITEM;

@@ -22,6 +22,16 @@ typedef struct tile_s {
     quant_t items[7];
 } tile_t;
 
+typedef len_t coord_t[2];
+
+typedef int unbounded_coord_t[2];
+
+typedef struct loc_tile_s {
+    coord_t coord;
+    tile_t *tile;
+    unsigned int nplayer;
+} loc_tile_t;
+
 void get_item_count(len_t width, len_t height, tile_t *quants);
 item_t rand_item(tile_t *items_left, len_t tiles_left);
 quant_t get_total_items(tile_t *tile);

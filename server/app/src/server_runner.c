@@ -5,6 +5,7 @@
 ** server_runner
 */
 
+#include "common.h"
 #include "serrorh.h"
 #include "server.h"
 #include "trantor.h"
@@ -110,22 +111,24 @@ static int init_signal_handling(serv_context_t *context)
     return 0;
 }
 
-static void server_run_step(server_t *server, struct timespec *now)
+static void server_run_step(
+    server_t *server, struct timespec *now, serv_context_t *context)
 {
     struct timespec next;
     double delta = 0.0;
-    serv_context_t context = {.max_sd = server->listen_sd, .running = true};
 
-    server_select(server, &context);
-    if (global_running_state(false, 0))
+    server_select(server, context);
+    if (global_running_state(false, 0)) {
+        context->running = false;
         return;
-    server_handle_event(server, &context);
+    }
+    server_handle_event(server, context);
     clock_gettime(CLOCK_MONOTONIC, &next);
     delta = (next.tv_sec - now->tv_sec)
         + (next.tv_nsec - now->tv_nsec) / 1e9;
     if (delta < 0.1)
         return;
-    context.running = trantor_time_pass(&server->trantor, delta);
+    context->running = trantor_time_pass(&server->trantor, delta);
     *now = next;
 }
 
@@ -140,5 +143,5 @@ void server_run(server_t *server)
     clock_gettime(CLOCK_MONOTONIC, &now);
     init_trantor(&server->trantor);
     while (context.running)
-        server_run_step(server, &now);
+        server_run_step(server, &now, &context);
 }

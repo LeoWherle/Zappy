@@ -17,10 +17,6 @@ typedef struct map_s {
     double since_refill;
 } map_t;
 
-typedef len_t coord_t[2];
-
-typedef int unbounded_coord_t[2];
-
 typedef struct ray_s {
     unbounded_coord_t start;
     direction_t direction;

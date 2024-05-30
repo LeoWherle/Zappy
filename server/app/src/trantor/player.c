@@ -39,6 +39,7 @@ void hatch_egg(player_t *player, double f)
     player->busy = false;
     player->pcmd_exec.command = 0;
     player->pcmd_exec.exec_time_left = 0;
+    player->is_dead = false;
 }
 
 void destroy_player(void *player)

@@ -82,12 +82,12 @@ static void client_handle_event(
         context->nready--;
         client_read(client, server);
     }
+    consumed = client_execute(client, server);
+    client_consume_read_buffer(client, consumed);
     if (FD_ISSET(client->sd, &context->writefds)) {
         context->nready--;
         client_write(client);
     }
-    consumed = client_execute(client, server);
-    client_consume_read_buffer(client, consumed);
 }
 
 static bool client_should_delete(client_t *client)

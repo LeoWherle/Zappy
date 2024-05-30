@@ -23,12 +23,12 @@ typedef enum pcommand_e {
     CONNECT_PCMD = 7,
     FORK_PCMD = 8,
     EJECT_PCMD = 9,
-    TAKE_PCMD = 11,
-    SET_PCMD = 12,
-    INCANTATION_PCMD = 13
+    TAKE_PCMD = 10,
+    SET_PCMD = 11,
+    INCANTATION_PCMD = 12
 } pcommand_t;
 
-#define PCMD_NEEDS_OBJ(c) (c == 11 || c == 12)
+#define PCMD_NEEDS_OBJ(c) (c == 10 || c == 11)
 
 typedef struct broadcast_buffer_s {
     len_t pos[2];
