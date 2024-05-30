@@ -59,7 +59,7 @@ static void handle_game_end(trantor_t *trantor)
     if (trantor->winning_team == -1)
         return;
     wtname = vec_at(trantor->params.team_names, trantor->winning_team);
-    talkf(trantor->log, "seg %s\n", wtname);
+    talkf(&trantor->log, "seg %s\n", wtname);
 }
 
 static void execute_pcmd(trantor_t *trantor, player_t *player)
@@ -71,15 +71,15 @@ static void execute_pcmd(trantor_t *trantor, player_t *player)
     args.map = &(trantor->map);
     args.broadcast_msg = executor->arg;
     args.item = executor->item;
-    args.players = trantor->players;
+    args.players = &trantor->players;
     args.cnb = count_idxteam_egg(trantor, player->team);
-    args.log = trantor->log;
+    args.log = &trantor->log;
     COMMAND_FUNCS[executor->command](&args);
     player->busy = false;
     if (executor->command != INCANTATION_PCMD)
         return;
     trantor->winning_team = winning_team(
-            trantor->players, trantor->params.teams);
+            &trantor->players, trantor->params.teams);
     handle_game_end(trantor);
 }
 
@@ -119,21 +119,21 @@ static void start_new_task(trantor_t *trantor, player_t *player)
     if (player->npcmd == 0 || player->is_dead || player->is_egg)
         return;
     LOG_TRACE("Starting new task for player %d", player->n);
-    init_pcmd_executor(player->pcmd_buffer->items,
+    init_pcmd_executor(player->pcmd_buffer.items,
         trantor->params.f, &player->pcmd_exec);
     if (player->pcmd_exec.command == NONE_PCMD) {
-        SAY_KO(player->response_buffer);
+        SAY_KO(&player->response_buffer);
         return;
     }
     if (player->pcmd_exec.command == INCANTATION_PCMD) {
-        if (!can_invocate(trantor->players, player, &(trantor->map))) {
-            SAY_KO(player->response_buffer);
+        if (!can_invocate(&trantor->players, player, &(trantor->map))) {
+            SAY_KO(&player->response_buffer);
             return;
         }
-        start_invocation(trantor->players, player, trantor->log);
+        start_invocation(&trantor->players, player, &trantor->log);
     }
     player->busy = true;
-    pop_line(player->pcmd_buffer);
+    pop_line(&player->pcmd_buffer);
     player->npcmd--;
 }
 
@@ -178,8 +178,8 @@ static void player_time_pass(
 bool trantor_time_pass(trantor_t *trantor, double delta)
 {
     try_refill_map(trantor, delta);
-    for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
-        player_time_pass(trantor, delta, vec_at(trantor->players, i));
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        player_time_pass(trantor, delta, vec_at(&trantor->players, i));
     }
     return (trantor->winning_team == -1);
 }
