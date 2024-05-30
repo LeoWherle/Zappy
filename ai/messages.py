@@ -3,15 +3,9 @@ This module defines a Logger class for handling different types of log messages
 with various log levels.
 """
 
-HEADER = '\033[95m'
-OKBLUE = '\033[94m'
-OKCYAN = '\033[96m'
-OKGREEN = '\033[92m'
-WARNING = '\033[93m'
-FAIL = '\033[91m'
-ENDC = '\033[0m'
-BOLD = '\033[1m'
-UNDERLINE = '\033[4m'
+from color import *
+
+NEEDED_KEYS = ["info", "error", "warning", "server", "ai"]
 
 class Logger:
     """
@@ -33,6 +27,18 @@ class Logger:
                 "server" : True,
                 "ai" : True
             }
+        for elem in NEEDED_KEYS:
+            if self.log_level[elem] is None:
+                self.log_level[elem] = True
+
+        print(BOLD + "=============================================")
+        print(UNDERLINE + "Log level:" + ENDC)
+        for key in self.log_level:
+            if self.log_level[key]:
+                print(BOLD + OKGREEN + f"{key} is enabled" + ENDC)
+            else:
+                print(BOLD + FAIL + f"{key} is disabled" + ENDC)
+        print(BOLD + "=============================================" + ENDC)
 
     def server_log(self, msg, ai_id):
         """
