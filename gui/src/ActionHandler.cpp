@@ -68,7 +68,7 @@ void ActionHandler::setTileContent(std::smatch &arg)
     }
     std::map<Kaillou, std::size_t> tileRocks;
     for (std::size_t i = 0; i < NBKAILLOU; i++) {
-        tileRocks.at(static_cast<Kaillou>(i)) = std::atoi(arg[i + 3].str().c_str());
+        tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::atoi(arg[i + 3].str().c_str())));
     }
     _map[index].setRocks(tileRocks);
 }

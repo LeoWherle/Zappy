@@ -61,6 +61,12 @@ void Warudo::setUpMap(void)
             _in.consume(end + 1);
         }
     }
+    // Define the camera to look into our 3d world
+    _cam.SetPosition(raylib::Vector3(0, 10, 0));  // Camera position
+    _cam.SetTarget(raylib::Vector3(_x / 2, 0, _y / 2));      // Camera looking at point
+    _cam.SetUp(raylib::Vector3(_x / 2, 0, _y / 2));          // Camera up vector (rotation towards target)
+    _cam.SetFovy(45);                                // Camera field-of-view Y
+    _cam.SetProjection(CAMERA_PERSPECTIVE);             // Camera mode type
     std::cout << "Map ready" << std::endl;
 }
 
@@ -75,7 +81,7 @@ void Warudo::setUp(void)
 void Warudo::loop()
 {
     while (_run && !WindowShouldClose()) {
-   //     handleCommunication();
+        handleCommunication();
         updateGraphic();
     }
 }
@@ -96,16 +102,14 @@ void Warudo::handleCommunication(void)
         std::size_t consume = 0;
         std::string delimiter = "\n";
         auto end = inBuff.find(delimiter);
-        std::cout << "block" << std::endl;
         while (end != std::string::npos) {
             std::string tmp = inBuff.substr(0, end);
             _handler(tmp);
-            inBuff.erase(0, end);
+            inBuff.erase(0, end + 1);
+            consume += end + 1;
             end = inBuff.find(delimiter);
-            consume += end;
         }
-        std::cout << "unblock" << std::endl;
-        _in.consume(consume);
+        _in.consume(consume + 1);
     }
 
 //    _out.write_to_buffer("mct\n");
@@ -128,24 +132,25 @@ void Warudo::updateGraphic(void)
 
     BeginDrawing();
 
-    std::size_t index = 0;
-    ClearBackground(BLACK);
-    for (auto tile : _map) {
-        DrawRectangle((index % _x) * 60, (index / _x) * 60, 60, 60, WHITE);
-        DrawRectangleLines((index % _x) * 60, (index / _x) * 60, 60, 60, GRAY);  // NOTE: Uses QUADS internally, not lines
-        index++;
-    }
+            ClearBackground(BLACK);
 
+            BeginMode3D(_cam);
 
-    BeginMode3D(_cam);
+                std::size_t index = 0;
+                for (auto tile : _map) {
+                    raylib::Vector3 pos((index % _x), 0, static_cast<int>((index / _x)));
+                    DrawCube(pos, 1, 1, 1, WHITE);
+                    DrawCubeWires(pos, 1, 1, 1, GRAY);
+                    index++;
+                }
 
-    updateTile();
-    updatePikmin();
-    updateUI();
+            EndMode3D();
 
-    EndMode3D();
+            updateTile();
+            updatePikmin();
+            updateUI();
 
-    EndDrawing();
+        EndDrawing();
 }
 
 void Warudo::updatePikmin(void)

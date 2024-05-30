@@ -47,5 +47,5 @@ class Warudo {
         WriteBuffer _out;
         bool _run;
 
-        Camera _cam;
+        raylib::Camera3D _cam;
 };
