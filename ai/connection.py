@@ -169,6 +169,8 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
                 self.logger.server_log(elem, ai_instance.id)
                 self.logger.info(f"AI leveled up to {ai_instance.lvl}", ai_instance.id)
                 ai_instance.is_elevating = False
+                if ai_instance.lvl == 8:
+                    return
             if elem.startswith("eject"):
                 ai_instance.last_eject = int(elem.split(":")[1])
                 self.logger.info(f"Ejected: K = {ai_instance.last_eject}", ai_instance.id)
@@ -201,7 +203,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.map_y = int(coord[1])
         return int(infos[0])
 
-    def close_connection(self):
+    def close_connection(self, ai_instance):
         """Closes the connection to the server."""
         self.sock.close()
-        self.logger.warning("Disconnected", 0)
+        self.logger.warning("Disconnected", ai_instance.id)

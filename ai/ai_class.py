@@ -12,18 +12,19 @@ needs_for_lvl_6 = {"linemate": 6,
 DEATH_MESSAGE = "AI is dead"
 
 class AI:
-    def __init__(self, team, net, id=0):
+    def __init__(self, team, net):
         self.net = net
         self.team = team
         self.lvl = 1
-        self.id = id
+        self.id = randint(1, 10000)
         self.dead = False
         self.is_elevating = False
         self.last_eject = None
         self.random = True
-        self.stop = False
         self.block_k_reception = False
         self.food_supply = False
+        self.king = False
+        self.choosen_ones = False
 
         team_slots_left = net.send_team(team)
         if (team_slots_left == -1):
@@ -48,12 +49,17 @@ class AI:
                     self.dead = True
                     return None
                 if elem.startswith("["):
-                    inventory = response.split("[")[1].split(",")
+                    inventory = elem.split("[")[1].split(",")
                 else:
                     self.net.add_to_read(elem)
             if inventory is None:
                 response = self.net.read(self)
         dic = {}
+        if inventory == []:
+            return dic
+        while inventory[-1][-1] != "]":
+            response = self.net.read(self)
+            inventory += response.split("\n")[0].split(",")
         for elem in inventory:
             key = elem.split(" ")[1]
             value = int(elem.split(" ")[2])
@@ -73,11 +79,16 @@ class AI:
                     self.dead = True
                     return None
                 if elem.startswith("["):
-                    look = response.split("[")[1].split(",")
+                    look = elem.split("[")[1].split(",")
                 else:
                     self.net.add_to_read(elem)
             if look is None:
                 response = self.net.read(self)
+        if look == []:
+            return None
+        while look[-1][-1] != "]":
+            response = self.net.read(self)
+            look += response.split("\n")[0].split(",")
         for i in range(len(look)):
             look[i] = look[i].split(" ")
         for elem in look:
@@ -298,7 +309,7 @@ class AI:
         inv = self.inventory()
         if inv is None:
             return
-        leftovers = inv["food"] - 10
+        leftovers = inv["food"] - 15
         if leftovers < 0:
             for _ in range(-leftovers):
                 self.take("food")
@@ -395,13 +406,16 @@ class AI:
             return
         if self.random and broadcast_received == "lvl6":
             self.random = False
-        if not self.random and broadcast_received == "lvl6" and not self.stop:
+        if not self.random and broadcast_received == "lvl6":
             self.go_to_broadcast(int(k))
-        if not self.random and broadcast_received == "elevate":
-            if not self.food_supply and self.get_nb_player_on_tile() >= 6:
-                self.stop = True
+        if broadcast_received == "elevate":
+            self.random = False
+            if not self.choosen_ones and self.get_nb_player_on_tile() >= 6:
+                self.choosen_ones = True
+            
+            if self.choosen_ones:
+                self.share_food()
                 self.drop_all()
                 self.incantation()
             else:
                 self.food_supply = True
-

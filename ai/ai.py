@@ -22,11 +22,16 @@ def make_ai_actions(ai_instance, threads, args, logger):
 
     if ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
         NB_THREAD += 1
-        ai_instance.fork(make_new_ai, (args, logger, ai_instance.id + 1), threads)
+        ai_instance.fork(make_new_ai, (args, logger), threads)
 
-    if ai_instance.is_enought_for_lvl() and ai_instance.random:
+    if not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
+        ai_instance.king = True
+
+    if ai_instance.king:
         if ai_instance.get_nb_player_on_tile() >= 6:
             ai_instance.broadcast("elevate")
+            ai_instance.share_food()
+            ai_instance.drop_all()
         else:
             ai_instance.broadcast("lvl6")
             ai_instance.look()
@@ -36,17 +41,8 @@ def make_ai_actions(ai_instance, threads, args, logger):
     elif ai_instance.random:
         ai_instance.move_random()
 
-    if not ai_instance.stop:
+    if not ai_instance.choosen_ones and not ai_instance.king:
         ai_instance.take_all()
-    else:
-        ai_instance.share_food()
-
-    if ai_instance.food_supply:
-        if ai_instance.get_nb_player_on_tile() >= 6:
-            ai_instance.drop_all_food()
-        else:
-            ai_instance.take_all_food()
-            ai_instance.move_random()
 
 
 def start_ai_logic(ai_instance, threads, args, logger):
@@ -59,8 +55,10 @@ def start_ai_logic(ai_instance, threads, args, logger):
     args (argparse.Namespace): The command line arguments.
     logger (Logger): The logger.
     """
-    while not ai_instance.dead:
+    while not ai_instance.dead and ai_instance.lvl < 8:
         ai_instance.net.empty_buffer(ai_instance)
+        if ai_instance.dead:
+            break
         if ai_instance.is_elevating:
             continue
 
@@ -69,7 +67,7 @@ def start_ai_logic(ai_instance, threads, args, logger):
         ai_instance.net.send_buffer(ai_instance)
 
 
-def make_new_ai(args, logger, ai_id):
+def make_new_ai(args, logger):
     """
     This function creates a new AI.
 
@@ -89,9 +87,9 @@ def make_new_ai(args, logger, ai_id):
         return 84
     net.multi_threading = args.t
 
-    ai_instance = AI(args.n, net, ai_id)  # AI Creation
+    ai_instance = AI(args.n, net)  # AI Creation
     start_ai_logic(ai_instance, threads, args, logger)  # AI Logic
-    net.close_connection()  # End of the AI
+    net.close_connection(ai_instance)  # End of the AI
     NB_THREAD -= 1
     for thread in threads:
         thread.join()
