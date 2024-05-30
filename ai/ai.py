@@ -38,15 +38,6 @@ def make_ai_actions(ai_instance, threads, args, logger):
 
     if not ai_instance.stop:
         ai_instance.take_all()
-    else:
-        ai_instance.share_food()
-
-    if ai_instance.food_supply:
-        if ai_instance.get_nb_player_on_tile() >= 6:
-            ai_instance.drop_all_food()
-        else:
-            ai_instance.take_all_food()
-            ai_instance.move_random()
 
 
 def start_ai_logic(ai_instance, threads, args, logger):

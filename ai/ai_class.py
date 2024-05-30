@@ -48,12 +48,17 @@ class AI:
                     self.dead = True
                     return None
                 if elem.startswith("["):
-                    inventory = response.split("[")[1].split(",")
+                    inventory = elem.split("[")[1].split(",")
                 else:
                     self.net.add_to_read(elem)
             if inventory is None:
                 response = self.net.read(self)
         dic = {}
+        if inventory == []:
+            return dic
+        while inventory[-1][-1] != "]":
+            response = self.net.read(self)
+            inventory += response.split("\n")[0].split(",")
         for elem in inventory:
             key = elem.split(" ")[1]
             value = int(elem.split(" ")[2])
@@ -73,11 +78,16 @@ class AI:
                     self.dead = True
                     return None
                 if elem.startswith("["):
-                    look = response.split("[")[1].split(",")
+                    look = elem.split("[")[1].split(",")
                 else:
                     self.net.add_to_read(elem)
             if look is None:
                 response = self.net.read(self)
+        if look == []:
+            return None
+        while look[-1][-1] != "]":
+            response = self.net.read(self)
+            look += response.split("\n")[0].split(",")
         for i in range(len(look)):
             look[i] = look[i].split(" ")
         for elem in look:
@@ -398,7 +408,7 @@ class AI:
         if not self.random and broadcast_received == "lvl6" and not self.stop:
             self.go_to_broadcast(int(k))
         if not self.random and broadcast_received == "elevate":
-            if not self.food_supply and self.get_nb_player_on_tile() >= 6:
+            if self.get_nb_player_on_tile() >= 6:
                 self.stop = True
                 self.drop_all()
                 self.incantation()
