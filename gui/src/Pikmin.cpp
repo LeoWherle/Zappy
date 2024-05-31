@@ -109,7 +109,6 @@ void Pikmin::drawModel(float delta)
     if (_model) {
         _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
     } else {
-        std::cout << _position.x << " " << _position.z << std::endl;
         DrawCubeV(_position, _scale, _colorMod);
     }
 }

@@ -6,6 +6,7 @@
 */
 
 #include "ActionHandler.hpp"
+#include <iostream>
 
 ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams, std::pair<std::size_t, std::size_t> &size, float &timeMult):
     _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult)
@@ -44,6 +45,7 @@ bool ActionHandler::operator()(std::string &action)
     for (auto &[regex, reaction] : _regexMap) {
         std::smatch match;
         if (std::regex_match(action, match, regex)) {
+            std::cout << action << std::endl;
             (this->*reaction)(match);
             return true;
         }
@@ -101,7 +103,7 @@ void ActionHandler::setPikminPosition(std::smatch &arg)
     for (auto &player : _pikmins) {
         if (player == id) {
             if ((player.getX() != x || player.getY() != y) && player.getStatus() != Pikmin::State::EJECT) {
-                player.setPositionVector(raylib::Vector3(player.getX(), 0, player.getY()));
+                player.setPositionVector(raylib::Vector3(player.getX(), 1, player.getY()));
                 player.setAnimation(_animation.get("walk"));
                 player.setMotionVector(raylib::Vector3(player.getX() - x, 0, player.getY() - y));
             }
@@ -166,7 +168,8 @@ void ActionHandler::startIncantation(std::smatch &arg)
     std::string incanters = arg[3].str();
 
     while (incanters.size() > 0) {
-        std::string tmp = incanters.substr(0, incanters.find(' ') - 1);
+        std::cout << incanters << std::endl;
+        std::string tmp = incanters.substr(0, incanters.find(' '));
         for (auto &player : _pikmins) {
             if (player == tmp) {
                 player.setAnimation(_animation.get("incant"));
@@ -175,7 +178,7 @@ void ActionHandler::startIncantation(std::smatch &arg)
         std::size_t index = incanters.find(' ') + 1;
         if (index > incanters.size())
             index = incanters.size();
-        incanters = incanters.substr(index);
+        incanters = incanters.erase(index);
     }
 }
 
