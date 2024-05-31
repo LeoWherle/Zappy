@@ -11,11 +11,10 @@
 #include <string.h>
 #include <string>
 
+#include "pl_mpeg.h"
+
 #include "Image.hpp"
 #include "Texture.hpp"
-
-#define PL_MPEG_IMPLEMENTATION
-#include "pl_mpeg.h"
 
 /**
  * @brief Class to handle video playback (MPEG1 only)
@@ -79,57 +78,15 @@ public:
     };
     // clang-format on
 
-    Video(const std::string &file_path, bool loop = false, double speed = 1):
-        _loop(loop),
-        _base_time(GetTime()),
-        _speed(speed)
-    {
-        _plm = plm_create_with_filename(file_path.c_str());
-        if (_plm == nullptr) {
-            throw InvalidFile("Failed to open video file");
-        }
-        _framerate = plm_get_framerate(_plm);
-        _samplerate = plm_get_samplerate(_plm);
-        _Imframe.width = plm_get_width(_plm);
-        _Imframe.height = plm_get_height(_plm);
-        _Imframe.mipmaps = 1;
-        _Imframe.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
-        _Imframe.data = RL_MALLOC(_Imframe.width * _Imframe.height * 3);
-        plm_set_loop(_plm, loop);
-
-        _texture.Load(_Imframe);
-    }
-
-    Video(const char *file_path, bool loop = false, double speed = 1):
-        _loop(loop),
-        _base_time(GetTime()),
-        _speed(speed)
-    {
-        _plm = plm_create_with_filename(file_path);
-        if (_plm == nullptr) {
-            throw InvalidFile("Failed to open video file");
-        }
-        _framerate = plm_get_framerate(_plm);
-        _samplerate = plm_get_samplerate(_plm);
-        _Imframe.width = plm_get_width(_plm);
-        _Imframe.height = plm_get_height(_plm);
-        _Imframe.mipmaps = 1;
-        _Imframe.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
-        _Imframe.data = RL_MALLOC(_Imframe.width * _Imframe.height * 3);
-        plm_set_loop(_plm, loop);
-
-        _texture.Load(_Imframe);
-    }
+    Video(const std::string &file_path, bool loop = false, double speed = 1);
+    Video(const char *file_path, bool loop = false, double speed = 1);
+    ~Video();
 
     void Resume(void) { _pause = false; }
     void Pause(void) { _pause = true; }
     void setRunning(bool running) { _pause = !running; }
 
-    void Loop(bool loop)
-    {
-        _ended = false;
-        plm_set_loop(_plm, loop);
-    }
+    void Loop(bool loop);
 
     bool isLooping(void) const { return _loop; }
 
@@ -140,58 +97,12 @@ public:
     void setSpeed(double speed) { _speed = speed; }
     double getSpeed() const { return _speed; }
 
-    void Rewind(void)
-    {
-        _ended = false;
-        bool old = plm_get_loop(_plm);
-        plm_set_loop(_plm, true);
-        plm_rewind(_plm);
-        plm_set_loop(_plm, old);
-    }
+    void Rewind(void);
 
-    void Update()
-    {
-        plm_frame_t *frame = nullptr;
-
-        if (_pause || _ended)
-            return;
-
-        double time = (GetTime() - _base_time);
-
-        if (time >= 1.0 / (_framerate * _speed)) {
-            _base_time = GetTime();
-
-            // Decode video frame
-            frame = plm_decode_video(_plm);
-            if (frame) {
-                plm_frame_to_rgb(frame, (uint8_t *) _Imframe.data, _Imframe.width * 3);
-                _texture.Update(_Imframe.data);
-            } else {
-                memset(_Imframe.data, 0, _Imframe.width * _Imframe.height * 3);
-                _texture.Update(_Imframe.data);
-            }
-            if (plm_has_ended(_plm)) {
-                if (_loop) {
-                    plm_rewind(_plm);
-                }
-            }
-        }
-    }
+    void Update();
 
     // Center the video on the screen
-    void Draw(Color color = WHITE) const
-    {
-        _texture.Draw(
-            GetScreenWidth() / 2 - _texture.width / 2, GetScreenHeight() / 2 - _texture.height / 2, color
-        );
-    }
+    void Draw(Color color = WHITE) const;
 
-    void Draw(int x, int y, Color color = WHITE) const { _texture.Draw(x, y, color); }
-
-    ~Video()
-    {
-        if (_plm != nullptr) {
-            plm_destroy(_plm);
-        }
-    }
+    void Draw(int x, int y, Color color = WHITE) const;
 };
