@@ -12,7 +12,7 @@
 
 #include <stdbool.h>
 
-#define PARSER_FUNC_COUNT 8
+#define PARSER_FUNC_COUNT 9
 
 typedef struct trantor_params_s {
     int port;
@@ -24,6 +24,7 @@ typedef struct trantor_params_s {
     float f;
     bool spam_gui;
     unsigned int seed;
+    bool paused_start;
 } trantor_params_t;
 
 // typedef for arg parsing funcs
@@ -55,4 +56,5 @@ bool parse_seed_arg(int *ac, char ***args, trantor_params_t *params);
 bool parse_port_arg(int *ac, char ***args, trantor_params_t *params);
 bool parse_float_arg(int *ac, char ***args, trantor_params_t *params);
 bool parse_teams_arg(int *ac, char ***args, trantor_params_t *params);
-bool parse_spam_gui(int *ac, char ***args, trantor_params_t *params);
+bool parse_spam_gui_arg(int *ac, char ***args, trantor_params_t *params);
+bool parse_paused_arg(int *ac, char ***args, trantor_params_t *params);

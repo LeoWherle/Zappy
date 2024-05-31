@@ -29,6 +29,7 @@ typedef struct trantor_s {
     string_t log;
     int winning_team;
     double since_spam;
+    bool paused;
 } trantor_t;
 
 bool parse_args(int ac, char **av, trantor_params_t *params);

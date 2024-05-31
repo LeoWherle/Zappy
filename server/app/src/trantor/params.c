@@ -22,7 +22,8 @@ const arg_parser_t ARGS_PARSERS[PARSER_FUNC_COUNT] = {
     {"-s", parse_seed_arg, false},
     {"-f", parse_float_arg, false},
     {"-n", parse_teams_arg, true},
-    {"--spam-gui", parse_spam_gui, false},
+    {"--spam-gui", parse_spam_gui_arg, false},
+    {"--paused", parse_paused_arg, false}
 };
 
 static void set_args_to_default(trantor_params_t *params)
@@ -34,6 +35,7 @@ static void set_args_to_default(trantor_params_t *params)
     params->f = DEFAULT_F;
     params->spam_gui = false;
     params->seed = 0;
+    params->paused_start = false;
     if (vec_init(&params->team_names, sizeof(char *), NULL, NULL) != BUF_OK)
         LOG_ERROR("Failed to init team_names vector");
 }

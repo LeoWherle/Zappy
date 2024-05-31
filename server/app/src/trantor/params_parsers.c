@@ -79,11 +79,21 @@ bool parse_teams_arg(int *ac, char ***args, trantor_params_t *params)
     return true;
 }
 
-bool parse_spam_gui(int *ac, char ***args, trantor_params_t *params)
+bool parse_spam_gui_arg(int *ac, char ***args, trantor_params_t *params)
 {
     if (*ac < 1)
         return false;
     params->spam_gui = true;
+    *ac -= 1;
+    *args += 1;
+    return true;
+}
+
+bool parse_paused_arg(int *ac, char ***args, trantor_params_t *params)
+{
+    if (*ac < 1)
+        return false;
+    params->paused_start = true;
     *ac -= 1;
     *args += 1;
     return true;

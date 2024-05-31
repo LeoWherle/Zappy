@@ -63,6 +63,7 @@ void init_trantor(trantor_t *trantor)
         add_initial_team_eggs(trantor, i);
     if (trantor->params.spam_gui)
         init_spamming_trantor(trantor);
+    trantor->paused = trantor->params.paused_start;
 }
 
 void feed_player_line(

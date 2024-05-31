@@ -169,6 +169,8 @@ static void player_time_pass(
 
 bool trantor_time_pass(trantor_t *trantor, double delta)
 {
+    if (trantor->paused)
+        return (trantor->winning_team == -1);
     try_refill_map(trantor, delta);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
         player_time_pass(trantor, delta,
