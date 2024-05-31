@@ -22,7 +22,6 @@ Tile::Tile(std::size_t x, std::size_t y) : _x(x), _y(y)
 
 void Tile::setRocks(std::map<Kaillou, std::size_t> &rocks)
 {
-    std::cout << "my x = " << _x << " y = " << _y << std::endl;
     for (auto i = rocks.begin(); i != rocks.end(); i++) {
         int delta = rocks[i->first] - _rocks[i->first];
         for (int j = 0; j < delta; j++) {
@@ -48,7 +47,7 @@ void Tile::addRock(Kaillou rock)
     if (_rocks.find(rock) != _rocks.end()) {
         groundedMaterial newMat;
         newMat.caillou = rock;
-        newMat.pos = raylib::Vector3(_x - 0.25f + (float)(std::rand() % 500) / 1000.0f, 0.6, _y - 0.25f + (float)(std::rand() % 500) / 1000.0f);
+        newMat.pos = raylib::Vector3(_x - 0.45f + (float)(std::rand() % 900) / 1000.0f, 0.6, _y - 0.45f + (float)(std::rand() % 900) / 1000.0f);
         _materials.push_back(newMat);
     }
 }
