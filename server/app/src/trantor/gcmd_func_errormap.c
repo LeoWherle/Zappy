@@ -32,8 +32,8 @@ void gui_bct(trantor_t *trantor, gcmd_args_t *args)
 
 void gui_mct(trantor_t *trantor, gcmd_args_t *args)
 {
-    for (len_t y = 0; y < trantor->map.height; y++) {
-        for (len_t x = 0; x < trantor->map.width; x++) {
+    for (len_t x = 0; x < trantor->map.width; x++) {
+        for (len_t y = 0; y < trantor->map.height; y++) {
             args->pos[0] = x;
             args->pos[1] = y;
             gui_bct(trantor, args);

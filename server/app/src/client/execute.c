@@ -102,7 +102,7 @@ static size_t client_send_welcome(client_t *client)
 {
     char msg[] = "WELCOME\n";
 
-    if (str_push_bytes(&client->write_buf, msg, sizeof(msg)) == BUF_OK) {
+    if (str_push_bytes(&client->write_buf, msg, strlen(msg)) == BUF_OK) {
         client->sent_welcome = true;
         return 0;
     }
@@ -141,6 +141,15 @@ static void client_process_output(client_t *client, player_t *player)
     str_clear(&player->response_buffer);
 }
 
+static void gui_client_process_output(client_t *client, trantor_t *trantor)
+{
+    if (trantor->log.nmemb == 0)
+        return;
+    if (str_push_str(&client->write_buf, &trantor->log) != BUF_OK)
+        return;
+    str_clear(&trantor->log);
+}
+
 // WARNING : For now vec_at is ok, because we don't delete dead players
 size_t client_execute(client_t *client, server_t *server)
 {
@@ -153,7 +162,11 @@ size_t client_execute(client_t *client, server_t *server)
             return client_get_connection(server, client);
         }
     }
-    player = vec_at(&server->trantor.players, client->player_id - 1);
-    client_process_output(client, player);
+    if (client->is_gui) {
+        gui_client_process_output(client, &server->trantor);
+    } else {
+        player = vec_at(&server->trantor.players, client->player_id - 1);
+        client_process_output(client, player);
+    }
     return client_process_data(client, player, &server->trantor);
 }

@@ -137,7 +137,7 @@ void server_run(server_t *server)
     struct timespec now;
     serv_context_t context = {.max_sd = server->listen_sd, .running = true};
 
-    srand(time(NULL));
+    srand(server->trantor.params.seed);
     if (init_signal_handling(&context))
         LOG_ERROR("Failed to initialize signal handling");
     clock_gettime(CLOCK_MONOTONIC, &now);
