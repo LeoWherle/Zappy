@@ -168,17 +168,18 @@ void ActionHandler::startIncantation(std::smatch &arg)
     std::string incanters = arg[3].str();
 
     while (incanters.size() > 0) {
-        std::cout << incanters << std::endl;
         std::string tmp = incanters.substr(0, incanters.find(' '));
         for (auto &player : _pikmins) {
             if (player == tmp) {
                 player.setAnimation(_animation.get("incant"));
             }
         }
-        std::size_t index = incanters.find(' ') + 1;
-        if (index > incanters.size())
-            index = incanters.size();
-        incanters = incanters.erase(index);
+        std::size_t index = incanters.find(' ');
+        if (index == std::string::npos) {
+            incanters.erase();
+        } else {
+            incanters.erase(0, index + 1);
+        }
     }
 }
 
@@ -262,6 +263,7 @@ void ActionHandler::pikminDie(std::smatch &arg)
     for (std::size_t i = 0; i < _pikmins.size(); i++) {
         if (_pikmins[i] == pikminId) {
             _pikmins[i].setAnimation(_animation.get("death"));
+            _pikmins[i].setStatus(Pikmin::State::DYING);
         }
     }
 }

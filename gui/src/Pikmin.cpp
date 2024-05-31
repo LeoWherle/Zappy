@@ -76,7 +76,7 @@ void Pikmin::setAnimation(std::string fileName)
 bool Pikmin::animationUpdate(float delta)
 {
     if (_model == nullptr || _anim.size() == 0) {
-        return false;
+        return true;
     }
     _cumulatedTime += delta;
     if (_cumulatedTime >= _animationTime) {

@@ -183,9 +183,13 @@ void Warudo::updateGraphic(void)
 
 void Warudo::updatePikmin(void)
 {
+    bool animState = false;
     for (auto &pikmin : _pikmins) {
-        pikmin.animationUpdate(_delta);
+        animState = pikmin.animationUpdate(_delta);
         pikmin.drawModel(_delta);
+        if (pikmin.getStatus() == Pikmin::State::DYING && animState) {
+            //erase
+        }
     }
 }
 
