@@ -20,21 +20,16 @@
 static void add_initial_team_eggs(
     trantor_t *trantor, team_t tm)
 {
-    player_t *p;
+    player_t p;
     coord_t c = {0};
 
     for (unsigned int i = 0; i < trantor->params.players; i++) {
+        p = (player_t){0};
         c[0] = rand() % trantor->params.width;
         c[1] = rand() % trantor->params.height;
-        p = malloc(sizeof(player_t));
-        if (p == NULL) {
-            continue;
-        }
-        init_egg(p, tm, c);
-        if (vec_push(&trantor->players, &p) != BUF_OK) {
-            free(p);
+        init_egg(&p, tm, c);
+        if (vec_push(&trantor->players, &p) != BUF_OK)
             LOG_ERROR("Failed to add player to vector");
-        }
     }
 }
 
@@ -42,7 +37,7 @@ void init_trantor(trantor_t *trantor)
 {
     init_map(trantor->params.width, trantor->params.height, &trantor->map);
     if (vec_init(&trantor->players,
-        sizeof(player_t *), destroy_player, NULL) != BUF_OK)
+        sizeof(player_t), destroy_player, NULL) != BUF_OK)
         LOG_ERROR("Failed to init players vector");
     if (str_init(&trantor->log, "") != BUF_OK)
         LOG_ERROR("Failed to init log buffer");
@@ -71,7 +66,7 @@ void remove_player(trantor_t *trantor, player_t *player)
     player_t *other;
 
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        other = *(player_t **) vec_at(&trantor->players, i);
+        other = (player_t *) vec_at(&trantor->players, i);
         if (other->incantator == player)
             other->incantator = NULL;
     }

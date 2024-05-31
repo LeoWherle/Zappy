@@ -27,7 +27,7 @@ player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
         return NULL;
     team = (team_t) idx;
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        temp = *(player_t **) vec_at(&trantor->players, i);
+        temp = (player_t *) vec_at(&trantor->players, i);
         if (!temp->is_egg || temp->team != team)
             continue;
         hatch_egg(temp, trantor->params.f);
@@ -46,7 +46,7 @@ unsigned int count_idxteam_egg(trantor_t *trantor, team_t t)
     unsigned int count = 0;
 
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        temp = *(player_t **) vec_at(&trantor->players, i);
+        temp = (player_t *) vec_at(&trantor->players, i);
         if (!temp->is_egg || temp->team != t)
             continue;
         count++;

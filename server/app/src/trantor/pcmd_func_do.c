@@ -12,9 +12,6 @@
 #include "trantor/tile.h"
 #include "trantor/string_utils.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
 
 void player_broadcast(pcmd_args_t *args)
 {
@@ -22,7 +19,7 @@ void player_broadcast(pcmd_args_t *args)
     unsigned int sq = 0;
 
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
-        p = *(player_t **) vec_at(args->players, i);
+        p = (player_t *) vec_at(args->players, i);
         if (p == args->player || p->is_egg || p->is_dead)
             continue;
         sq = get_receiving_square(args->map, p->direction,
@@ -35,16 +32,15 @@ void player_broadcast(pcmd_args_t *args)
 
 void player_fork(pcmd_args_t *args)
 {
-    player_t *egg = NULL;
+    player_t egg = {0};
 
     SAY_OK(&args->player->response_buffer);
-    egg = malloc(sizeof(player_t));
-    init_egg(egg, args->player->team, args->player->coord);
+    init_egg(&egg, args->player->team, args->player->coord);
     if (vec_push(args->players, &egg) != BUF_OK)
         LOG_ERROR("Error while pushing egg to players");
     talkf(args->log, "pfk %d\n", args->player->n);
-    talkf(args->log, "enw %d %d %d %d\n", egg->n, args->player->n,
-        egg->coord[0], egg->coord[1]);
+    talkf(args->log, "enw %d %d %d %d\n", egg.n, args->player->n,
+        egg.coord[0], egg.coord[1]);
 }
 
 static void warn_player_eject(

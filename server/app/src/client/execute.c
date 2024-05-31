@@ -60,12 +60,14 @@ static void cl_send_start(client_t *client, player_t *player, unsigned int cnb)
 static void player_get_connection(
     server_t *srv, client_t *cl, const char *tname)
 {
-    cl->player = hatch_team_egg(&srv->trantor, tname);
-    if (cl->player == NULL) {
+    player_t *p = hatch_team_egg(&srv->trantor, tname);
+
+    if (p == NULL) {
         LOG_DEBUG("Failed to find available team name %s for cl", tname);
         cl->delete = true;
     }
-    cl_send_start(cl, cl->player, count_team_egg(&(srv->trantor), tname));
+    cl->player_id = p->n;
+    cl_send_start(cl, p, count_team_egg(&(srv->trantor), tname));
 }
 
 /**
@@ -139,16 +141,19 @@ static void client_process_output(client_t *client, player_t *player)
     str_clear(&player->response_buffer);
 }
 
+// WARNING : For now vec_at is ok, because we don't delete dead players
 size_t client_execute(client_t *client, server_t *server)
 {
-    if (client->player == NULL && !client->is_gui) {
+    player_t *player = NULL;
+
+    if (client->player_id == 0 && !client->is_gui) {
         if (!client->sent_welcome) {
             return client_send_welcome(client);
         } else {
             return client_get_connection(server, client);
         }
-    } else {
-        client_process_output(client, client->player);
-        return client_process_data(client, client->player, &server->trantor);
     }
+    player = vec_at(&server->trantor.players, client->player_id - 1);
+    client_process_output(client, player);
+    return client_process_data(client, player, &server->trantor);
 }
