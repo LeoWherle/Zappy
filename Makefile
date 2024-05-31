@@ -31,6 +31,14 @@ RAYLIB_PATH=gui/raylib/src
 RAYLIB_CPP_PATH=gui/raylib-cpp
 
 
+RULE =
+# used with make DEBUG=n
+ifeq ($(DEBUG), n)
+	RULE = "DEBUG=n"
+else ifeq ($(DEBUG), y)
+	RULE = "DEBUG=y"
+endif
+
 all: $(BIN_SERVER) $(BIN_AI)  $(BIN_GUI)
 
 submodules:
@@ -57,11 +65,11 @@ $(BIN_AI):
 	mv $(FOLDER_AI)$(BIN_AI) .
 
 $(BIN_SERVER):
-	@$(MAKE) -C $(FOLDER_SERVER)
+	@$(MAKE) -C $(FOLDER_SERVER) $(RULE)
 	mv $(FOLDER_SERVER)$(BIN_SERVER) .
 
 $(BIN_GUI):
-	@$(MAKE) -C $(FOLDER_GUI)
+	@$(MAKE) -C $(FOLDER_GUI) $(RULE)
 	mv $(FOLDER_GUI)$(BIN_GUI) .
 
 build_lib:
