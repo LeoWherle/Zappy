@@ -8,105 +8,71 @@
 #include "trantor/params.h"
 #include "serrorh.h"
 #include "trantor/common.h"
+#include "trantor/config.h"
 #include "vector.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-// original idea by lucien :
-// return -1 if port is invalid else the port as an int (with strtol)
-static signed int get_port(const char *port)
-{
-    char *endptr = NULL;
-    long port_int = strtol(port, &endptr, 10);
+const arg_parser_t ARGS_PARSERS[PARSER_FUNC_COUNT] = {
+    {"-p", parse_port_arg, false},
+    {"-x", parse_width_arg, false},
+    {"-y", parse_height_arg, false},
+    {"-c", parse_players_arg, false},
+    {"-s", parse_seed_arg, false},
+    {"-f", parse_float_arg, false},
+    {"-n", parse_teams_arg, true},
+    {"--spam-gui", parse_spam_gui, false},
+};
 
-    if (port_int < 0 || port_int > 65535 || (*endptr) != '\0') {
-        LOG_ERROR("Invalid port: \"%s\"", port);
-        return -1;
-    }
-    return port_int;
+static void set_args_to_default(trantor_params_t *params)
+{
+    params->port = DEFAULT_PORT;
+    params->width = DEFAULT_WIDTH;
+    params->height = DEFAULT_HEIGHT;
+    params->players = DEFAULT_PLAYERS;
+    params->f = DEFAULT_F;
+    params->spam_gui = false;
+    params->seed = 0;
+    if (vec_init(&params->team_names, sizeof(char *), NULL, NULL) != BUF_OK)
+        LOG_ERROR("Failed to init team_names vector");
 }
 
-static bool parse_port_arg(int *ac, char ***args, trantor_params_t *params)
+static bool parse_arg(
+    int *ac, char ***args, trantor_params_t *params, bool *parsed)
 {
-    signed int port = 0;
-
-    if (*ac < 2 || strcmp((*args)[0], "-p") != 0)
-        return false;
-    port = get_port((*args)[1]);
-    if (port == -1)
-        return false;
-    params->port = (int) port;
-    *ac -= 2;
-    *args += 2;
-    return true;
-}
-
-static bool parse_int_arg(int *ac, char ***args, trantor_params_t *params)
-{
-    char flags[3][3] = {"-x", "-y", "-c"};
-    unsigned int *values[] = {
-        &params->width, &params->height, &params->players};
-
-    if (*ac < 2)
-        return false;
-    for (int i = 0; i < 3; i++) {
-        if (strcmp((*args)[0], flags[i]) != 0)
+    for (int i = 0; i < PARSER_FUNC_COUNT + 1; i++) {
+        if (i == PARSER_FUNC_COUNT) {
+            LOG_ERROR("Invalid argument: \"%s\"", (*args)[0]);
+            return false;
+        }
+        if (strcmp((*args)[0], ARGS_PARSERS[i].flag) != 0)
             continue;
-        *values[i] = atoi((*args)[1]);
-        *ac -= 2;
-        *args += 2;
+        if (parsed[i]) {
+            LOG_ERROR("Duplicate argument: \"%s\"", (*args)[0]);
+            return false;
+        }
+        if (!ARGS_PARSERS[i].func(ac, args, params))
+            return false;
+        parsed[i] = true;
         return true;
     }
     return false;
 }
 
-static bool parse_float_arg(int *ac, char ***args, trantor_params_t *params)
-{
-    if (*ac < 2)
-        return false;
-    if (strcmp((*args)[0], "-f") != 0)
-        return false;
-    params->f = atof((*args)[1]);
-    *ac -= 2;
-    *args += 2;
-    return true;
-}
-
-static bool parse_str_arg(int *ac, char ***args, trantor_params_t *params)
-{
-    if (*ac < 1 + MINIMUM_TEAMS)
-        return false;
-    if (strcmp((*args)[0], "-n") != 0)
-        return false;
-    while (*ac > 1 && (*args)[1][0] != '-') {
-        if (vec_push(&params->team_names, (*args)[1]) != BUF_OK)
-            return false;
-        *ac -= 1;
-        *args += 1;
-    }
-    *ac -= 1;
-    *args += 1;
-    params->teams = params->team_names.nmemb;
-    return true;
-}
-
 bool parse_args(int ac, char **av, trantor_params_t *params)
 {
-    if (vec_init(&params->team_names, sizeof(char *), NULL, NULL) != BUF_OK)
-        return false;
-    if (ac < 3)
-        return false;
-    while (ac > 1) {
-        if (parse_int_arg(&ac, &av, params))
-            continue;
-        if (parse_float_arg(&ac, &av, params))
-            continue;
-        if (parse_str_arg(&ac, &av, params))
-            continue;
-        if (parse_port_arg(&ac, &av, params))
-            continue;
-        return false;
+    bool parsed[PARSER_FUNC_COUNT] = {false};
+
+    set_args_to_default(params);
+    while (ac != 0)
+        if (!parse_arg(&ac, &av, params, parsed))
+            return false;
+    for (int i = 0; i < PARSER_FUNC_COUNT; i++) {
+        if (ARGS_PARSERS[i].required && !parsed[i]) {
+            LOG_ERROR("Missing required argument");
+            return false;
+        }
     }
     return true;
 }

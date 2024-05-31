@@ -7,6 +7,7 @@
 
 #include "serrorh.h"
 #include "server.h"
+#include "trantor/params.h"
 #include <stdio.h>
 #include <sys/cdefs.h>
 #include <unistd.h>
@@ -54,6 +55,7 @@ int main(int ac, char *av[])
     --ac;
     ++av;
     if (!parse_args(ac, av, &server_data.trantor.params)) {
+        destroy_params(&server_data.trantor.params);
         printf("%s\n", USAGE);
         return 84;
     }

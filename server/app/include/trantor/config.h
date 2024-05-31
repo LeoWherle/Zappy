@@ -20,6 +20,12 @@
 #define FOOD_LIFE_UNIT 126.0
 #define MAP_REFILLS_INTERVAL 20.0
 
+#define DEFAULT_PORT 4242
+#define DEFAULT_WIDTH 10
+#define DEFAULT_HEIGHT 10
+#define DEFAULT_PLAYERS 4
+#define DEFAULT_F 2
+
 typedef struct item_config_s {
     item_t type;
     const char *name;

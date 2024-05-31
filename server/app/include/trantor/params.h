@@ -12,8 +12,7 @@
 
 #include <stdbool.h>
 
-// 2 ?
-#define MINIMUM_TEAMS 1
+#define PARSER_FUNC_COUNT 8
 
 typedef struct trantor_params_s {
     int port;
@@ -23,7 +22,19 @@ typedef struct trantor_params_s {
     vector_t team_names;
     unsigned int players;
     float f;
+    bool spam_gui;
+    unsigned int seed;
 } trantor_params_t;
+
+// typedef for arg parsing funcs
+typedef bool (*parse_arg_func_t)(
+    int *ac, char ***args, trantor_params_t *params);
+
+typedef struct arg_parser_s {
+    const char *flag;
+    parse_arg_func_t func;
+    bool required;
+} arg_parser_t;
 
 
 void destroy_params(trantor_params_t *params);
@@ -33,3 +44,15 @@ int get_team_index(trantor_params_t *params, const char *team_name);
  * getting the c_string.
  */
 const char *get_team_name(const trantor_params_t *params, team_t team_id);
+
+
+// Internal
+bool parse_width_arg(int *ac, char ***args, trantor_params_t *params);
+bool parse_height_arg(int *ac, char ***args, trantor_params_t *params);
+bool parse_players_arg(int *ac, char ***args, trantor_params_t *params);
+bool parse_seed_arg(int *ac, char ***args, trantor_params_t *params);
+
+bool parse_port_arg(int *ac, char ***args, trantor_params_t *params);
+bool parse_float_arg(int *ac, char ***args, trantor_params_t *params);
+bool parse_teams_arg(int *ac, char ***args, trantor_params_t *params);
+bool parse_spam_gui(int *ac, char ***args, trantor_params_t *params);
