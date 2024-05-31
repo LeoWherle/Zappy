@@ -17,6 +17,37 @@
 #define PL_MPEG_IMPLEMENTATION
 #include "pl_mpeg.h"
 
+/**
+ * @brief Class to handle video playback (MPEG1 only)
+ *
+ * @example:
+ * 
+    #include "Window.hpp"
+    #include "Video.hpp"
+
+    int main(void)
+    {
+        raylib::Window window(1280, 720, "raylib Example MPEG video playing");
+        Video video("assets/rick.mpeg");
+
+        while (!WindowShouldClose()) {
+            if (IsKeyPressed(KEY_SPACE))
+                video.setRunning(video.isPaused());
+            if (IsKeyPressed(KEY_R))
+                video.Rewind();
+            if (IsKeyPressed(KEY_L))
+                video.Loop(!video.isLooping());
+            video.Update();
+
+            BeginDrawing();
+            {
+                ClearBackground(RAYWHITE);
+                video.Draw();
+            }
+            EndDrawing();
+        }
+    }
+ */
 class Video {
 private:
     plm_t *_plm;
@@ -48,15 +79,16 @@ public:
         if (_plm == nullptr) {
             throw InvalidFile("Failed to open video file");
         }
-        plm_set_loop(_plm, true);
         _framerate = plm_get_framerate(_plm);
         _samplerate = plm_get_samplerate(_plm);
         _Imframe.width = plm_get_width(_plm);
         _Imframe.height = plm_get_height(_plm);
         _Imframe.mipmaps = 1;
-        _Imframe.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+        _Imframe.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
         _Imframe.data = RL_MALLOC(_Imframe.width * _Imframe.height * 3);
         plm_set_loop(_plm, loop);
+
+        _texture.Load(_Imframe);
     }
 
     Video(const char *file_path, bool loop = false)
@@ -65,15 +97,16 @@ public:
         if (_plm == nullptr) {
             throw InvalidFile("Failed to open video file");
         }
-        plm_set_loop(_plm, true);
         _framerate = plm_get_framerate(_plm);
         _samplerate = plm_get_samplerate(_plm);
         _Imframe.width = plm_get_width(_plm);
         _Imframe.height = plm_get_height(_plm);
         _Imframe.mipmaps = 1;
-        _Imframe.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+        _Imframe.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;
         _Imframe.data = RL_MALLOC(_Imframe.width * _Imframe.height * 3);
         plm_set_loop(_plm, loop);
+
+        _texture.Load(_Imframe);
     }
 
     void Resume(void) { _pause = false; }
@@ -107,20 +140,20 @@ public:
 
         if (_pause || _ended)
             return;
+
         double time = (GetTime() - _base_time);
+
         if (time >= 1.0 / _framerate) {
             _base_time = GetTime();
-            if (plm_has_ended(_plm)) {
-                plm_rewind(_plm);
-            }
+
             // Decode video frame
             frame = plm_decode_video(_plm);
             if (frame) {
                 plm_frame_to_rgb(frame, (uint8_t *) _Imframe.data, _Imframe.width * 3);
-                UpdateTexture(_texture, _Imframe.data);
+                _texture.Update(_Imframe.data);
             } else {
                 memset(_Imframe.data, 0, _Imframe.width * _Imframe.height * 3);
-                UpdateTexture(_texture, _Imframe.data);
+                _texture.Update(_Imframe.data);
             }
             if (plm_has_ended(_plm)) {
                 if (_loop) {
@@ -131,15 +164,14 @@ public:
     }
 
     // Center the video on the screen
-    void Draw(Color color = WHITE)
+    void Draw(Color color = WHITE) const
     {
-        DrawTexture(
-            _texture, GetScreenWidth() / 2 - _texture.width / 2, GetScreenHeight() / 2 - _texture.height / 2,
-            color
+        _texture.Draw(
+            GetScreenWidth() / 2 - _texture.width / 2, GetScreenHeight() / 2 - _texture.height / 2, color
         );
     }
 
-    void Draw(int x, int y, Color color = WHITE) { DrawTexture(_texture, x, y, color); }
+    void Draw(int x, int y, Color color = WHITE) const { _texture.Draw(x, y, color); }
 
     ~Video()
     {
