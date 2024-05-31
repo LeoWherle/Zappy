@@ -44,6 +44,7 @@ SRC 	=	src/err_log.c \
 			src/err_env.c \
 			src/assert.c \
 			src/load_env.c \
+			src/load_color.c \
 			src/log_file.c \
 
 
