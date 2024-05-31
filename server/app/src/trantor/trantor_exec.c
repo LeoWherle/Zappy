@@ -179,7 +179,7 @@ bool trantor_time_pass(trantor_t *trantor, double delta)
 {
     try_refill_map(trantor, delta);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        player_time_pass(trantor, delta, vec_at(&trantor->players, i));
+        player_time_pass(trantor, delta, *(player_t **) vec_at(&trantor->players, i));
     }
     return (trantor->winning_team == -1);
 }

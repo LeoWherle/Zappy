@@ -8,11 +8,9 @@
 #include "sstrings.h"
 #include "trantor.h"
 #include "trantor/common.h"
-#include "trantor/map_fn.h"
 #include "trantor/player.h"
 #include "trantor/string_utils.h"
 #include "vector.h"
-#include "serrorh.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,7 +19,7 @@
 
 player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
 {
-    player_t *temp;
+    player_t *temp = NULL;
     team_t team;
     int idx = get_team_index(&trantor->params, team_name);
 
@@ -29,7 +27,7 @@ player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
         return NULL;
     team = (team_t) idx;
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        temp = vec_at(&trantor->players, i);
+        temp = *(player_t **) vec_at(&trantor->players, i);
         if (!temp->is_egg || temp->team != team)
             continue;
         hatch_egg(temp, trantor->params.f);

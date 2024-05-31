@@ -65,7 +65,7 @@ static size_t get_tile_req_size(vector_t *players, loc_tile_t *ltile)
     player_t *p;
 
     for (size_t i = 0; i < players->nmemb; i++) {
-        p = vec_at(players, i);
+        p = *(player_t **) vec_at(players, i);
         if (p->is_dead)
             continue;
         if (!COORD_EQ(p->coord, ltile->coord))

@@ -8,7 +8,6 @@
 #include "buffer.h"
 #include "trantor.h"
 #include "trantor/common.h"
-#include "trantor/map.h"
 #include "trantor/player.h"
 #include "trantor/string_utils.h"
 #include "trantor/map_fn.h"
@@ -32,7 +31,7 @@ static void add_initial_team_eggs(
             continue;
         }
         init_egg(p, tm, c);
-        if (vec_push(&trantor->players, p) != BUF_OK) {
+        if (vec_push(&trantor->players, &p) != BUF_OK) {
             free(p);
             LOG_ERROR("Failed to add player to vector");
         }
@@ -84,7 +83,7 @@ void remove_player(trantor_t *trantor, player_t *player)
 void free_trantor(trantor_t *trantor)
 {
     free_map(&trantor->map);
-    vec_delete(&trantor->players);
+    vec_reset(&trantor->players);
     destroy_params(&trantor->params);
-    str_delete(&trantor->log);
+    str_reset(&trantor->log);
 }

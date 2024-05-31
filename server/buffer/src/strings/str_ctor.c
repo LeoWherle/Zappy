@@ -37,5 +37,7 @@ buf_error_t str_init(string_t *str, const char *cstr)
             return BUF_ALLOC;
         }
     }
+    if (cstr == NULL)
+        return BUF_OK;
     return str_push_cstr(str, cstr);
 }

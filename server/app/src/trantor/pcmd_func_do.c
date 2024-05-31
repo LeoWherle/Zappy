@@ -22,8 +22,8 @@ void player_broadcast(pcmd_args_t *args)
     unsigned int sq = 0;
 
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
-        p = vec_at(args->players, i);
-        if (p == args->player)
+        p = *(player_t **) vec_at(args->players, i);
+        if (p == args->player || p->is_egg || p->is_dead)
             continue;
         sq = get_receiving_square(args->map, p->direction,
             args->player->coord, p->coord);
