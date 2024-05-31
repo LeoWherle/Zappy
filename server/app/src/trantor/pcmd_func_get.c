@@ -65,8 +65,8 @@ static size_t get_tile_req_size(vector_t *players, loc_tile_t *ltile)
         len += 7;
         ltile->nplayer++;
     }
-    for (unsigned int i = 0; i < 7; i++) {
-        len += ((strlen(get_item_name(i)) + 1) * ltile->tile->items[i]);
+    for (unsigned int i = 0; i < ITEM_COUNT - 1; i++) {
+        len += ((get_item_name_len(i + 1) + 1) * ltile->tile->items[i]);
     }
     return len;
 }
@@ -76,7 +76,7 @@ static void sprintf_tile(char *msg, loc_tile_t *ltile, size_t *len)
     for (unsigned int i = 0; i < ltile->nplayer; i++) {
         *len += sprintf(msg + *len, "player ");
     }
-    for (unsigned int i = 0; i < 7; i++) {
+    for (unsigned int i = 0; i < ITEM_COUNT - 1; i++) {
         for (unsigned int j = 0; j < ltile->tile->items[i]; j++) {
             *len += sprintf(msg + *len, "%s ", get_item_name(i + 1));
         }
@@ -122,14 +122,14 @@ void player_inventory(pcmd_args_t *args)
     char *msg = NULL;
     size_t len = 4 + 6 + 1;
 
-    for (unsigned int i = 0; i < 7; i++)
+    for (unsigned int i = 0; i < ITEM_COUNT - 1; i++)
         len += snprintf(NULL, 0, "%s %d", get_item_name(i),
             args->player->inventory.items[i]);
     if (vec_reserve(str_to_vec(&args->player->response_buffer), len) != BUF_OK)
         return;
     msg = STRING_END(&args->player->response_buffer);
     len = sprintf(msg, "[ ");
-    for (unsigned int i = 0; i < 7; i++) {
+    for (unsigned int i = 0; i < ITEM_COUNT - 1; i++) {
         len += sprintf(msg + len, "%s %d", get_item_name(i + 1),
             args->player->inventory.items[i]);
         if (i != 6)

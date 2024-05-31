@@ -131,7 +131,7 @@ static void start_new_task(trantor_t *trantor, player_t *player)
 static void try_refill_map(trantor_t *trantor, double delta)
 {
     trantor->map.since_refill += delta;
-    if (trantor->map.since_refill >= 20) {
+    if (trantor->map.since_refill >= MAP_REFILLS_INTERVAL) {
         add_ressources(&(trantor->map));
         trantor->map.since_refill = 0.0;
     }
@@ -141,7 +141,7 @@ static bool death_from_hunger(trantor_t *trantor, player_t *player)
 {
     if (HAS_ITEM(player->inventory, FOOD_ITEM)) {
         TAKE_ITEM(player->inventory, FOOD_ITEM);
-        player->time_left += 126.0 / trantor->params.f;
+        player->time_left += FOOD_LIFE_UNIT / trantor->params.f;
         return false;
     } else {
         remove_player(trantor, player);

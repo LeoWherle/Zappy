@@ -16,6 +16,10 @@
 #define ITEM_COUNT 8
 #define MAX_LEVEL 8
 
+#define START_LIFE_UNITS 1260.0
+#define FOOD_LIFE_UNIT 126.0
+#define MAP_REFILLS_INTERVAL 20.0
+
 typedef struct item_config_s {
     item_t type;
     const char *name;
