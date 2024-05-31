@@ -9,6 +9,7 @@
 #include "buffer.h"
 #include "sstrings.h"
 #include "serrorh.h"
+#include "trantor/config.h"
 
 #include <stdlib.h>
 
@@ -30,7 +31,7 @@ void hatch_egg(player_t *player, double f)
 {
     player->is_egg = false;
     player->direction = rand() % 4;
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < ITEM_COUNT - 1; i++) {
         player->inventory.items[i] = 0;
     }
     player->elevation = 1;
@@ -40,7 +41,7 @@ void hatch_egg(player_t *player, double f)
     if (str_init(&player->response_buffer, NULL) != BUF_OK)
         LOG_ERROR("Failed to init player response buffer");
     player->incantator = NULL;
-    player->time_left = 1260.0 / f;
+    player->time_left = START_LIFE_UNITS / f;
     player->busy = false;
     player->pcmd_exec.command = 0;
     player->pcmd_exec.exec_time_left = 0;
@@ -49,7 +50,11 @@ void hatch_egg(player_t *player, double f)
 
 void destroy_player(void *player)
 {
-    str_reset(&(*(player_t **)player)->pcmd_buffer);
-    str_reset(&(*(player_t **)player)->response_buffer);
-    free(*(player_t **)player);
+    player_t *p = *(player_t **)player;
+
+    if (!p->is_egg) {
+        str_reset(&p->pcmd_buffer);
+        str_reset(&p->response_buffer);
+    }
+    free(p);
 }

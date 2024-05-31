@@ -10,7 +10,6 @@
 #include "trantor/common.h"
 #include "trantor/item.h"
 
-#define PCMD_COUNT 13
 
 typedef enum pcommand_e {
     NONE_PCMD = 0,

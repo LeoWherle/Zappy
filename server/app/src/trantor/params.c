@@ -113,7 +113,7 @@ bool parse_args(int ac, char **av, trantor_params_t *params)
 
 void destroy_params(trantor_params_t *params)
 {
-    vec_delete(&params->team_names);
+    vec_reset(&params->team_names);
 }
 
 int get_team_index(trantor_params_t *params, const char *team_name)

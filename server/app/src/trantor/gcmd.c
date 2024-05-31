@@ -6,29 +6,28 @@
 */
 
 #include "trantor/gcmd.h"
+#include "trantor/config.h"
 
-#include <string.h>
 #include <stdlib.h>
 
-const char *GCOMMAND_LINES[10] = {
-    "", "msz", "bct", "mct", "tna", "ppo", "plv", "pin", "sgt", "sst"
-};
 
 // WRONG (2nd atoi for bct)
 gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
 {
-    for (int i = 1; i < 10; i++) {
-        if (strncmp(gcmd, GCOMMAND_LINES[i], strlen(GCOMMAND_LINES[i])) != 0)
-            continue;
-        if (i == BCT_GCMD) {
-            args->pos[0] = atoi(gcmd + strlen(GCOMMAND_LINES[i]) + 1);
-            args->pos[1] = atoi(gcmd + strlen(GCOMMAND_LINES[i]) + 3);
-        }
-        if (USES_N(i))
-            args->n = atoi(gcmd + strlen(GCOMMAND_LINES[i]) + 1);
-        if (i == SST_GCMD)
-            args->t = atof(gcmd + strlen(GCOMMAND_LINES[i]) + 1);
-        return i;
+    size_t slen = 0;
+    gcommand_t gcmd_type = get_gcmd_by_name(gcmd);
+
+    if (gcmd_type == NONE_GCMD)
+        return NONE_GCMD;
+    if (gcmd_type == BCT_GCMD || USES_N(gcmd_type) || gcmd_type == SST_GCMD)
+        slen = get_gcmd_name_len(gcmd_type) + 1;
+    if (gcmd_type == BCT_GCMD) {
+        args->pos[0] = atoi(gcmd + slen);
+        args->pos[1] = atoi(gcmd + slen);
     }
-    return NONE_GCMD;
+    if (USES_N(gcmd_type))
+        args->n = atoi(gcmd + slen);
+    if (gcmd_type == SST_GCMD)
+        args->t = atof(gcmd + slen);
+    return gcmd_type;
 }
