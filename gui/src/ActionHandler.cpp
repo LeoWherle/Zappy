@@ -56,7 +56,12 @@ void ActionHandler::setmapSize(std::smatch &arg)
     _x = std::atoi(arg[1].str().c_str());
     _y = std::atoi(arg[2].str().c_str());
     _map.clear();
-    _map = std::vector<Tile>(_x * _y, Tile());
+    for (std::size_t i = 0; i < _x; i++) {
+        for (std::size_t j = 0; j < _y; j++) {
+            _map.push_back(Tile(i, j));
+            _map[_map.size() - 1].getRockModel(_model);
+        }
+    }
 }
 
 void ActionHandler::setTileContent(std::smatch &arg)
@@ -227,7 +232,6 @@ void ActionHandler::pikminDropRessource(std::smatch &arg)
                 return;
             }
             player.dropRock(static_cast<Kaillou>(rock));
-            _map[index].addRock(static_cast<Kaillou>(rock));
             player.setAnimation(_animation.get("drop ressource"));
         }
     }

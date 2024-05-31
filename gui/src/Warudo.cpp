@@ -173,7 +173,7 @@ void Warudo::updatePikmin(void)
 void Warudo::updateTile(void)
 {
     for (auto &tile : _map) {
-        //tile update
+        tile.drawTile();
     }
 }
 
