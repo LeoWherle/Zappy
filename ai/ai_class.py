@@ -1,4 +1,3 @@
-import threading
 from random import randint
 from tools import is_a_number
 
@@ -99,7 +98,7 @@ class AI:
         return look
     
     # Fork the AI
-    def fork(self, func, args, threads):
+    def fork(self):
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
@@ -117,11 +116,6 @@ class AI:
             if status == False:
                 response = self.net.read(self)
         self.net.logger.info("Forked", self.id)
-        if (not self.net.multi_threading):
-            self.net.logger.info("Mutli threading is disabled, manually connect an AI", self.id)
-        else:
-            threads.append(threading.Thread(target=func, args=args))
-            threads[-1].start()
 
     # Get the nb of unused slots in the team
     def get_unused_slots(self):

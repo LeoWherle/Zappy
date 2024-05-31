@@ -2,6 +2,7 @@
 This module contains the AI logic for the game.
 """
 
+import threading
 from connection import ServerConnection
 from ai_class import AI
 
@@ -22,7 +23,13 @@ def make_ai_actions(ai_instance, threads, args, logger):
 
     if ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
         NB_THREAD += 1
-        ai_instance.fork(make_new_ai, (args, logger), threads)
+        if (not ai_instance.net.multi_threading):
+            ai_instance.net.logger.info("Mutli threading is disabled, manually connect an AI", ai_instance.id)
+        else:
+            threads.append(threading.Thread(target=make_new_ai, args=(args, logger)))
+            threads[-1].start()
+    elif (NB_THREAD < 9):
+        ai_instance.fork()
 
     if not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
         ai_instance.king = True
