@@ -70,7 +70,7 @@ void ActionHandler::setTileContent(std::smatch &arg)
 {
     int x = std::atoi(arg[1].str().c_str());
     int y = std::atoi(arg[2].str().c_str());
-    int index = _x * y + x;
+    int index = x * _y + y;
     if (index > _x * _y || index < 0) {
         return;
     }
@@ -78,6 +78,7 @@ void ActionHandler::setTileContent(std::smatch &arg)
     for (std::size_t i = 0; i < NBKAILLOU; i++) {
         tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::atoi(arg[i + 3].str().c_str())));
     }
+    std::cout << "serv x = " << x << " y = " << y <<std::endl;
     _map[index].setRocks(tileRocks);
 }
 
