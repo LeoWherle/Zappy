@@ -21,9 +21,9 @@
  * @brief Class to handle video playback (MPEG1 only)
  *
  * @example:
- * 
-    #include "Window.hpp"
+ *
     #include "Video.hpp"
+    #include "Window.hpp"
 
     int main(void)
     {
@@ -58,7 +58,8 @@ private:
     bool _loop = false;
     bool _ended = false;
     bool _pause = false;
-    double _base_time = GetTime();
+    double _speed;
+    double _base_time;
 
 public:
     // clang-format off
@@ -73,7 +74,10 @@ public:
     };
     // clang-format on
 
-    Video(const std::string &file_path, bool loop = false)
+    Video(const std::string &file_path, bool loop = false, double speed = 1):
+        _loop(loop),
+        _base_time(GetTime()),
+        _speed(speed)
     {
         _plm = plm_create_with_filename(file_path.c_str());
         if (_plm == nullptr) {
@@ -91,7 +95,10 @@ public:
         _texture.Load(_Imframe);
     }
 
-    Video(const char *file_path, bool loop = false)
+    Video(const char *file_path, bool loop = false, double speed = 1):
+        _loop(loop),
+        _base_time(GetTime()),
+        _speed(speed)
     {
         _plm = plm_create_with_filename(file_path);
         if (_plm == nullptr) {
@@ -125,6 +132,9 @@ public:
 
     bool isPaused() const { return _pause; }
 
+    void setSpeed(double speed) { _speed = speed; }
+    double getSpeed() const { return _speed; }
+
     void Rewind(void)
     {
         _ended = false;
@@ -143,7 +153,7 @@ public:
 
         double time = (GetTime() - _base_time);
 
-        if (time >= 1.0 / _framerate) {
+        if (time >= 1.0 / (_framerate * _speed)) {
             _base_time = GetTime();
 
             // Decode video frame
