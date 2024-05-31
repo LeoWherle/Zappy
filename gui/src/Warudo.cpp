@@ -67,8 +67,7 @@ void Warudo::setUpMap(void)
     float heightX = (tan(72.5 * M_PI / 180.0f) * _x) / 2.0f;
     float heightY = (tan(72.5 * M_PI / 180.0f) * _y) / 2.0f;
     float height = std::max(heightX, heightY);
-    std::cout << height << std::endl;
-    _cam.SetPosition(raylib::Vector3(_x / 2.0f, height, _y / 1.99f));  // Camera position
+    _cam.SetPosition(raylib::Vector3(_x / 2.0f, height - 5, _y / 0.75f));  // Camera position
     _cam.SetTarget(raylib::Vector3(_x / 2.0f, 0.0f, _y / 2.0f));          // Camera looking at point
     _cam.SetUp(raylib::Vector3(0.0f, 1.0f, 0.0f));                   // Camera up vector (rotation towards target)
     _cam.SetFovy(45.0f);                                       // Camera field-of-view Y
@@ -142,8 +141,8 @@ void Warudo::updateGraphic(void)
 {
     BeginDrawing();
 
+        ClearWindowState(0);
         ClearBackground(BLACK);
-
             BeginMode3D(_cam);
 
                 std::size_t index = 0;
@@ -173,11 +172,11 @@ void Warudo::updateGraphic(void)
                     }
                 }
 
-            EndMode3D();
+                updateTile();
+                updatePikmin();
+                updateUI();
 
-        updateTile();
-        updatePikmin();
-        updateUI();
+            EndMode3D();
 
     EndDrawing();
 }

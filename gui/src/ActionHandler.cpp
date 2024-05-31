@@ -129,7 +129,7 @@ void ActionHandler::setPikminInventory(std::smatch &arg)
     std::map<Kaillou, std::size_t> tileRocks;
 
     for (std::size_t i = 0; i < NBKAILLOU; i++) {
-        tileRocks.at(static_cast<Kaillou>(i)) = std::atoi(arg[i + 4].str().c_str());
+        tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::atoi(arg[i + 4].str().c_str())));
     }
     for (auto &player : _pikmins) {
         if (player == id) {
@@ -280,11 +280,13 @@ void ActionHandler::eggHatche(std::smatch &arg)
 {
     std::string eggId = arg[1].str();
 
+    raylib::Color red = raylib::Color::Red();
     for (std::size_t i = 0; i < _pikmins.size(); i++) {
         if (_pikmins[i] == eggId) {
             _pikmins[i].setModel(_model.get("pikmin"));
             _pikmins[i].setAnimation(_animation.get("birth"));
             _pikmins[i].setStatus(Pikmin::State::ALIVE);
+            _pikmins[i].setColor(red);
         }
     }
 }
