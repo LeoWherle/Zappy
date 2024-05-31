@@ -20,6 +20,7 @@ typedef struct string_s {
     cpctor_t _unused1;
 } string_t;
 
+
 /***************************** STRING CONSTRUCTORS ***************************/
 
 /**

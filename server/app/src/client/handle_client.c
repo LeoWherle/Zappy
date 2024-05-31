@@ -36,7 +36,8 @@ static void client_read(client_t *client, server_t *server)
         return;
     }
     client->read_buf.nmemb += red;
-    LOG_TRACE("Read %ld bytes from client with fd: %d", red, client->sd);
+    LOG_TRACE("Read buffer: -%.*s-", (int) client->read_buf.nmemb,
+        (char *) client->read_buf.items);
 }
 
 // Write the client's write buffer to the client's socket
@@ -63,6 +64,9 @@ static void client_write(client_t *client)
 static void client_consume_read_buffer(client_t *client, size_t consumed)
 {
     if (consumed > 0) {
+        LOG_TRACE("Will erase %ld bytes from read buffer", consumed);
+        LOG_TRACE("Read buffer: -%.*s-", (int) client->read_buf.nmemb,
+            (char *) client->read_buf.items);
         if (str_erase(&client->read_buf, 0, consumed) != BUF_OK) {
             LOG_ERROR("Failed to erase consumed bytes from read buffer");
         }
@@ -77,9 +81,9 @@ static void client_handle_event(
     if (FD_ISSET(client->sd, &context->readfds)) {
         context->nready--;
         client_read(client, server);
-        consumed = client_execute(client, server);
-        client_consume_read_buffer(client, consumed);
     }
+    consumed = client_execute(client, server);
+    client_consume_read_buffer(client, consumed);
     if (FD_ISSET(client->sd, &context->writefds)) {
         context->nready--;
         client_write(client);
@@ -104,7 +108,7 @@ void handle_clients(server_t *server, serv_context_t *context)
     if (server == NULL || context == NULL)
         return;
     clients = &server->clients;
-    for (; i < clients->nmemb || context->nready < 0; i++) {
+    for (; i < clients->nmemb; i++) {
         client_handle_event(VEC_AT(clients, i), server, context);
     }
     client_cleanup(server);

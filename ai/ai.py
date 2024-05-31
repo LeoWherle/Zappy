@@ -1,65 +1,96 @@
+"""
+This module contains the AI logic for the game.
+"""
+
 from connection import ServerConnection
 from ai_class import AI
-import threading
 
-nb_thread = 0 # (temporary) Global variable to limit the number of AI on map
+NB_THREAD = 0  # (Temporary) Global variable to limit the number of AI on map
 
-# Change the function to change the AI logic
-def make_ai_actions(ai, threads, args, logger):
-    global nb_thread # (temporary) Global variable to limit the number of AI on map
 
-    if (ai.get_unused_slots() > 0 and nb_thread < 9):
-        nb_thread += 1
-        ai.fork(make_new_ai, (args, logger, ai.id + 1), threads)
+def make_ai_actions(ai_instance, threads, args, logger):
+    """
+    This function defines the actions of the AI.
 
-    if (ai.is_enought_for_lvl() and ai.random):
-        if (ai.get_nb_player_on_tile() >= 6):
-            ai.broadcast("elevate")
+    Parameters:
+    ai_instance (AI): The AI instance.
+    threads (list): The list of threads.
+    args (argparse.Namespace): The command line arguments.
+    logger (Logger): The logger.
+    """
+    global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
+
+    if ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
+        NB_THREAD += 1
+        ai_instance.fork(make_new_ai, (args, logger), threads)
+
+    if not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
+        ai_instance.king = True
+
+    if ai_instance.king:
+        if ai_instance.get_nb_player_on_tile() >= 6:
+            ai_instance.broadcast("elevate")
+            ai_instance.share_food()
+            ai_instance.drop_all()
         else:
-            ai.broadcast("lvl6")
-            ai.look()
-            ai.look() # To delay broadcast
-            ai.look()
+            ai_instance.broadcast("lvl6")
+            ai_instance.look()
+            ai_instance.look()  # To delay broadcast
+            ai_instance.look()
 
-    elif(ai.random):
-        ai.move_random()
+    elif ai_instance.random:
+        ai_instance.move_random()
 
-    if (not ai.stop):
-        ai.take_all()
-    else:
-        ai.share_food()
+    if not ai_instance.choosen_ones and not ai_instance.king:
+        ai_instance.take_all()
 
-    if (ai.food_supply):
-        if ai.get_nb_player_on_tile() >= 6:
-            ai.drop_all_food()
-        else:
-            ai.take_all_food()
-            ai.move_random()
-    
 
-def start_ai_logic(ai, threads, args, logger):
-    while (not ai.dead):
-        ai.net.empty_buffer(ai)
-        if (ai.is_elevating):
+def start_ai_logic(ai_instance, threads, args, logger):
+    """
+    This function starts the AI logic.
+
+    Parameters:
+    ai_instance (AI): The AI instance.
+    threads (list): The list of threads.
+    args (argparse.Namespace): The command line arguments.
+    logger (Logger): The logger.
+    """
+    while not ai_instance.dead and ai_instance.lvl < 8:
+        ai_instance.net.empty_buffer(ai_instance)
+        if ai_instance.dead:
+            break
+        if ai_instance.is_elevating:
             continue
-        
-        make_ai_actions(ai, threads, args, logger)
-        
-        ai.net.send_buffer(ai)
 
-def make_new_ai(args, logger, id):
-    global nb_thread # (temporary) Global variable to limit the number of AI on map
+        make_ai_actions(ai_instance, threads, args, logger)
+
+        ai_instance.net.send_buffer(ai_instance)
+
+
+def make_new_ai(args, logger):
+    """
+    This function creates a new AI.
+
+    Parameters:
+    args (argparse.Namespace): The command line arguments.
+    logger (Logger): The logger.
+    ai_id (int): The ID of the AI.
+
+    Returns:
+    int: The exit code.
+    """
+    global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
 
     threads = []
-    net = ServerConnection(logger, args.h, args.p) # AI Connection to Server
+    net = ServerConnection(logger, args.h, args.p)  # AI Connection to Server
     if not net.connect():
         return 84
     net.multi_threading = args.t
 
-    ai = AI(args.n, net, id) # AI Creation
-    start_ai_logic(ai, threads, args, logger) # AI Logic
-    net.close_connection() # End of the AI
-    nb_thread -= 1
+    ai_instance = AI(args.n, net)  # AI Creation
+    start_ai_logic(ai_instance, threads, args, logger)  # AI Logic
+    net.close_connection(ai_instance)  # End of the AI
+    NB_THREAD -= 1
     for thread in threads:
         thread.join()
     return 0
