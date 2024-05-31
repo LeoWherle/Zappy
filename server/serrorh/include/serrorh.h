@@ -44,6 +44,7 @@
 
     #define LOG_LEVEL_ENV    "LOG_LEVEL"
     #define LOG_FILE_ENV     "LOG_FILE"
+    #define LOG_COLOR_ENV    "LOG_COLOR"
     #define ENV_FILE_DEFAULT "server.env"
 
     #define MAX_LEVEL_STR_LEN 5
@@ -65,8 +66,10 @@ void log_set_level(enum LogLevel level);
 int load_env(const char *env_file);
 void load_env_log_level(void);
 void load_env_log_file(void);
+void load_env_log_color(void);
 
 FILE *global_log_file(bool set, FILE *value);
+bool global_log_color(bool no_color, bool set);
 
 __attribute__((constructor)) void pre_load_env(void);
 __attribute__((destructor)) void post_load_env(void);

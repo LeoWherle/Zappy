@@ -15,6 +15,7 @@ void pre_load_env(void)
     }
     load_env_log_level();
     load_env_log_file();
+    load_env_log_color();
 }
 
 __attribute__((destructor))
