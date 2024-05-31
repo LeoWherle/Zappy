@@ -37,6 +37,11 @@
                 video.Rewind();
             if (IsKeyPressed(KEY_L))
                 video.Loop(!video.isLooping());
+            if (IsKeyPressed(KEY_RIGHT))
+                video.setSpeed(video.getSpeed() * 1.5);
+            if (IsKeyPressed(KEY_LEFT))
+                video.setSpeed(video.getSpeed() * 0.75);
+gs
             video.Update();
 
             BeginDrawing();
