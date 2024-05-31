@@ -25,8 +25,8 @@
 typedef struct trantor_s {
     trantor_params_t params;
     map_t map;
-    vector_t *players;
-    string_t *log;
+    vector_t players;
+    string_t log;
     int winning_team;
 } trantor_t;
 

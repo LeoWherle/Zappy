@@ -27,9 +27,9 @@ struct player_s {
     direction_t direction;
     tile_t inventory;
     elevation_t elevation;
-    string_t *pcmd_buffer; // stores received commands
+    string_t pcmd_buffer; // stores received commands
     unsigned int npcmd;
-    string_t *response_buffer; // stores responses
+    string_t response_buffer; // stores responses
     bool busy;
     pcmd_executor_t pcmd_exec;
     player_t *incantator;

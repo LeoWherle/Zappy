@@ -5,6 +5,7 @@
 ** pmcd funcs source file
 */
 
+#include "trantor/config.h"
 #include "trantor/pcmd_args.h"
 #include "trantor/map.h"
 #include "trantor/tile.h"
@@ -13,8 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-const unsigned int NPLAYER_ELEV_REQ[7] = {1, 2, 2, 4, 4, 6, 6};
 const char ELEV_MSG[] = "Elevation underway\nCurrent level: %d\n";
 
 static unsigned int count_players_on_tile(
@@ -37,7 +36,7 @@ static unsigned int count_players_on_tile(
 bool can_invocate(vector_t *players, player_t *invocator, map_t *map)
 {
     bool enough_players = count_players_on_tile(players, invocator)
-        >= NPLAYER_ELEV_REQ[invocator->elevation - 1];
+        >= get_elev_players(invocator->elevation);
     bool stones_presents = tile_can_invocate(
         CGET_TILE(map, invocator->coord), invocator->elevation);
 
@@ -56,7 +55,7 @@ static void elevate_players(pcmd_args_t *args)
             && p->elevation == args->player->elevation))
             continue;
         p->elevation++;
-        talk(p->response_buffer, msg);
+        talk(&p->response_buffer, msg);
         p->incantator = NULL;
     }
 }
@@ -64,7 +63,7 @@ static void elevate_players(pcmd_args_t *args)
 void player_incantation(pcmd_args_t *args)
 {
     if (!can_invocate(args->players, args->player, args->map)) {
-        SAY_KO(args->player->response_buffer);
+        SAY_KO(&args->player->response_buffer);
         return;
     }
     tile_invocate(CGET_TILE(args->map, args->player->coord),

@@ -9,6 +9,7 @@
 #include "serrorh.h"
 #include "sstrings.h"
 #include "trantor.h"
+#include "trantor/config.h"
 #include "trantor/item.h"
 #include "trantor/pcmd_args.h"
 #include "trantor/gcmd.h"
@@ -19,16 +20,6 @@
 #include "trantor/tile.h"
 #include "vector.h"
 
-pcmd_func_t COMMAND_FUNCS[PCMD_COUNT] = {
-    player_error, player_forward, player_right, player_left, player_look,
-    player_inventory, player_broadcast, player_co_num, player_fork,
-    player_eject, player_take, player_set, player_incantation
-};
-
-gcmd_func_t GCOMMAND_FUNCS[10] = {
-    gui_error, gui_msz, gui_bct, gui_mct, gui_tna,
-    gui_ppo, gui_plv, gui_pin, gui_sgt, gui_sst
-};
 
 static int winning_team(vector_t *players, unsigned int teams)
 {
@@ -58,8 +49,8 @@ static void handle_game_end(trantor_t *trantor)
 
     if (trantor->winning_team == -1)
         return;
-    wtname = vec_at(trantor->params.team_names, trantor->winning_team);
-    talkf(trantor->log, "seg %s\n", wtname);
+    wtname = vec_at(&trantor->params.team_names, trantor->winning_team);
+    talkf(&trantor->log, "seg %s\n", wtname);
 }
 
 static void execute_pcmd(trantor_t *trantor, player_t *player)
@@ -71,15 +62,15 @@ static void execute_pcmd(trantor_t *trantor, player_t *player)
     args.map = &(trantor->map);
     args.broadcast_msg = executor->arg;
     args.item = executor->item;
-    args.players = trantor->players;
+    args.players = &trantor->players;
     args.cnb = count_idxteam_egg(trantor, player->team);
-    args.log = trantor->log;
-    COMMAND_FUNCS[executor->command](&args);
+    args.log = &trantor->log;
+    get_pcmd_func(executor->command)(&args);
     player->busy = false;
     if (executor->command != INCANTATION_PCMD)
         return;
     trantor->winning_team = winning_team(
-            trantor->players, trantor->params.teams);
+            &trantor->players, trantor->params.teams);
     handle_game_end(trantor);
 }
 
@@ -92,7 +83,7 @@ void execute_gcmd(trantor_t *trantor, const char *gcmd)
         gui_error(trantor, &args);
         return;
     }
-    GCOMMAND_FUNCS[command](trantor, &args);
+    get_gcmd_func(command)(trantor, &args);
 }
 
 static void start_invocation(
@@ -119,28 +110,28 @@ static void start_new_task(trantor_t *trantor, player_t *player)
     if (player->npcmd == 0 || player->is_dead || player->is_egg)
         return;
     LOG_TRACE("Starting new task for player %d", player->n);
-    init_pcmd_executor(player->pcmd_buffer->items,
+    init_pcmd_executor(player->pcmd_buffer.items,
         trantor->params.f, &player->pcmd_exec);
     if (player->pcmd_exec.command == NONE_PCMD) {
-        SAY_KO(player->response_buffer);
+        SAY_KO(&player->response_buffer);
         return;
     }
     if (player->pcmd_exec.command == INCANTATION_PCMD) {
-        if (!can_invocate(trantor->players, player, &(trantor->map))) {
-            SAY_KO(player->response_buffer);
+        if (!can_invocate(&trantor->players, player, &(trantor->map))) {
+            SAY_KO(&player->response_buffer);
             return;
         }
-        start_invocation(trantor->players, player, trantor->log);
+        start_invocation(&trantor->players, player, &trantor->log);
     }
     player->busy = true;
-    pop_line(player->pcmd_buffer);
+    pop_line(&player->pcmd_buffer);
     player->npcmd--;
 }
 
 static void try_refill_map(trantor_t *trantor, double delta)
 {
     trantor->map.since_refill += delta;
-    if (trantor->map.since_refill >= 20) {
+    if (trantor->map.since_refill >= MAP_REFILLS_INTERVAL) {
         add_ressources(&(trantor->map));
         trantor->map.since_refill = 0.0;
     }
@@ -150,7 +141,7 @@ static bool death_from_hunger(trantor_t *trantor, player_t *player)
 {
     if (HAS_ITEM(player->inventory, FOOD_ITEM)) {
         TAKE_ITEM(player->inventory, FOOD_ITEM);
-        player->time_left += 126.0 / trantor->params.f;
+        player->time_left += FOOD_LIFE_UNIT / trantor->params.f;
         return false;
     } else {
         remove_player(trantor, player);
@@ -178,8 +169,9 @@ static void player_time_pass(
 bool trantor_time_pass(trantor_t *trantor, double delta)
 {
     try_refill_map(trantor, delta);
-    for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
-        player_time_pass(trantor, delta, vec_at(trantor->players, i));
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        player_time_pass(trantor, delta,
+            (player_t *) vec_at(&trantor->players, i));
     }
     return (trantor->winning_team == -1);
 }

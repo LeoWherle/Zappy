@@ -20,7 +20,7 @@ typedef struct trantor_params_s {
     len_t width;
     len_t height;
     unsigned int teams;
-    vector_t *team_names;
+    vector_t team_names;
     unsigned int players;
     float f;
 } trantor_params_t;
