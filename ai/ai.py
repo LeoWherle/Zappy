@@ -8,6 +8,20 @@ from ai_class import AI
 
 NB_THREAD = 0  # (Temporary) Global variable to limit the number of AI on map
 
+def connect_new_thread(ai_instance, args, logger, threads):
+    """
+    This function connects a new thread.
+
+    Parameters:
+    args (argparse.Namespace): The command line arguments.
+    """
+    global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
+    NB_THREAD += 1
+    if not ai_instance.net.multi_threading:
+        ai_instance.net.logger.info("Mutli threading is disabled, manually connect an AI", ai_instance.id)
+    else:
+        threads.append(threading.Thread(target=make_new_ai, args=(args, logger)))
+        threads[-1].start()
 
 def make_ai_actions(ai_instance, threads, args, logger):
     """
@@ -22,12 +36,7 @@ def make_ai_actions(ai_instance, threads, args, logger):
     global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
 
     if ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
-        NB_THREAD += 1
-        if (not ai_instance.net.multi_threading):
-            ai_instance.net.logger.info("Mutli threading is disabled, manually connect an AI", ai_instance.id)
-        else:
-            threads.append(threading.Thread(target=make_new_ai, args=(args, logger)))
-            threads[-1].start()
+        connect_new_thread(ai_instance, args, logger, threads)        
     elif (NB_THREAD < 9):
         ai_instance.fork()
 
