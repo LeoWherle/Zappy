@@ -63,5 +63,7 @@
     "functional": "c",
     "vector.h": "c",
     "serrorh.h": "c"
-  }
+  },
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/compile_commands.json",
+  "cmake.sourceDirectory": "/home/epitech/delivery/Zappy/gui/raylib"
 }
