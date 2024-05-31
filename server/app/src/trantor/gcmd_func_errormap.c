@@ -45,5 +45,5 @@ void gui_tna(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 {
     for (unsigned int i = 0; i < trantor->params.teams; i++)
         talkf(&trantor->log, "tna %s\n",
-            (char *)vec_at(trantor->params.team_names, i));
+            (char *)vec_at(&trantor->params.team_names, i));
 }

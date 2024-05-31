@@ -58,7 +58,7 @@ static void handle_game_end(trantor_t *trantor)
 
     if (trantor->winning_team == -1)
         return;
-    wtname = vec_at(trantor->params.team_names, trantor->winning_team);
+    wtname = vec_at(&trantor->params.team_names, trantor->winning_team);
     talkf(&trantor->log, "seg %s\n", wtname);
 }
 
