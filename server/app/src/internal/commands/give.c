@@ -10,6 +10,7 @@
 #include "serrorh.h"
 #include "string/macros.h"
 #include "trantor/common.h"
+#include "trantor/config.h"
 #include "trantor/item.h"
 #include "trantor/player.h"
 #include "vector.h"
@@ -39,7 +40,7 @@ static bool fetch_give_data(give_data_t *data, vector_t *args, size_t arg_pos)
         return false;
     }
     item = VEC_STR(args, arg_pos + 0);
-    data->type = get_item_type(item);
+    data->type = get_item_by_name(item);
     if (data->type == NONE_ITEM) {
         LOG_ERROR("Invalid resource: %.*s", (int) strlen(item), item);
         return false;

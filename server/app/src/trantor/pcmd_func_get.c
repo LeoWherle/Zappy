@@ -11,20 +11,12 @@
 #include "trantor/pcmd_args.h"
 #include "trantor/tile.h"
 #include "trantor/string_utils.h"
+#include "trantor/config.h"
 #include "vector.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 
-const char *ITEM_NAMES[7] = {
-    "food",
-    "linemate",
-    "deraumere",
-    "sibur",
-    "mendiane",
-    "phiras",
-    "thystame"
-};
 
 static void fill_tiles(pcmd_args_t *args, loc_tile_t *tiles)
 {
@@ -74,7 +66,7 @@ static size_t get_tile_req_size(vector_t *players, loc_tile_t *ltile)
         ltile->nplayer++;
     }
     for (unsigned int i = 0; i < 7; i++) {
-        len += ((strlen(ITEM_NAMES[i]) + 1) * ltile->tile->items[i]);
+        len += ((strlen(get_item_name(i)) + 1) * ltile->tile->items[i]);
     }
     return len;
 }
@@ -86,7 +78,7 @@ static void sprintf_tile(char *msg, loc_tile_t *ltile, size_t *len)
     }
     for (unsigned int i = 0; i < 7; i++) {
         for (unsigned int j = 0; j < ltile->tile->items[i]; j++) {
-            *len += sprintf(msg + *len, "%s ", ITEM_NAMES[i]);
+            *len += sprintf(msg + *len, "%s ", get_item_name(i + 1));
         }
     }
 }
@@ -131,14 +123,14 @@ void player_inventory(pcmd_args_t *args)
     size_t len = 4 + 6 + 1;
 
     for (unsigned int i = 0; i < 7; i++)
-        len += snprintf(NULL, 0, "%s %d", ITEM_NAMES[i],
+        len += snprintf(NULL, 0, "%s %d", get_item_name(i),
             args->player->inventory.items[i]);
     if (vec_reserve(str_to_vec(&args->player->response_buffer), len) != BUF_OK)
         return;
     msg = STRING_END(&args->player->response_buffer);
     len = sprintf(msg, "[ ");
     for (unsigned int i = 0; i < 7; i++) {
-        len += sprintf(msg + len, "%s %d", ITEM_NAMES[i],
+        len += sprintf(msg + len, "%s %d", get_item_name(i + 1),
             args->player->inventory.items[i]);
         if (i != 6)
             len += sprintf(msg + len, ", ");

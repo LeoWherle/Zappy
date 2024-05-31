@@ -6,39 +6,24 @@
 */
 
 #include "trantor/pcmd.h"
+#include "trantor/config.h"
 #include <string.h>
 
-const char *ITEM_NMES[7] = {
-    "food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"
-};
-
-const char *PCOMMAND_LINES[PCMD_COUNT] = {
-    "", "Forward", "Right", "Left", "Look", "Inventory", "Broadcast",
-    "Connect_nbr", "Fork", "Eject", "Take", "Set", "Incantation"
-};
-
-item_t get_item_type(const char *item)
-{
-    for (int i = 0; i < 7; i++) {
-        if (strncmp(item, ITEM_NMES[i], strlen(ITEM_NMES[i])) == 0)
-            return i + 1;
-    }
-    return NONE_ITEM;
-}
-
-// arg is use to harvest the broadcast msg
+// arg is use to harvest the broadcast msg or the item name
 pcommand_t parse_pcmd(const char *pcmd, char **arg, item_t *item)
 {
-    for (int i = 1; i < PCMD_COUNT; i++) {
-        if (strncmp(pcmd, PCOMMAND_LINES[i], strlen(PCOMMAND_LINES[i])) != 0)
-            continue;
-        if (i == BROADCAST_PCMD)
-            *arg = strdup(pcmd + strlen(PCOMMAND_LINES[i]) + 1);
-        if (PCMD_NEEDS_OBJ(i))
-            *item = get_item_type(pcmd + strlen(PCOMMAND_LINES[i]) + 1);
-        if (PCMD_NEEDS_OBJ(i) && *item == NONE_ITEM)
-            return NONE_PCMD;
-        return i;
-    }
-    return NONE_PCMD;
+    size_t slen = 0;
+    pcommand_t res = get_pcmd_by_name(pcmd);
+
+    if (res == NONE_PCMD)
+        return NONE_PCMD;
+    if (res == BROADCAST_PCMD || PCMD_NEEDS_OBJ(res))
+        slen = get_pcmd_name_len(res) + 1;
+    if (res == BROADCAST_PCMD)
+        *arg = strdup(pcmd + slen);
+    if (PCMD_NEEDS_OBJ(res))
+        *item = get_item_by_name(pcmd + slen);
+    if (PCMD_NEEDS_OBJ(res) && *item == NONE_ITEM)
+        return NONE_PCMD;
+    return res;
 }

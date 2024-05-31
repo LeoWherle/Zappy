@@ -9,6 +9,7 @@
 #include "serrorh.h"
 #include "sstrings.h"
 #include "trantor.h"
+#include "trantor/config.h"
 #include "trantor/item.h"
 #include "trantor/pcmd_args.h"
 #include "trantor/gcmd.h"
@@ -19,16 +20,6 @@
 #include "trantor/tile.h"
 #include "vector.h"
 
-pcmd_func_t COMMAND_FUNCS[PCMD_COUNT] = {
-    player_error, player_forward, player_right, player_left, player_look,
-    player_inventory, player_broadcast, player_co_num, player_fork,
-    player_eject, player_take, player_set, player_incantation
-};
-
-gcmd_func_t GCOMMAND_FUNCS[10] = {
-    gui_error, gui_msz, gui_bct, gui_mct, gui_tna,
-    gui_ppo, gui_plv, gui_pin, gui_sgt, gui_sst
-};
 
 static int winning_team(vector_t *players, unsigned int teams)
 {
@@ -74,7 +65,7 @@ static void execute_pcmd(trantor_t *trantor, player_t *player)
     args.players = &trantor->players;
     args.cnb = count_idxteam_egg(trantor, player->team);
     args.log = &trantor->log;
-    COMMAND_FUNCS[executor->command](&args);
+    get_pcmd_func(executor->command)(&args);
     player->busy = false;
     if (executor->command != INCANTATION_PCMD)
         return;
@@ -92,7 +83,7 @@ void execute_gcmd(trantor_t *trantor, const char *gcmd)
         gui_error(trantor, &args);
         return;
     }
-    GCOMMAND_FUNCS[command](trantor, &args);
+    get_gcmd_func(command)(trantor, &args);
 }
 
 static void start_invocation(
