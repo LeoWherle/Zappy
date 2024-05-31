@@ -20,10 +20,10 @@ const elev_config_t ELEVATION_CONFIG[MAX_LEVEL] = {
 
 unsigned int get_elev_players(unsigned int level)
 {
-    return ELEVATION_CONFIG[level - 1].players;
+    return ELEVATION_CONFIG[level].players;
 }
 
 const tile_t *get_elev_stones(unsigned int level)
 {
-    return &ELEVATION_CONFIG[level - 1].stones;
+    return &ELEVATION_CONFIG[level].stones;
 }

@@ -40,7 +40,7 @@ void player_fork(pcmd_args_t *args)
     SAY_OK(&args->player->response_buffer);
     egg = malloc(sizeof(player_t));
     init_egg(egg, args->player->team, args->player->coord);
-    if (vec_push(args->players, egg) != BUF_OK)
+    if (vec_push(args->players, &egg) != BUF_OK)
         LOG_ERROR("Error while pushing egg to players");
     talkf(args->log, "pfk %d\n", args->player->n);
     talkf(args->log, "enw %d %d %d %d\n", egg->n, args->player->n,
