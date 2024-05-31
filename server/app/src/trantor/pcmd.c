@@ -6,7 +6,6 @@
 */
 
 #include "trantor/pcmd.h"
-#include "trantor/tile.h"
 #include <string.h>
 
 const char *ITEM_NMES[7] = {

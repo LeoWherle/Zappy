@@ -22,14 +22,14 @@ void player_broadcast(pcmd_args_t *args)
     unsigned int sq = 0;
 
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
-        p = vec_at(args->players, i);
-        if (p == args->player)
+        p = *(player_t **) vec_at(args->players, i);
+        if (p == args->player || p->is_egg || p->is_dead)
             continue;
         sq = get_receiving_square(args->map, p->direction,
             args->player->coord, p->coord);
-        talkf(p->response_buffer, "message %d, %s", sq, args->broadcast_msg);
+        talkf(&p->response_buffer, "message %d, %s", sq, args->broadcast_msg);
     }
-    SAY_OK(args->player->response_buffer);
+    SAY_OK(&args->player->response_buffer);
     talkf(args->log, "pbc %d %s\n", args->player->n, args->broadcast_msg);
 }
 
@@ -37,7 +37,7 @@ void player_fork(pcmd_args_t *args)
 {
     player_t *egg = NULL;
 
-    SAY_OK(args->player->response_buffer);
+    SAY_OK(&args->player->response_buffer);
     egg = malloc(sizeof(player_t));
     init_egg(egg, args->player->team, args->player->coord);
     if (vec_push(args->players, egg) != BUF_OK)
@@ -56,7 +56,7 @@ static void warn_player_eject(
         talkf(log, "edi %d\n", player->n);
         return;
     }
-    talkf(player->response_buffer, "eject: %d\n", relative);
+    talkf(&player->response_buffer, "eject: %d\n", relative);
 }
 
 static bool player_eject_step(pcmd_args_t *args, unsigned int *i)
@@ -83,10 +83,10 @@ void player_eject(pcmd_args_t *args)
     for (unsigned int i = 0; i < args->players->nmemb; i++)
         has_ejected = (has_ejected || player_eject_step(args, &i));
     if (has_ejected) {
-        SAY_OK(args->player->response_buffer);
+        SAY_OK(&args->player->response_buffer);
         talkf(args->log, "pex %d\n", args->player->n);
     } else
-        SAY_KO(args->player->response_buffer);
+        SAY_KO(&args->player->response_buffer);
 }
 
 void player_set(pcmd_args_t *args)
@@ -96,11 +96,11 @@ void player_set(pcmd_args_t *args)
 
     t = CGET_TILE(args->map, args->player->coord);
     if (!HAS_ITEM(args->player->inventory, args->item)) {
-        SAY_KO(args->player->response_buffer);
+        SAY_KO(&args->player->response_buffer);
         return;
     }
     i = TAKE_ITEM(args->player->inventory, args->item);
     ADD_ITEM(*t, i);
-    SAY_OK(args->player->response_buffer);
+    SAY_OK(&args->player->response_buffer);
     talkf(args->log, "pdr %d %d\n", args->player->n, args->item);
 }

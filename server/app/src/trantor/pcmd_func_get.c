@@ -65,7 +65,7 @@ static size_t get_tile_req_size(vector_t *players, loc_tile_t *ltile)
     player_t *p;
 
     for (size_t i = 0; i < players->nmemb; i++) {
-        p = vec_at(players, i);
+        p = *(player_t **) vec_at(players, i);
         if (p->is_dead)
             continue;
         if (!COORD_EQ(p->coord, ltile->coord))
@@ -97,7 +97,7 @@ static void player_look_msg(
     char *msg = NULL;
     size_t len = 0;
 
-    msg = STRING_END(args->player->response_buffer);
+    msg = STRING_END(&args->player->response_buffer);
     len = sprintf(msg, "[ ");
     for (size_t i = 0; i < tnb; i++) {
         sprintf_tile(msg, tiles + i, &len);
@@ -106,7 +106,7 @@ static void player_look_msg(
     }
     free(tiles);
     len += sprintf(msg + len, "]\n");
-    args->player->response_buffer->nmemb += len;
+    args->player->response_buffer.nmemb += len;
 }
 
 void player_look(pcmd_args_t *args)
@@ -118,7 +118,7 @@ void player_look(pcmd_args_t *args)
     for (size_t i = 0; i < tnb; i++)
         len += get_tile_req_size(args->players, tiles + i);
     if (vec_reserve(
-        str_to_vec(args->player->response_buffer), len) != BUF_OK) {
+        str_to_vec(&args->player->response_buffer), len) != BUF_OK) {
         free(tiles);
         return;
     }
@@ -133,9 +133,9 @@ void player_inventory(pcmd_args_t *args)
     for (unsigned int i = 0; i < 7; i++)
         len += snprintf(NULL, 0, "%s %d", ITEM_NAMES[i],
             args->player->inventory.items[i]);
-    if (vec_reserve(str_to_vec(args->player->response_buffer), len) != BUF_OK)
+    if (vec_reserve(str_to_vec(&args->player->response_buffer), len) != BUF_OK)
         return;
-    msg = STRING_END(args->player->response_buffer);
+    msg = STRING_END(&args->player->response_buffer);
     len = sprintf(msg, "[ ");
     for (unsigned int i = 0; i < 7; i++) {
         len += sprintf(msg + len, "%s %d", ITEM_NAMES[i],
@@ -144,12 +144,12 @@ void player_inventory(pcmd_args_t *args)
             len += sprintf(msg + len, ", ");
     }
     len += sprintf(msg + len, " ]\n");
-    args->player->response_buffer->nmemb += len;
+    args->player->response_buffer.nmemb += len;
 }
 
 void player_co_num(pcmd_args_t *args)
 {
-    talkf(args->player->response_buffer, "%d\n", args->cnb);
+    talkf(&args->player->response_buffer, "%d\n", args->cnb);
 }
 
 void player_take(pcmd_args_t *args)
@@ -159,11 +159,11 @@ void player_take(pcmd_args_t *args)
 
     t = CGET_TILE(args->map, args->player->coord);
     if (!HAS_ITEM(*t, args->item)) {
-        SAY_KO(args->player->response_buffer);
+        SAY_KO(&args->player->response_buffer);
         return;
     }
     i = TAKE_ITEM(*t, args->item);
     ADD_ITEM(args->player->inventory, i);
-    SAY_OK(args->player->response_buffer);
+    SAY_OK(&args->player->response_buffer);
     talkf(args->log, "pgt %d %d\n", args->player->n, args->item);
 }

@@ -56,12 +56,12 @@ void give_all(server_t *serv, vector_t *args)
         return (void) LOG_ERROR("Expected: give @a <resource> quantity");
     if (fetch_give_data(&item, args, 0))
         return;
-    for (size_t i = 0; i < serv->trantor.players->nmemb; i++) {
-        give_player_ressource(VEC_AT(serv->trantor.players, i), &item);
+    for (size_t i = 0; i < serv->trantor.players.nmemb; i++) {
+        give_player_ressource(VEC_AT(&serv->trantor.players, i), &item);
     }
     LOG_INFO("Gave %d %*.s to %lu players", item.amount,
         (int) strlen(VEC_STR(args, 0)), VEC_STR(args, 0),
-        serv->trantor.players->nmemb);
+        serv->trantor.players.nmemb);
 }
 
 void give_random(server_t *serv, vector_t *args)
@@ -73,11 +73,11 @@ void give_random(server_t *serv, vector_t *args)
         return (void) LOG_ERROR("Expected: give @r <resource> quantity");
     if (fetch_give_data(&item, args, 0))
         return;
-    if (serv->trantor.players->nmemb != 0) {
+    if (serv->trantor.players.nmemb != 0) {
         return (void) LOG_ERROR("No players to give resources to");
     }
-    random = rand() % serv->trantor.players->nmemb;
-    give_player_ressource(VEC_AT(serv->trantor.players, random), &item);
+    random = rand() % serv->trantor.players.nmemb;
+    give_player_ressource(VEC_AT(&serv->trantor.players, random), &item);
 }
 
 static bool player_find_by_id(const void *player, void *id)
@@ -97,7 +97,7 @@ void give_player(server_t *serv, vector_t *args)
     id = strtoul(*(const char **) VEC_STR(args, 0), NULL, 10);
     if (fetch_give_data(&item, args, 1))
         return;
-    playr = vec_find_arg(serv->trantor.players, player_find_by_id, &id);
+    playr = vec_find_arg(&serv->trantor.players, player_find_by_id, &id);
     if (playr == NULL)
         return (void) LOG_ERROR("Player not found: %lu", id);
     give_player_ressource(playr, &item);
@@ -117,10 +117,10 @@ void give_team(server_t *serv, vector_t *args)
         return (void) LOG_ERROR("Invalid team: %s", VEC_STR(args, 0));
     if (fetch_give_data(&item, args, 1))
         return;
-    for (size_t i = 0; i < serv->trantor.players->nmemb; i++) {
-        playr = VEC_AT(serv->trantor.players, i);
+    for (size_t i = 0; i < serv->trantor.players.nmemb; i++) {
+        playr = VEC_AT(&serv->trantor.players, i);
         if (playr->team == (team_t) team_id)
-            give_player_ressource(VEC_AT(serv->trantor.players, i), &item);
+            give_player_ressource(VEC_AT(&serv->trantor.players, i), &item);
     }
 }
 

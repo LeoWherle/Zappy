@@ -5,12 +5,14 @@
 ** trantor source file
 */
 
+#include "buffer.h"
 #include "trantor.h"
 #include "trantor/common.h"
-#include "trantor/map.h"
+#include "trantor/player.h"
 #include "trantor/string_utils.h"
 #include "trantor/map_fn.h"
 #include "serrorh.h"
+#include "vector.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -29,7 +31,7 @@ static void add_initial_team_eggs(
             continue;
         }
         init_egg(p, tm, c);
-        if (vec_push(trantor->players, p) != BUF_OK) {
+        if (vec_push(&trantor->players, &p) != BUF_OK) {
             free(p);
             LOG_ERROR("Failed to add player to vector");
         }
@@ -39,8 +41,11 @@ static void add_initial_team_eggs(
 void init_trantor(trantor_t *trantor)
 {
     init_map(trantor->params.width, trantor->params.height, &trantor->map);
-    trantor->players = vec_new(sizeof(player_t), destroy_player, NULL);
-    trantor->log = str_new();
+    if (vec_init(&trantor->players,
+        sizeof(player_t *), destroy_player, NULL) != BUF_OK)
+        LOG_ERROR("Failed to init players vector");
+    if (str_init(&trantor->log, "") != BUF_OK)
+        LOG_ERROR("Failed to init log buffer");
     trantor->winning_team = -1;
     for (unsigned int i = 0; i < trantor->params.teams; i++) {
         add_initial_team_eggs(trantor, i);
@@ -52,7 +57,7 @@ void feed_player_line(
 {
     if (player->npcmd > 10 || player->is_dead)
         return;
-    talkf(player->pcmd_buffer, "%s\n", line);
+    talkf(&player->pcmd_buffer, "%s\n", line);
     player->npcmd++;
 }
 
@@ -65,20 +70,20 @@ void remove_player(trantor_t *trantor, player_t *player)
 {
     player_t *other;
 
-    for (unsigned int i = 0; i < trantor->players->nmemb; i++) {
-        other = vec_at(trantor->players, i);
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        other = vec_at(&trantor->players, i);
         if (other->incantator == player)
             other->incantator = NULL;
     }
-    talk(player->response_buffer, "dead\n");
+    talk(&player->response_buffer, "dead\n");
     player->is_dead = true;
-    talkf(trantor->log, "pdi %d\n", player->n);
+    talkf(&trantor->log, "pdi %d\n", player->n);
 }
 
 void free_trantor(trantor_t *trantor)
 {
     free_map(&trantor->map);
-    vec_delete(trantor->players);
+    vec_reset(&trantor->players);
     destroy_params(&trantor->params);
-    str_delete(trantor->log);
+    str_reset(&trantor->log);
 }

@@ -5,7 +5,6 @@
 ** main
 */
 
-#include "common.h"
 #include "serrorh.h"
 #include "server.h"
 #include <stdio.h>

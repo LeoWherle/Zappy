@@ -56,7 +56,7 @@ static void elevate_players(pcmd_args_t *args)
             && p->elevation == args->player->elevation))
             continue;
         p->elevation++;
-        talk(p->response_buffer, msg);
+        talk(&p->response_buffer, msg);
         p->incantator = NULL;
     }
 }
@@ -64,7 +64,7 @@ static void elevate_players(pcmd_args_t *args)
 void player_incantation(pcmd_args_t *args)
 {
     if (!can_invocate(args->players, args->player, args->map)) {
-        SAY_KO(args->player->response_buffer);
+        SAY_KO(&args->player->response_buffer);
         return;
     }
     tile_invocate(CGET_TILE(args->map, args->player->coord),
