@@ -6,6 +6,7 @@
 */
 
 #include "Pikmin.hpp"
+#include <iostream>
 
 Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y)
 {
@@ -26,12 +27,12 @@ Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y)
     _frameCount = 0;
     _direction = 1;
     _level = 1;
-    _position = raylib::Vector3(x, 0, y);
+    _position = raylib::Vector3(x, 1, y);
     _motionVector = raylib::Vector3(0, 0, 0);
     _rotationAxis = raylib::Vector3(0, 1, 0);
     _rotation = 0;
     _scale = raylib::Vector3(1, 1, 1);
-    _colorMod = raylib::Color::White();
+    _colorMod = raylib::Color::Blue();
     _cumulatedTime = 0.0f;
     _animationTime = 0.0f;
     _walkTime = 0.0f;
@@ -108,6 +109,6 @@ void Pikmin::drawModel(float delta)
     if (_model) {
         _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
     } else {
-        DrawCube(_position, _scale.x, _scale.y, _scale.z, _colorMod);
+        DrawCubeV(_position, _scale, _colorMod);
     }
 }

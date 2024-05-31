@@ -64,12 +64,14 @@ void Warudo::setUpMap(void)
             _in.consume(end + 1);
         }
     }
-    // Define the camera to look into our 3d world
-    _cam.SetPosition(raylib::Vector3(0, 10, 0));  // Camera position
-    _cam.SetTarget(raylib::Vector3(_x / 2, 0, _y / 2));      // Camera looking at point
-    _cam.SetUp(raylib::Vector3(_x / 2, 0, _y / 2));          // Camera up vector (rotation towards target)
-    _cam.SetFovy(45);                                // Camera field-of-view Y
-    _cam.SetProjection(CAMERA_PERSPECTIVE);             // Camera mode type
+    float heightX = (tan(72.5 * M_PI / 180.0f) * _x) / 2.0f;
+    float heightY = (tan(72.5 * M_PI / 180.0f) * _y) / 2.0f;
+    float height = std::max(heightX, heightY);
+    _cam.SetPosition(raylib::Vector3(_x / 2.0f, height - 5, _y / 0.75f));  // Camera position
+    _cam.SetTarget(raylib::Vector3(_x / 2.0f, 0.0f, _y / 2.0f));          // Camera looking at point
+    _cam.SetUp(raylib::Vector3(0.0f, 1.0f, 0.0f));                   // Camera up vector (rotation towards target)
+    _cam.SetFovy(45.0f);                                       // Camera field-of-view Y
+    _cam.SetProjection(CAMERA_PERSPECTIVE);                 // Camera mode type
     std::cout << "Map ready" << std::endl;
 }
 
@@ -122,44 +124,61 @@ void Warudo::handleCommunication(void)
     }
 
 //    _out.write_to_buffer("mct\n");
-    for (auto &player: _pikmins) {
-        Pikmin::State status = player.getStatus();
-        if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-            _out.write_to_buffer("ppo ");
-            _out.write_to_buffer(player.getId());
-            _out.write_to_buffer("\n");
-            _out.write_to_buffer("plv ");
-            _out.write_to_buffer(player.getId());
-            _out.write_to_buffer("\n");
-        }
-    }
+   // for (auto &player: _pikmins) {
+   //     Pikmin::State status = player.getStatus();
+   //     if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+   //         _out.write_to_buffer("ppo ");
+   //         _out.write_to_buffer(player.getId());
+   //         _out.write_to_buffer("\n");
+   //         _out.write_to_buffer("plv ");
+   //         _out.write_to_buffer(player.getId());
+   //         _out.write_to_buffer("\n");
+   //     }
+   // }
 }
 
 void Warudo::updateGraphic(void)
 {
-    UpdateCamera(&_cam, CAMERA_FIRST_PERSON);
-
     BeginDrawing();
 
-            ClearBackground(BLACK);
-
+        ClearWindowState(0);
+        ClearBackground(BLACK);
             BeginMode3D(_cam);
 
                 std::size_t index = 0;
+                bool line = true;
+                bool white = line;
                 for (auto tile : _map) {
                     raylib::Vector3 pos((index % _x), 0, static_cast<int>((index / _x)));
-                    DrawCube(pos, 1, 1, 1, WHITE);
-                    DrawCubeWires(pos, 1, 1, 1, GRAY);
+                    if (index % _x == 0) {
+                        line = !line;
+                        white = line;
+                    }
+                    if (white) {
+                        DrawCube(pos, 1, 1, 1, WHITE);
+                        white = !white;
+                    } else {
+                        DrawCube(pos, 1, 1, 1, GRAY);
+                        white = !white;
+                    }
                     index++;
                 }
+                for (auto &player : _pikmins) {
+                    player.drawModel(_delta);
+                    if (player.animationUpdate(_delta)) {
+                        // dunno
+                    } else {
+                        // dunno
+                    }
+                }
+
+                updateTile();
+                updatePikmin();
+                updateUI();
 
             EndMode3D();
 
-            updateTile();
-            updatePikmin();
-            updateUI();
-
-        EndDrawing();
+    EndDrawing();
 }
 
 void Warudo::updatePikmin(void)

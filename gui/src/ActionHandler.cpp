@@ -6,6 +6,7 @@
 */
 
 #include "ActionHandler.hpp"
+#include <iostream>
 
 ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams, std::pair<std::size_t, std::size_t> &size, float &timeMult):
     _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult)
@@ -44,6 +45,7 @@ bool ActionHandler::operator()(std::string &action)
     for (auto &[regex, reaction] : _regexMap) {
         std::smatch match;
         if (std::regex_match(action, match, regex)) {
+            std::cout << action << std::endl;
             (this->*reaction)(match);
             return true;
         }
@@ -106,7 +108,7 @@ void ActionHandler::setPikminPosition(std::smatch &arg)
     for (auto &player : _pikmins) {
         if (player == id) {
             if ((player.getX() != x || player.getY() != y) && player.getStatus() != Pikmin::State::EJECT) {
-                player.setPositionVector(raylib::Vector3(player.getX(), 0, player.getY()));
+                player.setPositionVector(raylib::Vector3(player.getX(), 1, player.getY()));
                 player.setAnimation(_animation.get("walk"));
                 player.setMotionVector(raylib::Vector3(player.getX() - x, 0, player.getY() - y));
             }
@@ -134,7 +136,7 @@ void ActionHandler::setPikminInventory(std::smatch &arg)
     std::map<Kaillou, std::size_t> tileRocks;
 
     for (std::size_t i = 0; i < NBKAILLOU; i++) {
-        tileRocks.at(static_cast<Kaillou>(i)) = std::atoi(arg[i + 4].str().c_str());
+        tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::atoi(arg[i + 4].str().c_str())));
     }
     for (auto &player : _pikmins) {
         if (player == id) {
@@ -171,7 +173,8 @@ void ActionHandler::startIncantation(std::smatch &arg)
     std::string incanters = arg[3].str();
 
     while (incanters.size() > 0) {
-        std::string tmp = incanters.substr(0, incanters.find(' ') - 1);
+        std::cout << incanters << std::endl;
+        std::string tmp = incanters.substr(0, incanters.find(' '));
         for (auto &player : _pikmins) {
             if (player == tmp) {
                 player.setAnimation(_animation.get("incant"));
@@ -180,7 +183,7 @@ void ActionHandler::startIncantation(std::smatch &arg)
         std::size_t index = incanters.find(' ') + 1;
         if (index > incanters.size())
             index = incanters.size();
-        incanters = incanters.substr(index);
+        incanters = incanters.erase(index);
     }
 }
 
@@ -284,11 +287,13 @@ void ActionHandler::eggHatche(std::smatch &arg)
 {
     std::string eggId = arg[1].str();
 
+    raylib::Color red = raylib::Color::Red();
     for (std::size_t i = 0; i < _pikmins.size(); i++) {
         if (_pikmins[i] == eggId) {
             _pikmins[i].setModel(_model.get("pikmin"));
             _pikmins[i].setAnimation(_animation.get("birth"));
             _pikmins[i].setStatus(Pikmin::State::ALIVE);
+            _pikmins[i].setColor(red);
         }
     }
 }

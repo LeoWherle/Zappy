@@ -72,6 +72,8 @@ class Pikmin {
 
         inline void setRotation(float rotation) { _rotation = rotation; }
 
+        inline void setColor(raylib::Color &color) { _colorMod = color; }
+
     private:
         std::size_t _x;
         std::size_t _y;

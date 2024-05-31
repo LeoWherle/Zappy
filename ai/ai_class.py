@@ -2,21 +2,29 @@ import threading
 from random import randint
 from tools import is_a_number
 
-needs_for_lvl_6 = {"linemate": 6, "deraumere": 4, "sibur": 5, "mendiane": 3, "phiras": 3, "thystame": 0}
+needs_for_lvl_6 = {"linemate": 6,
+                   "deraumere": 4,
+                   "sibur": 5,
+                   "mendiane": 3,
+                   "phiras": 3,
+                   "thystame": 0}
+
+DEATH_MESSAGE = "AI is dead"
 
 class AI:
-    def __init__(self, team, net, id=0):
+    def __init__(self, team, net):
         self.net = net
         self.team = team
         self.lvl = 1
-        self.id = id
+        self.id = randint(1, 10000)
         self.dead = False
         self.is_elevating = False
         self.last_eject = None
         self.random = True
-        self.stop = False
         self.block_k_reception = False
         self.food_supply = False
+        self.king = False
+        self.choosen_ones = False
 
         team_slots_left = net.send_team(team)
         if (team_slots_left == -1):
@@ -31,22 +39,27 @@ class AI:
     # Return a dictionary of the inventory
     def inventory(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return None
         response = self.net.send_and_read("Inventory", self)
         inventory = None
-        while (inventory == None):
+        while (inventory is None):
             for elem in response.split("\n"):
                 if elem == "dead":
                     self.dead = True
                     return None
                 if elem.startswith("["):
-                    inventory = response.split("[")[1].split(",")
+                    inventory = elem.split("[")[1].split(",")
                 else:
                     self.net.add_to_read(elem)
-            if inventory == None:
+            if inventory is None:
                 response = self.net.read(self)
         dic = {}
+        if inventory == []:
+            return dic
+        while inventory[-1][-1] != "]":
+            response = self.net.read(self)
+            inventory += response.split("\n")[0].split(",")
         for elem in inventory:
             key = elem.split(" ")[1]
             value = int(elem.split(" ")[2])
@@ -56,21 +69,26 @@ class AI:
     # Look, return a list of the objects around the AI
     def look(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return None
         response = self.net.send_and_read("Look", self)
         look = None
-        while (look == None):
+        while (look is None):
             for elem in response.split("\n"):
                 if elem == "dead":
                     self.dead = True
                     return None
                 if elem.startswith("["):
-                    look = response.split("[")[1].split(",")
+                    look = elem.split("[")[1].split(",")
                 else:
                     self.net.add_to_read(elem)
-            if look == None:
+            if look is None:
                 response = self.net.read(self)
+        if look == []:
+            return None
+        while look[-1][-1] != "]":
+            response = self.net.read(self)
+            look += response.split("\n")[0].split(",")
         for i in range(len(look)):
             look[i] = look[i].split(" ")
         for elem in look:
@@ -83,7 +101,7 @@ class AI:
     # Fork the AI
     def fork(self, func, args, threads):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         status = False
         response = self.net.send_and_read("Fork", self)
@@ -108,7 +126,7 @@ class AI:
     # Get the nb of unused slots in the team
     def get_unused_slots(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return -1
         response = self.net.send_and_read("Connect_nbr", self).split("\n")
         team_slots_left = -1
@@ -129,7 +147,7 @@ class AI:
     # Incantation
     def incantation(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return False
         response = self.net.send_and_read("Incantation", self)
         status = False
@@ -154,7 +172,7 @@ class AI:
     # Take an object
     def take(self, obj):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         response = self.net.send_and_read(f"Take {obj}", self)
         status = False
@@ -178,10 +196,10 @@ class AI:
     # Take all objects on a tile
     def take_all(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         object_list = self.look()
-        if object_list == None or object_list == []:
+        if object_list is None or object_list == []:
             return
         object_list = object_list[0]
         for elem in object_list:
@@ -190,10 +208,10 @@ class AI:
     
     def take_all_food(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         object_list = self.look()
-        if object_list == None or object_list == []:
+        if object_list is None or object_list == []:
             return
         object_list = object_list[0]
         for elem in object_list:
@@ -202,10 +220,10 @@ class AI:
 
     def get_nb_player_on_tile(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return -1
         object_list = self.look()
-        if object_list == None or object_list == []:
+        if object_list is None or object_list == []:
             return -1
         object_list = object_list[0]
         nb = 0
@@ -217,7 +235,7 @@ class AI:
     # Drop an object
     def drop(self, obj):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         response = self.net.send_and_read(f"Set {obj}", self)
         status = False
@@ -240,10 +258,10 @@ class AI:
 
     def drop_all(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         inv = self.inventory()
-        if inv == None:
+        if inv is None:
             return
         for key in inv:
             if key != "food":
@@ -252,20 +270,20 @@ class AI:
 
     def drop_all_food(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         inv = self.inventory()
-        if inv == None:
+        if inv is None:
             return
         for _ in range(inv["food"]):
             self.drop("food")
 
     def is_inv_empty(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         inv = self.inventory()
-        if inv == None:
+        if inv is None:
             return False
         for key in inv:
             if key != "food" and inv[key] > 0:
@@ -274,10 +292,10 @@ class AI:
     
     def is_enought_for_lvl(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         inv = self.inventory()
-        if inv == None:
+        if inv is None:
             return False
         for key in inv:
             if key != "food" and inv[key] < needs_for_lvl_6[key]:
@@ -286,12 +304,12 @@ class AI:
     
     def share_food(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         inv = self.inventory()
-        if inv == None:
+        if inv is None:
             return
-        leftovers = inv["food"] - 10
+        leftovers = inv["food"] - 15
         if leftovers < 0:
             for _ in range(-leftovers):
                 self.take("food")
@@ -301,10 +319,10 @@ class AI:
 
     def get_food_nbr(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return -1
         inv = self.inventory()
-        if inv == None:
+        if inv is None:
             return -1
         return inv["food"]
     
@@ -315,7 +333,7 @@ class AI:
     # Move the AI forward
     def forward(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         self.net.add_to_send("Forward")
         self.net.logger.info("Moved forward", self.id)
@@ -323,7 +341,7 @@ class AI:
     # Turn the AI right
     def turn_right(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         self.net.add_to_send("Right")
         self.net.logger.info("Turned right", self.id)
@@ -331,7 +349,7 @@ class AI:
     # Turn the AI left
     def turn_left(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         self.net.add_to_send("Left")
         self.net.logger.info("Turned left", self.id)
@@ -351,7 +369,7 @@ class AI:
     # Broadcast a message
     def broadcast(self, msg):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         self.net.add_to_send(f"Broadcast {msg}")
         self.net.logger.info(f"Broadcasted: {msg}", self.id)
@@ -359,7 +377,7 @@ class AI:
     # Eject
     def eject(self):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         self.net.add_to_send("Eject")
         self.net.logger.info("Ejection sended", self.id)
@@ -384,17 +402,20 @@ class AI:
     # Change this function to handle more messages
     def handle_broadcast(self, broadcast_received, k):
         if (self.dead):
-            self.net.logger.warning("AI is dead", self.id)
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         if self.random and broadcast_received == "lvl6":
             self.random = False
-        if not self.random and broadcast_received == "lvl6" and not self.stop:
+        if not self.random and broadcast_received == "lvl6":
             self.go_to_broadcast(int(k))
-        if not self.random and broadcast_received == "elevate":
-            if not self.food_supply and self.get_nb_player_on_tile() >= 6:
-                self.stop = True
+        if broadcast_received == "elevate":
+            self.random = False
+            if not self.choosen_ones and self.get_nb_player_on_tile() >= 6:
+                self.choosen_ones = True
+            
+            if self.choosen_ones:
+                self.share_food()
                 self.drop_all()
                 self.incantation()
             else:
                 self.food_supply = True
-
