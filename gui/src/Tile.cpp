@@ -48,7 +48,7 @@ void Tile::addRock(Kaillou rock)
     if (_rocks.find(rock) != _rocks.end()) {
         groundedMaterial newMat;
         newMat.caillou = rock;
-        newMat.pos = raylib::Vector3((float)(std::rand() % 1000) / 1000.0f + _x, 1, (float)(std::rand() % 1000) / 1000.0f + _y);
+        newMat.pos = raylib::Vector3(_x - 0.25f + (float)(std::rand() % 500) / 1000.0f, 0.6, _y - 0.25f + (float)(std::rand() % 500) / 1000.0f);
         _materials.push_back(newMat);
     }
 }
