@@ -28,7 +28,7 @@ else ifeq ($(DEBUG), y)
 	RULE = "DEBUG=y"
 	buildDir := $(buildDirName)/asan/
 else
-	CFLAGS += -g -fanalyzer
+	CFLAGS += -g
 	buildDir := $(buildDirName)/debug/
 endif
 
