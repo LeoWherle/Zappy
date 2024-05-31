@@ -9,6 +9,7 @@
 #include "serrorh.h"
 
 #include <stdlib.h>
+#include <time.h>
 
 static bool parse_uint_arg(
     int *ac, char ***args, const char *flag, unsigned int *val)
@@ -45,5 +46,10 @@ bool parse_players_arg(int *ac, char ***args, trantor_params_t *params)
 
 bool parse_seed_arg(int *ac, char ***args, trantor_params_t *params)
 {
-    return parse_uint_arg(ac, args, "-s", &params->seed);
+    bool res = parse_uint_arg(ac, args, "-s", &params->seed);
+
+    if (res && params->seed == 0) {
+        params->seed = (unsigned int) time(NULL);
+    }
+    return res;
 }
