@@ -78,7 +78,6 @@ void ActionHandler::setTileContent(std::smatch &arg)
     for (std::size_t i = 0; i < NBKAILLOU; i++) {
         tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::atoi(arg[i + 3].str().c_str())));
     }
-    std::cout << "serv x = " << x << " y = " << y <<std::endl;
     _map[index].setRocks(tileRocks);
 }
 
