@@ -50,7 +50,11 @@ void hatch_egg(player_t *player, double f)
 
 void destroy_player(void *player)
 {
-    str_reset(&(*(player_t **)player)->pcmd_buffer);
-    str_reset(&(*(player_t **)player)->response_buffer);
-    free(*(player_t **)player);
+    player_t *p = *(player_t **)player;
+
+    if (!p->is_egg) {
+        str_reset(&p->pcmd_buffer);
+        str_reset(&p->response_buffer);
+    }
+    free(p);
 }
