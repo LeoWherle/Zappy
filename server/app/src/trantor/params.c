@@ -80,20 +80,21 @@ static bool parse_str_arg(int *ac, char ***args, trantor_params_t *params)
     if (strcmp((*args)[0], "-n") != 0)
         return false;
     while (*ac > 1 && (*args)[1][0] != '-') {
-        if (vec_push(params->team_names, (*args)[1]) != BUF_OK)
+        if (vec_push(&params->team_names, (*args)[1]) != BUF_OK)
             return false;
         *ac -= 1;
         *args += 1;
     }
     *ac -= 1;
     *args += 1;
-    params->teams = params->team_names->nmemb;
+    params->teams = params->team_names.nmemb;
     return true;
 }
 
 bool parse_args(int ac, char **av, trantor_params_t *params)
 {
-    params->team_names = vec_new(sizeof(char *), NULL, NULL);
+    if (vec_init(&params->team_names, sizeof(char *), NULL, NULL) != BUF_OK)
+        return false;
     if (ac < 3)
         return false;
     while (ac > 1) {
@@ -112,13 +113,13 @@ bool parse_args(int ac, char **av, trantor_params_t *params)
 
 void destroy_params(trantor_params_t *params)
 {
-    vec_delete(params->team_names);
+    vec_reset(&params->team_names);
 }
 
 int get_team_index(trantor_params_t *params, const char *team_name)
 {
-    for (unsigned int i = 0; i < params->team_names->nmemb; i++) {
-        if (strcmp(team_name, (char *) vec_at(params->team_names, i)) == 0)
+    for (unsigned int i = 0; i < params->team_names.nmemb; i++) {
+        if (strcmp(team_name, (char *) vec_at(&params->team_names, i)) == 0)
             return i;
     }
     return -1;
@@ -126,5 +127,5 @@ int get_team_index(trantor_params_t *params, const char *team_name)
 
 const char *get_team_name(const trantor_params_t *params, team_t team_id)
 {
-    return (const char *) vec_at(params->team_names, (size_t) team_id);
+    return (const char *) vec_at(&params->team_names, (size_t) team_id);
 }

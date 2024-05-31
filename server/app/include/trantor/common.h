@@ -7,6 +7,7 @@
 
 #pragma once
 
+
 // in case we want to change
 typedef unsigned int quant_t;
 typedef unsigned int len_t;
