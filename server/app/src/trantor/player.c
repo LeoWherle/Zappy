@@ -16,7 +16,7 @@
 
 void init_egg(player_t *player, team_t team, coord_t c)
 {
-    static unsigned int last_n_given = 0;
+    static unsigned int last_n_given = 1;
 
     *player = (player_t){0};
     player->is_egg = true;
@@ -50,11 +50,10 @@ void hatch_egg(player_t *player, double f)
 
 void destroy_player(void *player)
 {
-    player_t *p = *(player_t **)player;
+    player_t *p = player;
 
     if (!p->is_egg) {
         str_reset(&p->pcmd_buffer);
         str_reset(&p->response_buffer);
     }
-    free(p);
 }

@@ -49,7 +49,7 @@ typedef struct client_s {
     struct {
         bool sent_welcome;
         bool is_gui;
-        player_t *player;
+        unsigned int player_id;
     };
 } client_t;
 
