@@ -13,14 +13,14 @@
 class ModelBank
 {
 public:
-    ModelBank(void) = default;
+    ModelBank(void);
     ~ModelBank(void);
 
-    Model *get(std::string ressourceName);
+    raylib::Model *get(std::string ressourceName);
 
     struct texturedModel {
-        Model model;
-        Texture2D texture;
+        raylib::Model model;
+        raylib::Texture2D texture;
     };
 
     class InvalidModel : public std::exception
@@ -40,4 +40,5 @@ public:
 
 private:
     std::map<std::string, texturedModel> _models;
+    raylib::Model _default;
 };
