@@ -40,7 +40,7 @@ namespace connection {
             /**
              * @brief timeout defined in microseconds
              */
-            Client(int timeout, std::string &ip, int port);
+            Client(int timeout, std::string &ip, std::size_t port);
             ~Client();
 
             void setUpConnection(void);

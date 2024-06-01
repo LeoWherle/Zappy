@@ -9,6 +9,8 @@
 
 #include "common.h"
 #include "packets.h"
+#include "trantor.h"
+#include "trantor/player.h"
 #include "sstrings.h"
 #include "vector.h"
 #include <arpa/inet.h>
@@ -33,6 +35,9 @@ typedef struct server_s {
     struct sockaddr_in addr;
     vector_t clients;
     serv_command_t command;
+    struct {
+        trantor_t trantor;
+    };
 } server_t;
 
 // both buffers are vectors of char
@@ -42,13 +47,13 @@ typedef struct client_s {
     string_t read_buf;
     string_t write_buf;
     struct {
-        struct {
-            bool logged_in;
-        };
+        bool sent_welcome;
+        bool is_gui;
+        unsigned int player_id;
     };
 } client_t;
 
-int server(server_t *server, const char *port_str);
+int server(server_t *server, int port);
 int server_listen(server_t *server, uint16_t port, int max_clients);
 server_t *server_create(void);
 int server_socket_init(server_t *server);
@@ -94,23 +99,7 @@ void command_exit(server_t *server, serv_context_t *context, vector_t *args);
 void command_help(server_t *server, serv_context_t *context, vector_t *args);
 void command_ping(server_t *server, serv_context_t *context, vector_t *args);
 void command_log(server_t *server, serv_context_t *context, vector_t *args);
-
-/*************************** ACTIONS *****************************************/
-
-typedef struct packet_s {
-    char name[MAX_NAME_LENGTH + 1];
-    bool (*handle)(server_t *server, client_t *client, client_packet_t *packet,
-        pck_server_user_t *response);
-} packet_t;
-
-bool packet_login(server_t *server, client_t *client, client_packet_t *packet,
-    pck_server_user_t *response);
-bool packet_logout(server_t *server, client_t *client, client_packet_t *packet,
-    pck_server_user_t *response);
-
-bool packet_ping(server_t *server, client_t *client, client_packet_t *packet,
-    pck_server_user_t *response);
-
+void command_give(server_t *server, serv_context_t *context, vector_t *args);
 
 // #define PACKET_SECTION_NAME     server_action
 

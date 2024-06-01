@@ -33,5 +33,4 @@ typedef struct context_s {
     bool running;
 } context_t;
 
-signed int get_port(const char *port);
 void init_logging(const char *env_file);
