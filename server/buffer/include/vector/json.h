@@ -90,8 +90,6 @@
  *     return 0;
  * }
  */
-typedef const char *cstring_t;
-
 #ifdef VEC_JSON_PRINT_DESCRIPTORS
     #define JFPRINTF dprintf
 typedef int file_data_t;
@@ -103,6 +101,24 @@ typedef int file_data_t;
     #define JFPRINTF fprintf
 typedef FILE *file_data_t;
 #endif
+
+// JSON_FUNCTION_NAME(type)
+#define JF(t) jsn_obj_fprint_##t
+
+#define JSON_PRINT(t, f, strc, vl) JF(t)(f, #vl, &(strc)->vl)
+#define JSON_PRINT_VEC(f, s, v, n) json_print_vec(f, #v, &(s)->v, (jp_t) JF(n))
+
+#define JSON_SEP(f)     JFPRINTF(f, ", ")
+#define JSON_OBJ_SEP(f) JSON_SEP(f)
+#define JSON_ARR_SEP(f) JSON_SEP(f)
+
+#define JSON_OBJ_BEGIN(f, n) n ? JFPRINTF(f, "\"%s\": {", n) : JFPRINTF(f, "{")
+#define JSON_OBJ_END(f)      JFPRINTF(f, "}")
+
+#define JSON_ARR_BEGIN(f, n) n ? JFPRINTF(f, "\"%s\": [", n) : JFPRINTF(f, "[")
+#define JSON_ARR_END(f)      JFPRINTF(f, "]")
+
+typedef const char *cstring_t;
 
 void jsn_obj_fprint_int(file_data_t file, const char *name, int *);
 void jsn_obj_fprint_float(file_data_t file, const char *name, float *);
@@ -125,19 +141,3 @@ typedef void (*jp_t)(file_data_t f, char *n, void *d);
 
 void json_print_vec(
     file_data_t file, const char *name, vector_t *vec, jp_t print);
-
-// JSON_FUNCTION_NAME(type)
-#define JF(t) jsn_obj_fprint_##t
-
-#define JSON_PRINT(t, f, strc, vl) JF(t)(f, #vl, &(strc)->vl)
-#define JSON_PRINT_VEC(f, s, v, n) json_print_vec(f, #v, &(s)->v, (jp_t) JF(n))
-
-#define JSON_SEP(f)     JFPRINTF(f, ", ")
-#define JSON_OBJ_SEP(f) JSON_SEP(f)
-#define JSON_ARR_SEP(f) JSON_SEP(f)
-
-#define JSON_OBJ_BEGIN(f, n) n ? JFPRINTF(f, "\"%s\": {", n) : JFPRINTF(f, "{")
-#define JSON_OBJ_END(f)      JFPRINTF(f, "}")
-
-#define JSON_ARR_BEGIN(f, n) n ? JFPRINTF(f, "\"%s\": [", n) : JFPRINTF(f, "[")
-#define JSON_ARR_END(f)      JFPRINTF(f, "]")
