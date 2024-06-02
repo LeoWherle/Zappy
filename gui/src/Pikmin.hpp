@@ -12,6 +12,7 @@
 #include <raylib-cpp.hpp>
 #include <map>
 #include "Kaillou.hpp"
+#include "ModelBank.hpp"
 
 class Pikmin {
     public:
@@ -28,7 +29,7 @@ class Pikmin {
             EGG,
             DYING
         };
-        Pikmin(std::string &id, std::size_t x, std::size_t y);
+        Pikmin(std::string id, std::size_t x, std::size_t y);
         Pikmin() = delete;
         Pikmin(const Pikmin &) = delete;
         Pikmin(Pikmin &&) = default;
@@ -57,7 +58,8 @@ class Pikmin {
         inline bool operator==(const Pikmin &other) { return (_id == other._id); }
         inline bool operator==(const std::string &id) { return (_id == id); }
 
-        inline void setModel(raylib::Model *model) { _model = model; }
+        inline void setModel(FullModel_t *model) { _model = model; }
+        inline void setTop(FullModel_t *top) { _top = top; }
         void drawModel(float delta);
         void setAnimation(std::string fileName);
         inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
@@ -82,9 +84,8 @@ class Pikmin {
         std::size_t _level;
         std::string _team;
         std::map<Kaillou, std::size_t> _inventory;
-        raylib::Model *_model;
-        std::vector<raylib::ModelAnimation> _anim;
-        int _animCount;
+        FullModel_t *_model;
+        FullModel_t *_top;
         int _frameCount;
         State _status;
 
