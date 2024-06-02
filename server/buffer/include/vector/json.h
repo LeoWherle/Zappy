@@ -92,7 +92,17 @@
  */
 typedef const char *cstring_t;
 
+#ifdef VEC_JSON_PRINT_DESCRIPTORS
+    #define JFPRINTF dprintf
+typedef int file_data_t;
+#elif VEC_JSON_PRINT_CUSTOM
+    #ifndef JFPRINTF
+        #error "VEC_JSON_PRINT_CUSTOM is defined but JFPRINTF is not defined"
+    #endif
+#else /* VEC_JSON_PRINT_STREAM */
+    #define JFPRINTF fprintf
 typedef FILE *file_data_t;
+#endif
 
 void jsn_obj_fprint_int(file_data_t file, const char *name, int *);
 void jsn_obj_fprint_float(file_data_t file, const char *name, float *);
@@ -118,8 +128,6 @@ void json_print_vec(
 
 // JSON_FUNCTION_NAME(type)
 #define JF(t) jsn_obj_fprint_##t
-
-#define JFPRINTF fprintf
 
 #define JSON_PRINT(t, f, strc, vl) JF(t)(f, #vl, &(strc)->vl)
 #define JSON_PRINT_VEC(f, s, v, n) json_print_vec(f, #v, &(s)->v, (jp_t) JF(n))
