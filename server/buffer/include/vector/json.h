@@ -30,13 +30,13 @@
  *     string_t name;
  *     bool adult;
  * } human_t;
- * 
+ *
  * typedef struct test_s {
  *     int a;
  *     human_t king;
  *     vector_t humans;
  * } test_t;
- * 
+ *
  * static void jsn_obj_fprint_human_t(FILE *file, const char *name, human_t *data)
  * {
  *     JSON_OBJ_BEGIN(file, name);
@@ -45,7 +45,7 @@
  *     JSON_PRINT(bool, file, data, adult);
  *     JSON_OBJ_END(file);
  * }
- * 
+ *
  * static void jsn_obj_fprint_test_t(FILE *file, const char *name, test_t *data)
  * {
  *     JSON_OBJ_BEGIN(file, name);
@@ -56,12 +56,12 @@
  *     JSON_PRINT_VEC(file, data, humans, human_t);
  *     JSON_OBJ_END(file);
  * }
- * 
+ *
  * int main(int ac, char *av[])
  * {
  *     test_t test = {42, .king = {.adult = true}};
  *     human_t human = {.adult = false};
- * 
+ *
  *     // Create a test object
  *     {
  *         if (str_init(&human.name, "randomguy") != 0)
@@ -86,7 +86,7 @@
  *     return 0;
  * }
  */
-typedef const char * cstring_t;
+typedef const char *cstring_t;
 
 typedef FILE * file_data_t;
 
@@ -108,10 +108,10 @@ void jsn_obj_fprint__Bool(file_data_t file, const char *name, bool *);
 void jsn_obj_fprint_string_t(file_data_t file, const char *name, string_t *);
 void jsn_obj_fprint_cstring_t(file_data_t file, const char *name, cstring_t *);
 
-typedef void(*jp_t)(file_data_t , char *, void *);
+typedef void (*jp_t)(file_data_t f, char *n, void *d);
 
 void json_print_vec(file_data_t file, const char *name, vector_t *vec,
-    void (*print)(file_data_t , char *, void *));
+    void (*print)(file_data_t , char *n, void *d));
 
 // JSON_FUNCTION_NAME(type)
 #define JF(t) jsn_obj_fprint_##t
