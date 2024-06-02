@@ -79,7 +79,7 @@ jobs:
             message=$(echo "$line" | awk -F ':' '{print $4}')
             custom_message="${error_messages[$message]:-Unknown Error}"
             path=$(echo "$file" | sed "s/^\.\///")
-            echo "::error file=./$DIR/$file,line=$line_number::$severity $message $custom_message"
+            echo "::error file=./$DIR/$path,line=$line_number::$severity $message $custom_message"
           done < $LOGFILE
           line_count=$(wc -l $LOGFILE | awk '{print $1}')
           if [ "$line_count" -gt 0 ]; then
