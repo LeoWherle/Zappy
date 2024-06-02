@@ -9,10 +9,10 @@
 
 #include "sstrings.h"
 #include "vector.h"
-#include <stddef.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /********** Helper functions AND Macros to print vectors as JSON **********/
 
@@ -37,7 +37,9 @@
  *     vector_t humans;
  * } test_t;
  *
- * static void jsn_obj_fprint_human_t(FILE *file, const char *name, human_t *data)
+ * static
+ * void jsn_obj_fprint_human_t(
+ *     file_data_t file, const char *name, human_t *data)
  * {
  *     JSON_OBJ_BEGIN(file, name);
  *     JSON_PRINT(string_t, file, data, name);
@@ -46,7 +48,9 @@
  *     JSON_OBJ_END(file);
  * }
  *
- * static void jsn_obj_fprint_test_t(FILE *file, const char *name, test_t *data)
+ * static
+ * void jsn_obj_fprint_test_t(
+ *     file_data_t file, const char *name, test_t *data)
  * {
  *     JSON_OBJ_BEGIN(file, name);
  *     JSON_PRINT(int, file, data, a);
@@ -88,7 +92,7 @@
  */
 typedef const char *cstring_t;
 
-typedef FILE * file_data_t;
+typedef FILE *file_data_t;
 
 void jsn_obj_fprint_int(file_data_t file, const char *name, int *);
 void jsn_obj_fprint_float(file_data_t file, const char *name, float *);
@@ -101,7 +105,6 @@ void jsn_obj_fprint_int64_t(file_data_t file, const char *name, int64_t *);
 void jsn_obj_fprint_size_t(file_data_t file, const char *name, size_t *);
 void jsn_obj_fprint_ssize_t(file_data_t file, const char *name, ssize_t *);
 
-
 void jsn_obj_fprint_bool(file_data_t file, const char *name, bool *);
 void jsn_obj_fprint__Bool(file_data_t file, const char *name, bool *);
 
@@ -110,8 +113,8 @@ void jsn_obj_fprint_cstring_t(file_data_t file, const char *name, cstring_t *);
 
 typedef void (*jp_t)(file_data_t f, char *n, void *d);
 
-void json_print_vec(file_data_t file, const char *name, vector_t *vec,
-    void (*print)(file_data_t , char *n, void *d));
+void json_print_vec(
+    file_data_t file, const char *name, vector_t *vec, jp_t print);
 
 // JSON_FUNCTION_NAME(type)
 #define JF(t) jsn_obj_fprint_##t
@@ -121,7 +124,7 @@ void json_print_vec(file_data_t file, const char *name, vector_t *vec,
 #define JSON_PRINT(t, f, strc, vl) JF(t)(f, #vl, &(strc)->vl)
 #define JSON_PRINT_VEC(f, s, v, n) json_print_vec(f, #v, &(s)->v, (jp_t) JF(n))
 
-#define JSON_SEP(f) JFPRINTF(f, ", ")
+#define JSON_SEP(f)     JFPRINTF(f, ", ")
 #define JSON_OBJ_SEP(f) JSON_SEP(f)
 #define JSON_ARR_SEP(f) JSON_SEP(f)
 
