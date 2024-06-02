@@ -8,7 +8,6 @@
 #include "ModelBank.hpp"
 #include "ModelAnimation.hpp"
 #include "raylib.h"
-#include <iostream>
 
 // model name | <model file | texture file>
 const std::map<std::string, ModelInfo> ModelBank::modelInfo = {

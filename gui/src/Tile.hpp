@@ -9,7 +9,6 @@
 
 #include <map>
 #include <vector>
-#include <string>
 #include "Kaillou.hpp"
 #include "ModelBank.hpp"
 
@@ -31,7 +30,7 @@ class Tile {
         };
 
         std::map<Kaillou, std::size_t> _rocks;
-        std::map<Kaillou, raylib::Model *> _models;
+        std::map<Kaillou, FullModel_t *> _models;
         std::vector<groundedMaterial> _materials;
         float _x;
         float _y;
