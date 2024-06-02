@@ -88,39 +88,45 @@
  */
 typedef const char * cstring_t;
 
-void jsn_obj_fprint_int(FILE *file, const char *name, int *);
-void jsn_obj_fprint_float(FILE *file, const char *name, float *);
-void jsn_obj_fprint_double(FILE *file, const char *name, double *);
-void jsn_obj_fprint_long(FILE *file, const char *name, long *);
-void jsn_obj_fprint_uint32_t(FILE *file, const char *name, uint32_t *);
-void jsn_obj_fprint_uint64_t(FILE *file, const char *name, uint64_t *);
-void jsn_obj_fprint_int32_t(FILE *file, const char *name, int32_t *);
-void jsn_obj_fprint_int64_t(FILE *file, const char *name, int64_t *);
-void jsn_obj_fprint_size_t(FILE *file, const char *name, size_t *);
-void jsn_obj_fprint_ssize_t(FILE *file, const char *name, ssize_t *);
+typedef FILE * file_data_t;
+
+void jsn_obj_fprint_int(file_data_t file, const char *name, int *);
+void jsn_obj_fprint_float(file_data_t file, const char *name, float *);
+void jsn_obj_fprint_double(file_data_t file, const char *name, double *);
+void jsn_obj_fprint_long(file_data_t file, const char *name, long *);
+void jsn_obj_fprint_uint32_t(file_data_t file, const char *name, uint32_t *);
+void jsn_obj_fprint_uint64_t(file_data_t file, const char *name, uint64_t *);
+void jsn_obj_fprint_int32_t(file_data_t file, const char *name, int32_t *);
+void jsn_obj_fprint_int64_t(file_data_t file, const char *name, int64_t *);
+void jsn_obj_fprint_size_t(file_data_t file, const char *name, size_t *);
+void jsn_obj_fprint_ssize_t(file_data_t file, const char *name, ssize_t *);
 
 
-void jsn_obj_fprint_bool(FILE *file, const char *name, bool *);
-void jsn_obj_fprint__Bool(FILE *file, const char *name, bool *);
+void jsn_obj_fprint_bool(file_data_t file, const char *name, bool *);
+void jsn_obj_fprint__Bool(file_data_t file, const char *name, bool *);
 
-void jsn_obj_fprint_string_t(FILE *file, const char *name, string_t *);
-void jsn_obj_fprint_cstring_t(FILE *file, const char *name, cstring_t *);
+void jsn_obj_fprint_string_t(file_data_t file, const char *name, string_t *);
+void jsn_obj_fprint_cstring_t(file_data_t file, const char *name, cstring_t *);
 
-typedef void(*jp_t)(FILE *, char *, void *);
+typedef void(*jp_t)(file_data_t , char *, void *);
 
-void json_print_vec(FILE *file, const char *name, vector_t *vec,
-    void (*print)(FILE *, char *, void *));
+void json_print_vec(file_data_t file, const char *name, vector_t *vec,
+    void (*print)(file_data_t , char *, void *));
 
 // JSON_FUNCTION_NAME(type)
 #define JF(t) jsn_obj_fprint_##t
 
+#define JFPRINTF fprintf
+
 #define JSON_PRINT(t, f, strc, vl) JF(t)(f, #vl, &(strc)->vl)
 #define JSON_PRINT_VEC(f, s, v, n) json_print_vec(f, #v, &(s)->v, (jp_t) JF(n))
 
-#define JSON_OBJ_SEP(f) fprintf(f, ", ")
+#define JSON_SEP(f) JFPRINTF(f, ", ")
+#define JSON_OBJ_SEP(f) JSON_SEP(f)
+#define JSON_ARR_SEP(f) JSON_SEP(f)
 
-#define JSON_OBJ_BEGIN(f, n) n ? fprintf(f, "\"%s\": {", n) : fprintf(f, "{")
-#define JSON_OBJ_END(f)      fprintf(f, "}")
+#define JSON_OBJ_BEGIN(f, n) n ? JFPRINTF(f, "\"%s\": {", n) : JFPRINTF(f, "{")
+#define JSON_OBJ_END(f)      JFPRINTF(f, "}")
 
-#define JSON_ARR_BEGIN(f, n) n ? fprintf(f, "\"%s\": [", n) : fprintf(f, "[")
-#define JSON_ARR_END(f)      fprintf(f, "]")
+#define JSON_ARR_BEGIN(f, n) n ? JFPRINTF(f, "\"%s\": [", n) : JFPRINTF(f, "[")
+#define JSON_ARR_END(f)      JFPRINTF(f, "]")

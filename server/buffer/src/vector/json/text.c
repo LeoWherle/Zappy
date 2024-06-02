@@ -7,28 +7,30 @@
 
 #include "vector/json.h"
 
-void jsn_obj_fprint_string_t(FILE *file, const char *name, string_t *value)
+void jsn_obj_fprint_string_t(
+    file_data_t file, const char *name, string_t *value)
 {
     if (name == NULL) {
-        fprintf(file, "\"%.*s\"", (int) value->nmemb, (char *) value->items);
+        JFPRINTF(file, "\"%.*s\"", (int) value->nmemb, (char *) value->items);
     } else {
-        fprintf(file, "\"%s\": \"%.*s\"", name, (int) value->nmemb,
+        JFPRINTF(file, "\"%s\": \"%.*s\"", name, (int) value->nmemb,
             (char *) value->items);
     }
 }
 
-void jsn_obj_fprint_cstring_t(FILE *file, const char *name, cstring_t *value)
+void jsn_obj_fprint_cstring_t(
+    file_data_t file, const char *name, cstring_t *value)
 {
     if (name == NULL)
-        fprintf(file, "\"%s\"", *value);
+        JFPRINTF(file, "\"%s\"", *value);
     else
-        fprintf(file, "\"%s\": \"%s\"", name, *value);
+        JFPRINTF(file, "\"%s\": \"%s\"", name, *value);
 }
 
-void jsn_obj_fprint_char(FILE *file, const char *name, char *value)
+void jsn_obj_fprint_char(file_data_t file, const char *name, char *value)
 {
     if (name == NULL)
-        fprintf(file, "\"%c\"", *value);
+        JFPRINTF(file, "\"%c\"", *value);
     else
-        fprintf(file, "\"%s\": \"%c\"", name, *value);
+        JFPRINTF(file, "\"%s\": \"%c\"", name, *value);
 }

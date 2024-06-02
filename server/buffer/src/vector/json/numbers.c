@@ -7,34 +7,34 @@
 
 #include "vector/json.h"
 
-void jsn_obj_fprint_int(FILE *file, const char *name, int *value)
+void jsn_obj_fprint_int(file_data_t file, const char *name, int *value)
 {
     if (name == NULL)
-        fprintf(file, "%d", *value);
+        JFPRINTF(file, "%d", *value);
     else
-        fprintf(file, "\"%s\": %d", name, *value);
+        JFPRINTF(file, "\"%s\": %d", name, *value);
 }
 
-void jsn_obj_fprint_float(FILE *file, const char *name, float *value)
+void jsn_obj_fprint_float(file_data_t file, const char *name, float *value)
 {
     if (name == NULL)
-        fprintf(file, "%f", *value);
+        JFPRINTF(file, "%f", *value);
     else
-        fprintf(file, "\"%s\": %f", name, *value);
+        JFPRINTF(file, "\"%s\": %f", name, *value);
 }
 
-void jsn_obj_fprint_double(FILE *file, const char *name, double *value)
+void jsn_obj_fprint_double(file_data_t file, const char *name, double *value)
 {
     if (name == NULL)
-        fprintf(file, "%f", *value);
+        JFPRINTF(file, "%f", *value);
     else
-        fprintf(file, "\"%s\": %f", name, *value);
+        JFPRINTF(file, "\"%s\": %f", name, *value);
 }
 
-void jsn_obj_fprint_long(FILE *file, const char *name, long *value)
+void jsn_obj_fprint_long(file_data_t file, const char *name, long *value)
 {
     if (name == NULL)
-        fprintf(file, "%ld", *value);
+        JFPRINTF(file, "%ld", *value);
     else
-        fprintf(file, "\"%s\": %ld", name, *value);
+        JFPRINTF(file, "\"%s\": %ld", name, *value);
 }

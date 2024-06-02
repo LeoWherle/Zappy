@@ -7,23 +7,23 @@
 
 #include "vector/json.h"
 
-void jsn_obj_fprint_ssize_t(FILE *file, const char *name, ssize_t *value)
+void jsn_obj_fprint_ssize_t(file_data_t file, const char *name, ssize_t *value)
 {
     if (name == NULL)
-        fprintf(file, "%ld", *value);
+        JFPRINTF(file, "%ld", *value);
     else
-        fprintf(file, "\"%s\": %ld", name, *value);
+        JFPRINTF(file, "\"%s\": %ld", name, *value);
 }
 
-void jsn_obj_fprint_bool(FILE *file, const char *name, bool *value)
+void jsn_obj_fprint_bool(file_data_t file, const char *name, bool *value)
 {
     if (name == NULL)
-        fprintf(file, "%s", *value ? "true" : "false");
+        JFPRINTF(file, "%s", *value ? "true" : "false");
     else
-        fprintf(file, "\"%s\": %s", name, *value ? "true" : "false");
+        JFPRINTF(file, "\"%s\": %s", name, *value ? "true" : "false");
 }
 
-void jsn_obj_fprint__Bool(FILE *file, const char *name, bool *value)
+void jsn_obj_fprint__Bool(file_data_t file, const char *name, bool *value)
 {
     jsn_obj_fprint_bool(file, name, value);
 }

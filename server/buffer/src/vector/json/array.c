@@ -7,8 +7,8 @@
 
 #include "vector/json.h"
 
-void json_print_vec(FILE *file, const char *name, vector_t *vec,
-    void (*print)(FILE *, char *, void *))
+void json_print_vec(file_data_t file, const char *name, vector_t *vec,
+    void (*print)(file_data_t, char *, void *))
 {
     void *data = NULL;
 
@@ -17,7 +17,7 @@ void json_print_vec(FILE *file, const char *name, vector_t *vec,
         data = VEC_AT(vec, i);
         print(file, NULL, data);
         if (i < vec->nmemb - 1)
-            fprintf(file, ", ");
+            JSON_ARR_SEP(file);
     }
     JSON_ARR_END(file);
 }

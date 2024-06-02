@@ -7,43 +7,44 @@
 
 #include "vector/json.h"
 
-
-void jsn_obj_fprint_uint32_t(FILE *file, const char *name, uint32_t *value)
+void jsn_obj_fprint_uint32_t(
+    file_data_t file, const char *name, uint32_t *value)
 {
     if (name == NULL)
-        fprintf(file, "%u", *value);
+        JFPRINTF(file, "%u", *value);
     else
-        fprintf(file, "\"%s\": %u", name, *value);
+        JFPRINTF(file, "\"%s\": %u", name, *value);
 }
 
-void jsn_obj_fprint_uint64_t(FILE *file, const char *name, uint64_t *value)
+void jsn_obj_fprint_uint64_t(
+    file_data_t file, const char *name, uint64_t *value)
 {
     if (name == NULL)
-        fprintf(file, "%lu", *value);
+        JFPRINTF(file, "%lu", *value);
     else
-        fprintf(file, "\"%s\": %lu", name, *value);
+        JFPRINTF(file, "\"%s\": %lu", name, *value);
 }
 
-void jsn_obj_fprint_int32_t(FILE *file, const char *name, int32_t *value)
+void jsn_obj_fprint_int32_t(file_data_t file, const char *name, int32_t *value)
 {
     if (name == NULL)
-        fprintf(file, "%d", *value);
+        JFPRINTF(file, "%d", *value);
     else
-        fprintf(file, "\"%s\": %d", name, *value);
+        JFPRINTF(file, "\"%s\": %d", name, *value);
 }
 
-void jsn_obj_fprint_int64_t(FILE *file, const char *name, int64_t *value)
+void jsn_obj_fprint_int64_t(file_data_t file, const char *name, int64_t *value)
 {
     if (name == NULL)
-        fprintf(file, "%ld", *value);
+        JFPRINTF(file, "%ld", *value);
     else
-        fprintf(file, "\"%s\": %ld", name, *value);
+        JFPRINTF(file, "\"%s\": %ld", name, *value);
 }
 
-void jsn_obj_fprint_size_t(FILE *file, const char *name, size_t *value)
+void jsn_obj_fprint_size_t(file_data_t file, const char *name, size_t *value)
 {
     if (name == NULL)
-        fprintf(file, "%lu", *value);
+        JFPRINTF(file, "%lu", *value);
     else
-        fprintf(file, "\"%s\": %lu", name, *value);
+        JFPRINTF(file, "\"%s\": %lu", name, *value);
 }
