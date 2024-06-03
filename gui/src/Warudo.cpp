@@ -67,7 +67,17 @@ void Warudo::setUpMap(void)
     float heightX = (tan(72.5 * M_PI / 180.0f) * _x) / 2.0f;
     float heightY = (tan(72.5 * M_PI / 180.0f) * _y) / 2.0f;
     float height = std::max(heightX, heightY);
-    _cam.SetPosition(raylib::Vector3(_x / 2.0f, height - 5, _y / 0.75f));  // Camera position
+    raylib:Vector3 camPos = raylib::Vector3(0, height, 0);
+    /* rotation X axis, MUST be improved in futur */
+    float angle = 45.0f;
+    float tmpY = camPos.y * cos(angle * M_PI / 180) + camPos.z * -sin(angle * M_PI / 180);
+    float tmpZ = camPos.y * sin(angle * M_PI / 180) + camPos.z * cos(angle * M_PI / 180);
+    camPos.y = tmpY;
+    camPos.z = tmpZ;
+    camPos.x += _x / 2.0f;
+    camPos.z += _y / 2.0f;
+    /* rotation X axis, MUST be improved in futur */
+    _cam.SetPosition(camPos);                                              // Camera position
     _cam.SetTarget(raylib::Vector3(_x / 2.0f, 0.0f, _y / 2.0f));          // Camera looking at point
     _cam.SetUp(raylib::Vector3(0.0f, 1.0f, 0.0f));                   // Camera up vector (rotation towards target)
     _cam.SetFovy(45.0f);                                       // Camera field-of-view Y
