@@ -184,12 +184,16 @@ void Warudo::updateGraphic(void)
 void Warudo::updatePikmin(void)
 {
     bool animState = false;
-    for (auto &pikmin : _pikmins) {
-        animState = pikmin.animationUpdate(_delta);
-        pikmin.drawModel(_delta);
-        if (pikmin.getStatus() == Pikmin::State::DYING && animState) {
-            //erase
+    std::vector<std::size_t> toDel;
+    for (std::size_t i = 0; i < _pikmins.size(); i++) {
+        animState = _pikmins[i].animationUpdate(_delta);
+        _pikmins[i].drawModel(_delta);
+        if (_pikmins[i].getStatus() == Pikmin::State::DYING && animState) {
+            toDel.push_back(i - toDel.size());
         }
+    }
+    for (auto del : toDel) {
+        _pikmins.erase(_pikmins.begin() + del);
     }
 }
 

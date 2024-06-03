@@ -30,8 +30,7 @@ class Pikmin {
         };
         Pikmin(std::string &id, std::size_t x, std::size_t y);
         Pikmin() = delete;
-        Pikmin(const Pikmin &) = delete;
-        Pikmin(Pikmin &&) = default;
+        Pikmin(const Pikmin &) = default;
         ~Pikmin();
 
         void pickRock(Kaillou rock);
@@ -59,7 +58,7 @@ class Pikmin {
 
         inline void setModel(raylib::Model *model) { _model = model; }
         void drawModel(float delta);
-        void setAnimation(std::string fileName);
+        void setAnimation(std::vector<raylib::ModelAnimation> *anim);
         inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
 
         bool animationUpdate(float delta);
@@ -83,7 +82,7 @@ class Pikmin {
         std::string _team;
         std::map<Kaillou, std::size_t> _inventory;
         raylib::Model *_model;
-        std::vector<raylib::ModelAnimation> _anim;
+        std::vector<raylib::ModelAnimation> *_anim;
         int _animCount;
         int _frameCount;
         State _status;

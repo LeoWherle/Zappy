@@ -40,5 +40,4 @@ public:
 
 private:
     std::map<std::string, texturedModel> _models;
-    raylib::Model _default;
 };

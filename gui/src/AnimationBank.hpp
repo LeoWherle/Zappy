@@ -15,9 +15,9 @@ class AnimationBank
 {
 public:
     AnimationBank() = default;
-    ~AnimationBank() = default;
+    ~AnimationBank();
 
-    std::string get(std::string ressourceName);
+    std::vector<raylib::ModelAnimation> *get(std::string ressourceName);
     float getFps(std::string ressourceName);
 
     class InvalidAnimation : public std::exception
@@ -35,4 +35,5 @@ public:
         std::string _str;
     };
 private:
+    std::map<std::string, std::vector<raylib::ModelAnimation>> _anims;
 };

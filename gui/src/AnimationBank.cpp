@@ -9,15 +9,26 @@
 
 //animation name | animation file name
 static const std::map<std::string, std::pair<std::string, float>> nameFile({
-    {"egg", {"", 1.0f}}
 });
 
-std::string AnimationBank::get(std::string ressourceName)
+AnimationBank::~AnimationBank(void)
 {
-    if (nameFile.find(ressourceName) == nameFile.end()) {
-        return "";
+    for (auto &[name, animList] : _anims) {
+        for (auto &anim : animList) {
+            anim.Unload();
+        }
     }
-    return nameFile.at(ressourceName).first;
+}
+
+std::vector<raylib::ModelAnimation> *AnimationBank::get(std::string ressourceName)
+{
+    if (_anims.find(ressourceName) == _anims.end()) {
+        if (nameFile.find(ressourceName) == nameFile.end()) {
+            return nullptr;
+        }
+        _anims[ressourceName] = raylib::ModelAnimation::Load(ressourceName);
+    }
+    return &_anims[ressourceName];
 }
 
 float AnimationBank::getFps(std::string ressourceName)

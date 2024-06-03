@@ -255,7 +255,6 @@ void ActionHandler::pikminPickRessource(std::smatch &arg)
                 return;
             }
             player.pickRock(static_cast<Kaillou>(rock));
-            _map[index].removeRock(static_cast<Kaillou>(rock));
         }
     }
 }
@@ -279,7 +278,7 @@ void ActionHandler::layedEgg(std::smatch &arg)
     std::size_t x = std::atoi(arg[3].str().c_str());
     std::size_t y = std::atoi(arg[4].str().c_str());
 
-    _pikmins.push_back(Pikmin(eggId, x, y));
+    _pikmins.emplace_back(Pikmin(eggId, x, y));
     _pikmins[_pikmins.size() - 1].setStatus(Pikmin::State::EGG);
     _pikmins[_pikmins.size() - 1].setModel(_model.get("egg"));
     _pikmins[_pikmins.size() - 1].setAnimation(_animation.get("egg"));

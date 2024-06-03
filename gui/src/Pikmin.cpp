@@ -31,7 +31,7 @@ Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y)
     _motionVector = raylib::Vector3(0, 0, 0);
     _rotationAxis = raylib::Vector3(0, 1, 0);
     _rotation = 0;
-    _scale = raylib::Vector3(1, 1, 1);
+    _scale = raylib::Vector3(0.5, 0.5, 0.5);
     _colorMod = raylib::Color::Blue();
     _cumulatedTime = 0.0f;
     _animationTime = 0.0f;
@@ -40,9 +40,6 @@ Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y)
 
 Pikmin::~Pikmin()
 {
-    for (auto &anim : _anim) {
-        anim.Unload();
-    }
 }
 
 
@@ -60,30 +57,23 @@ void Pikmin::dropRock(Kaillou rock)
     }
 }
 
-void Pikmin::setAnimation(std::string fileName)
+void Pikmin::setAnimation(std::vector<raylib::ModelAnimation> *anim)
 {
-    if (fileName == "")
-        return;
-    if (_anim.size() > 0) {
-        for (auto &anim : _anim) {
-            anim.Unload();
-        }
-        _animCount = 0;
-    }
-    _anim = raylib::ModelAnimation::Load(fileName.c_str());
+    _animCount = 0;
+    _anim = anim;
 }
 
 bool Pikmin::animationUpdate(float delta)
 {
-    if (_model == nullptr || _anim.size() == 0) {
+    if (_model == nullptr || _anim == nullptr || _anim->size() == 0) {
         return true;
     }
     _cumulatedTime += delta;
     if (_cumulatedTime >= _animationTime) {
         _cumulatedTime = 0.0f;
-        _model->UpdateAnimation(_anim[0], _frameCount);
+        _model->UpdateAnimation((*_anim)[0], _frameCount);
         _frameCount++;
-        if (_frameCount > _anim[0].frameCount) {
+        if (_frameCount > (*_anim)[0].frameCount) {
             _frameCount = 0;
             return true;
         }

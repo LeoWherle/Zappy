@@ -4,7 +4,7 @@
 ** File description:
 ** Model Bank
 */
-
+#include <iostream>
 #include "ModelBank.hpp"
 
 // model name | <model file | texture file>
@@ -17,9 +17,11 @@ ModelBank::ModelBank(void)
 
 ModelBank::~ModelBank(void)
 {
-    for (auto &[key, value] : _models) {
-        UnloadModel(value.model);
-        UnloadTexture(value.texture);
+    if (_models.size() > 0) {
+        for (auto &[key, value] : _models) {
+            value.model.Unload();
+            value.texture.Unload();
+        }
     }
 }
 
