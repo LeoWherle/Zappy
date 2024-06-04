@@ -31,6 +31,9 @@ class PikminData
         inline std::string getTeam(void) const { return _team; }
         inline Inventory getInventory(void) const { return _inventory; }
 
+        inline bool operator==(const PikminData &other) { return (_id == other._id); }
+        inline bool operator==(const std::string &id) { return (_id == id); }
+
     private:
         std::size_t _x;
         std::size_t _y;

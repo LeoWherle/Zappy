@@ -54,8 +54,8 @@ class Pikmin {
         void spawnAsEgg(void);
         void spawnAsPikmin(void);
 
-        inline bool operator==(const Pikmin &other) { return (_data.getId() == other._data.getId()); }
-        inline bool operator==(const std::string &id) { return (_data.getId() == id); }
+        inline bool operator==(const Pikmin &other) { return (_data == other._data); }
+        inline bool operator==(const std::string &id) { return (_data == id); }
 
         inline State getStatus(void) { return _status; }
         inline void setStatus(State newStatus) { _status = newStatus; }
