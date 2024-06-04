@@ -38,7 +38,7 @@ void log_set_level(enum LogLevel level)
 
 static bool is_colored(FILE *file)
 {
-    return file == stderr || file == stdout;
+    return (file == stderr || file == stdout) && global_log_color(0, 0);
 }
 
 int vflog_msg(FILE *file, enum LogLevel level, const char *__restrict format,

@@ -33,6 +33,23 @@ static void add_initial_team_eggs(
     }
 }
 
+static void init_spamming_trantor(trantor_t *trantor)
+{
+    player_t *player;
+
+    execute_gcmd(trantor, "msz");
+    execute_gcmd(trantor, "sgt");
+    execute_gcmd(trantor, "mct");
+    execute_gcmd(trantor, "tna");
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        player = (player_t *) vec_at(&trantor->players, i);
+        talkf(&trantor->log, "enw %d %d %d %d\n",
+            player->n, -1, player->coord[0], player->coord[1]);
+        talkf(&trantor->log, "eht %d\n", player->n);
+    }
+    trantor->since_spam = 0.0f;
+}
+
 void init_trantor(trantor_t *trantor)
 {
     init_map(trantor->params.width, trantor->params.height, &trantor->map);
@@ -42,9 +59,11 @@ void init_trantor(trantor_t *trantor)
     if (str_init(&trantor->log, "") != BUF_OK)
         LOG_ERROR("Failed to init log buffer");
     trantor->winning_team = -1;
-    for (unsigned int i = 0; i < trantor->params.teams; i++) {
+    for (unsigned int i = 0; i < trantor->params.teams; i++)
         add_initial_team_eggs(trantor, i);
-    }
+    if (trantor->params.spam_gui)
+        init_spamming_trantor(trantor);
+    trantor->paused = trantor->params.paused_start;
 }
 
 void feed_player_line(

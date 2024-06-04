@@ -37,11 +37,11 @@ void gui_pin(trantor_t *trantor, gcmd_args_t *args)
 // replace by actual time or f ?
 void gui_sgt(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 {
-    talkf(&trantor->log, "sgt %f\n", 0.0f);
+    talkf(&trantor->log, "sgt %d\n", (int) trantor->params.f);
 }
 
 // same
 void gui_sst(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 {
-    talkf(&trantor->log, "sst %f\n", 0.0f);
+    talkf(&trantor->log, "sst %d\n", (int) trantor->params.f);
 }

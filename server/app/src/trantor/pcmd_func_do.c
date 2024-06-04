@@ -38,9 +38,12 @@ void player_fork(pcmd_args_t *args)
     init_egg(&egg, args->player->team, args->player->coord);
     if (vec_push(args->players, &egg) != BUF_OK)
         LOG_ERROR("Error while pushing egg to players");
-    talkf(args->log, "pfk %d\n", args->player->n);
     talkf(args->log, "enw %d %d %d %d\n", egg.n, args->player->n,
         egg.coord[0], egg.coord[1]);
+    if (args->spam_gui)
+        talkf(args->log, "eht %d\n", args->player->n);
+    else
+        talkf(args->log, "pfk %d\n", args->player->n);
 }
 
 static void warn_player_eject(

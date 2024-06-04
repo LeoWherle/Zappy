@@ -20,16 +20,15 @@ BIN_AI=zappy_ai
 BIN_SERVER=zappy_server
 BIN_GUI=zappy_gui
 
-FOLDER_AI=ai/
-FOLDER_SERVER=server/
-FOLDER_GUI=gui/
+FOLDER_AI=ai
+FOLDER_SERVER=server
+FOLDER_GUI=gui
 
 
 MAKE  = make --no-print-directory
 
 RAYLIB_PATH=gui/raylib/src
 RAYLIB_CPP_PATH=gui/raylib-cpp
-
 
 RULE =
 # used with make DEBUG=n
@@ -57,31 +56,28 @@ install-raylib-cpp-example:
 	$(MAKE) -C $(RAYLIB_CPP_PATH)/build
 
 setup: install-raylib
-	$(MAKE) -C gui/ setup
+	$(MAKE) -C $(FOLDER_GUI) setup
 	@echo -e "$(GREEN)✓ Raylib installed sucessfully$(RESET)"
 
 $(BIN_AI):
-	@$(MAKE) -C $(FOLDER_AI)
-	mv $(FOLDER_AI)$(BIN_AI) .
+	ln -s -f $(FOLDER_AI)/main.py $(BIN_AI)
 
 $(BIN_SERVER):
-	@$(MAKE) -C $(FOLDER_SERVER) $(RULE)
-	mv $(FOLDER_SERVER)$(BIN_SERVER) .
+	@$(MAKE) -C $(FOLDER_SERVER)
+	cp $(FOLDER_SERVER)/$(BIN_SERVER) .
 
 $(BIN_GUI):
-	@$(MAKE) -C $(FOLDER_GUI) $(RULE)
-	mv $(FOLDER_GUI)$(BIN_GUI) .
+	@$(MAKE) -C $(FOLDER_GUI)
+	cp $(FOLDER_GUI)/$(BIN_GUI) .
 
 build_lib:
 	@$(MAKE) -C $(FOLDER_GUI) setup
 
 clean:
-	@$(MAKE) -C $(FOLDER_AI) clean
 	@$(MAKE) -C $(FOLDER_SERVER) clean
 	@$(MAKE) -C $(FOLDER_GUI) clean
 
 fclean:
-	@$(MAKE) -C $(FOLDER_AI) fclean
 	rm -f $(BIN_AI)
 	@$(MAKE) -C $(FOLDER_SERVER) fclean
 	rm -f $(BIN_SERVER)
