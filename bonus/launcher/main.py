@@ -26,9 +26,10 @@ class App:
 
         self.use_refServer_var = IntVar(value=0)
         self.use_refGui_var = IntVar(value=0)
-        self.width_var = DoubleVar(value=10)
-        self.height_var = DoubleVar(value=10)
-        self.starting_egg_var = DoubleVar(value=6)
+        self.width_var = IntVar(value=10)
+        self.height_var = IntVar(value=10)
+        self.starting_egg_var = IntVar(value=6)
+        self.f_scale_var = IntVar(value=100)
 
         self.setup_config_widgets(config_frame)
 
@@ -43,16 +44,17 @@ class App:
     def setup_config_widgets(self, frame):
         ttk.Checkbutton(frame, text="Use Ref Server", variable=self.use_refServer_var).grid(row=1, column=0, sticky="w")
         ttk.Checkbutton(frame, text="Use Ref GUI", variable=self.use_refGui_var).grid(row=2, column=0, sticky="w")
-        self.create_slider(frame, "Width", self.width_var, 3)
-        self.create_slider(frame, "Height", self.height_var, 6)
-        self.create_slider(frame, "Starting Egg", self.starting_egg_var, 9)
+        self.create_slider(frame, "Width", self.width_var, 3, 1, 100)
+        self.create_slider(frame, "Height", self.height_var, 6, 1, 100)
+        self.create_slider(frame, "Starting Egg", self.starting_egg_var, 9, 1, 10)
+        self.create_slider(frame, "F Scale", self.f_scale_var, 12, 2, 300)
 
         self.start_button = ttk.Button(frame, text="Start All", command=self.start_all_processes)
-        self.start_button.grid(row=13, column=0, sticky="ew", pady=(10, 0))
+        self.start_button.grid(row=15, column=0, sticky="ew", pady=(10, 0))
         self.stop_button = ttk.Button(frame, text="Stop All", command=self.stop_all_processes, state=tk.DISABLED)
-        self.stop_button.grid(row=14, column=0, sticky="ew")
-        ttk.Button(frame, text="Clear Output", command=self.clear_output).grid(row=15, column=0, sticky="ew")
-        ttk.Button(frame, text="Save Output", command=self.save_output).grid(row=16, column=0, sticky="ew")
+        self.stop_button.grid(row=16, column=0, sticky="ew")
+        ttk.Button(frame, text="Clear Output", command=self.clear_output).grid(row=17, column=0, sticky="ew")
+        ttk.Button(frame, text="Save Output", command=self.save_output).grid(row=18, column=0, sticky="ew")
 
     def update_outputs(self):
         for i, pm in enumerate(self.process_managers):
@@ -72,9 +74,10 @@ class App:
             self.config.update(
                 self.use_refServer_var.get(),
                 self.use_refGui_var.get(),
-                int(self.width_var.get()),
-                int(self.height_var.get()),
-                int(self.starting_egg_var.get())
+                self.width_var.get(),
+                self.height_var.get(),
+                self.starting_egg_var.get(),
+                self.f_scale_var.get()
             )
             cm = ConfiguratorManager(self.config)
             commands = cm.get_commands()
@@ -92,9 +95,9 @@ class App:
             self.start_button.state(['!disabled'])
             self.stop_button.state(['disabled'])
 
-    def create_slider(self, frame, label, var, start_row):
+    def create_slider(self, frame, label, var, start_row, min, max):
         ttk.Label(frame, text=label).grid(row=start_row, column=0, sticky="w")
-        slider = ttk.Scale(frame, from_=1, to=100 if "Egg" not in label else 10, orient="horizontal", variable=var,
+        slider = ttk.Scale(frame, from_=min, to=max, orient="horizontal", variable=var,
                            command=lambda v, l=label, var=var: self.update_slider_label(l, var))
         slider.grid(row=start_row + 1, column=0, sticky="ew")
         value_label = ttk.Label(frame, text=f"{var.get():.0f}")
