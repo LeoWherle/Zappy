@@ -21,6 +21,7 @@ typedef struct pcmd_args_s {
     vector_t *players;
     unsigned int cnb;
     string_t *log;
+    bool spam_gui;
 } pcmd_args_t;
 
 typedef void (*pcmd_func_t)(pcmd_args_t *args);

@@ -58,6 +58,7 @@ static void execute_pcmd(trantor_t *trantor, player_t *player)
     pcmd_executor_t *executor = &player->pcmd_exec;
     pcmd_args_t args = {0};
 
+    args.spam_gui = trantor->params.spam_gui;
     args.player = player;
     args.map = &(trantor->map);
     args.broadcast_msg = executor->arg;
@@ -133,7 +134,7 @@ static void try_refill_map(trantor_t *trantor, double delta)
     trantor->map.since_refill += delta;
     if (trantor->map.since_refill >= MAP_REFILLS_INTERVAL) {
         add_ressources(&(trantor->map));
-        trantor->map.since_refill = 0.0;
+        trantor->map.since_refill -= MAP_REFILLS_INTERVAL;
     }
 }
 
@@ -168,10 +169,19 @@ static void player_time_pass(
 
 bool trantor_time_pass(trantor_t *trantor, double delta)
 {
+    if (trantor->paused)
+        return (trantor->winning_team == -1);
     try_refill_map(trantor, delta);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
         player_time_pass(trantor, delta,
             (player_t *) vec_at(&trantor->players, i));
+    }
+    if (trantor->params.spam_gui) {
+        trantor->since_spam += delta;
+        if (trantor->since_spam >= SPAM_INTERVAL) {
+            execute_gcmd(trantor, "mct");
+            trantor->since_spam -= SPAM_INTERVAL;
+        }
     }
     return (trantor->winning_team == -1);
 }
