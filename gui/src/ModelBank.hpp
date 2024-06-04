@@ -7,30 +7,61 @@
 
 #pragma once
 
-#include "ModelAnimation.hpp"
+#include "Material.hpp"
 #include <raylib-cpp.hpp>
 #include <map>
 #include <vector>
 
-typedef struct ModelInfo {
-    std::string modelPath;
-    std::string texturePath;
-} ModelInfo_t;
+enum ModelType {
+    DEFAULT, 
+    RED_PIKMIN,
+    YELLOW_PIKMIN,
+    BLUE_PIKMIN,
+    LEAF_TOP,
+    BUD_TOP,
+    FLOWER_TOP
+};
 
-typedef struct FullModel {
-    raylib::Model model;
-    raylib::Texture2D texture;
-    std::vector<raylib::ModelAnimation> animations;
-} FullModel_t;
+enum AnimType {
+    WALK,
+    INCANTATION,
+    IDLE,
+    PICK,
+    DROP,
+    DEATH
+};
+
+
+class GuiModel {
+    public:
+
+        GuiModel(std::string modelPath, std::string texturePath, std::string animPath);
+        ~GuiModel();
+
+    protected:
+    private:
+        int _frameCount;
+        raylib::Model _model;
+        raylib::Texture _texture;
+        raylib::Material _material;
+        std::vector<raylib::ModelAnimation> _animations;
+};
 
 class ModelBank
 {
     public:
 
-        static const std::map<std::string, ModelInfo_t> modelInfo;
-        static std::map<std::string, FullModel_t> models;
+        typedef struct ModelInfo {
+            std::string modelPath;
+            std::string texturePath;
+            std::string animPath;
+        } ModelInfo_t;
 
-        static FullModel_t *get(std::string ressourceName);
+        static const std::map<ModelType, ModelInfo> modelInfo;
+        static const std::map<ModelType, std::vector<AnimType>> animInfo;
+        static std::map<ModelType, GuiModel *> models;
+
+        static GuiModel *get(ModelType ressourceName);
 
         class InvalidModel : public std::exception
         {
