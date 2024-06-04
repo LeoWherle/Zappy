@@ -60,6 +60,8 @@ class Pikmin {
         inline State getStatus(void) { return _status; }
         inline void setStatus(State newStatus) { _status = newStatus; }
 
+        inline PikminData &getData(void) { return _data; }
+
     private:
 
         PikminData _data;
