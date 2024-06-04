@@ -10,30 +10,22 @@
 #include <iostream>
 
 Tile::Tile(std::size_t x, std::size_t y) : _x(x), _y(y)
-{
-    _rocks[Kaillou::FOOD] = 0;
-    _rocks[Kaillou::LINEMATE] = 0;
-    _rocks[Kaillou::DERAUMERE] = 0;
-    _rocks[Kaillou::SIBUR] = 0;
-    _rocks[Kaillou::MENDIANE] = 0;
-    _rocks[Kaillou::PHIRAS] = 0;
-    _rocks[Kaillou::THYSTAME] = 0;
-}
+{}
 
 void Tile::setRocks(std::map<Kaillou, std::size_t> &rocks)
 {
     for (auto i = rocks.begin(); i != rocks.end(); i++) {
-        if (rocks[i->first] > _rocks[i->first]) {
-            while (rocks[i->first] != _rocks[i->first]) {
-                addRock(i->first);
-            }
-        } else if (rocks[i->first] < _rocks[i->first]) {
-            while (rocks[i->first] != _rocks[i->first]) {
-                removeRock(i->first);
-            }
+        std::size_t nbRock = _inv.getNbRock(i->first);
+        while (nbRock < rocks[i->first]) {
+            addRock(i->first);
+            nbRock++;
+        }
+        while (nbRock > rocks[i->first]) {
+            removeRock(i->first);
+            nbRock--;
         }
     }
-    _rocks = rocks;
+    _inv.setRock(rocks);
 }
 
 void Tile::getRockModel(ModelBank &bank)
@@ -49,24 +41,18 @@ void Tile::getRockModel(ModelBank &bank)
 
 void Tile::addRock(Kaillou rock)
 {
-    if (_rocks.find(rock) != _rocks.end()) {
-        _rocks[rock]++;
-        groundedMaterial newMat;
-        newMat.caillou = rock;
-        newMat.pos = raylib::Vector3(_x - 0.45f + (float)(std::rand() % 900) / 1000.0f, 0.6, _y - 0.45f + (float)(std::rand() % 900) / 1000.0f);
-        _materials.push_back(newMat);
-    }
+    groundedMaterial newMat;
+    newMat.caillou = rock;
+    newMat.pos = raylib::Vector3(_x - 0.45f + (float)(std::rand() % 900) / 1000.0f, 0.6, _y - 0.45f + (float)(std::rand() % 900) / 1000.0f);
+    _materials.push_back(newMat);
 }
 
 void Tile::removeRock(Kaillou rock)
 {
-    if (_rocks.find(rock) != _rocks.end()) {
-        for (auto i = _materials.begin(); i != _materials.end(); i++) {
-            if (i->caillou == rock) {
-                _materials.erase(i);
-                _rocks[rock]--;
-                break;
-            }
+    for (auto i = _materials.begin(); i != _materials.end(); i++) {
+        if (i->caillou == rock) {
+            _materials.erase(i);
+            break;
         }
     }
 }

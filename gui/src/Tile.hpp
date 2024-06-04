@@ -12,6 +12,7 @@
 #include <string>
 #include "Kaillou.hpp"
 #include "ModelBank.hpp"
+#include "Inventory.hpp"
 
 class Tile {
     public:
@@ -30,7 +31,7 @@ class Tile {
             raylib::Vector3 pos;
         };
 
-        std::map<Kaillou, std::size_t> _rocks;
+        Inventory _inv;
         std::map<Kaillou, raylib::Model *> _models;
         std::vector<groundedMaterial> _materials;
         float _x;
