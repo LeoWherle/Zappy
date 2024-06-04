@@ -11,45 +11,48 @@
 #include "Communication/Client.hpp"
 #include "Communication/WriteBuffer.hpp"
 #include "Communication/ReadBuffer.hpp"
+#include "Camera.hpp"
 #include "ActionHandler.hpp"
 #include "Pikmin.hpp"
 #include "Tile.hpp"
 
-class Warudo {
-    public:
-        Warudo(int timeout, std::string &ip, std::size_t port);
-        ~Warudo();
+namespace GUI {
+    class Warudo {
+        public:
+            Warudo(int timeout, std::string &ip, std::size_t port);
+            ~Warudo();
 
-        void setUp(void);
-        void handleCommunication(void);
-        void loop(void);
-        void updateGraphic(void);
+            void setUp(void);
+            void handleCommunication(void);
+            void loop(void);
+            void updateGraphic(void);
 
-    private:
-        void setUpServer(void);
-        void setUpMap(void);
+        private:
+            void setUpServer(void);
+            void setUpMap(void);
 
-        void updatePikmin(void);
-        void updateTile(void);
-        void updateUI(void);
+            void updatePikmin(void);
+            void updateTile(void);
+            void updateUI(void);
 
-        std::vector<Pikmin> _pikmins;
-        std::pair<std::size_t, std::size_t> _size;
-        std::vector<Tile> _map;
-        std::vector<std::string> _teams;
-        std::size_t &_x;
-        std::size_t &_y;
-        float _timeMult;
-        ActionHandler _handler;
+            std::vector<Pikmin> _pikmins;
+            std::pair<std::size_t, std::size_t> _size;
+            std::vector<Tile> _map;
+            std::vector<std::string> _teams;
+            std::size_t &_mapX;
+            std::size_t &_mapY;
+            float _timeMult;
+            ActionHandler _handler;
 
-        connection::Client _client;
-        ReadBuffer _stdInput;
-        ReadBuffer _in;
-        WriteBuffer _StdOutput;
-        WriteBuffer _out;
-        bool _run;
+            connection::Client _client;
+            Buffer::ReadBuffer _stdInput;
+            Buffer::ReadBuffer _in;
+            Buffer::WriteBuffer _StdOutput;
+            Buffer::WriteBuffer _out;
+            bool _run;
 
-        raylib::Camera3D _cam;
+            Camera _cam;
 
-        float _delta;
-};
+            float _delta;
+    };
+}

@@ -11,29 +11,31 @@
 #include <string>
 #include <raylib-cpp.hpp>
 
-class AnimationBank
-{
-public:
-    AnimationBank() = default;
-    ~AnimationBank();
-
-    std::vector<raylib::ModelAnimation> *get(std::string ressourceName);
-    float getFps(std::string ressourceName);
-
-    class InvalidAnimation : public std::exception
+namespace GUI {
+    class AnimationBank
     {
     public:
-        InvalidAnimation(std::string name) : _str("invalid animation name " + name)
-        {}
+        AnimationBank() = default;
+        ~AnimationBank();
 
-        const char* what() const noexcept override
+        std::vector<raylib::ModelAnimation> *get(std::string ressourceName);
+        float getFps(std::string ressourceName);
+
+        class InvalidAnimation : public std::exception
         {
-            return _str.c_str();
-        }
+        public:
+            InvalidAnimation(std::string name) : _str("invalid animation name " + name)
+            {}
 
+            const char* what() const noexcept override
+            {
+                return _str.c_str();
+            }
+
+        private:
+            std::string _str;
+        };
     private:
-        std::string _str;
+        std::map<std::string, std::vector<raylib::ModelAnimation>> _anims;
     };
-private:
-    std::map<std::string, std::vector<raylib::ModelAnimation>> _anims;
-};
+}

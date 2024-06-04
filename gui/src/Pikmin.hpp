@@ -15,54 +15,56 @@
 #include "PikminData.hpp"
 #include "PikminModel.hpp"
 
-class Pikmin {
-    public:
-        enum Direction {
-            NORTH = 1,
-            SOUTH = 3,
-            EST = 2,
-            WEST = 4
-        };
+namespace GUI{
+    class Pikmin {
+        public:
+            enum Direction {
+                NORTH = 1,
+                SOUTH = 3,
+                EST = 2,
+                WEST = 4
+            };
 
-        enum State {
-            ALIVE,
-            EJECT,
-            EGG,
-            DYING
-        };
-        Pikmin(std::string &id, std::size_t x, std::size_t y);
-        Pikmin() = delete;
-        Pikmin(const Pikmin &) = default;
-        ~Pikmin();
+            enum State {
+                ALIVE,
+                EJECT,
+                EGG,
+                DYING
+            };
+            Pikmin(std::string &id, std::size_t x, std::size_t y);
+            Pikmin() = delete;
+            Pikmin(const Pikmin &) = default;
+            ~Pikmin();
 
-        bool draw(float delta);
+            bool draw(float delta);
 
-        bool isOnTile(std::size_t x, std::size_t y);
+            bool isOnTile(std::size_t x, std::size_t y);
 
-        void setTeam(std::string &team);
+            void setTeam(std::string &team);
 
-        void updatePosition(std::size_t x, std::size_t y, int orientation);
-        void updateLevel(std::size_t level);
-        void updateInventory(std::map<Kaillou, std::size_t> &inventory);
-        void eject(void);
-        void startIncant(void);
-        void stopIncant(bool result);
-        void LayingEgg(void);
-        void dropRock(Kaillou rock);
-        void pickRock(Kaillou rock);
-        void die(void);
-        void spawnAsEgg(void);
-        void spawnAsPikmin(void);
+            void updatePosition(std::size_t x, std::size_t y, int orientation);
+            void updateLevel(std::size_t level);
+            void updateInventory(std::map<Kaillou, std::size_t> &inventory);
+            void eject(void);
+            void startIncant(void);
+            void stopIncant(bool result);
+            void LayingEgg(void);
+            void dropRock(Kaillou rock);
+            void pickRock(Kaillou rock);
+            void die(void);
+            void spawnAsEgg(void);
+            void spawnAsPikmin(void);
 
-        inline bool operator==(const Pikmin &other) { return (_data == other._data); }
-        inline bool operator==(const std::string &id) { return (_data == id); }
+            inline bool operator==(const Pikmin &other) { return (_data == other._data); }
+            inline bool operator==(const std::string &id) { return (_data == id); }
 
-        inline State getStatus(void) { return _status; }
-        inline void setStatus(State newStatus) { _status = newStatus; }
+            inline State getStatus(void) { return _status; }
+            inline void setStatus(State newStatus) { _status = newStatus; }
 
-    private:
+        private:
 
-        PikminData _data;
-        PikminModel _model;
-        State _status;
-};
+            PikminData _data;
+            PikminModel _model;
+            State _status;
+    };
+}

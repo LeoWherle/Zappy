@@ -10,34 +10,36 @@
 #include <raylib-cpp.hpp>
 #include <map>
 
-class ModelBank
-{
-public:
-    ModelBank(void);
-    ~ModelBank(void);
-
-    raylib::Model *get(std::string ressourceName);
-
-    struct texturedModel {
-        raylib::Model model;
-        raylib::Texture2D texture;
-    };
-
-    class InvalidModel : public std::exception
+namespace GUI {
+    class ModelBank
     {
     public:
-        InvalidModel(std::string name) : _str("invalid model name " + name)
-        {}
+        ModelBank(void);
+        ~ModelBank(void);
 
-        const char* what() const noexcept override
+        raylib::Model *get(std::string ressourceName);
+
+        struct texturedModel {
+            raylib::Model model;
+            raylib::Texture2D texture;
+        };
+
+        class InvalidModel : public std::exception
         {
-            return _str.c_str();
-        }
+        public:
+            InvalidModel(std::string name) : _str("invalid model name " + name)
+            {}
+
+            const char* what() const noexcept override
+            {
+                return _str.c_str();
+            }
+
+        private:
+            std::string _str;
+        };
 
     private:
-        std::string _str;
+        std::map<std::string, texturedModel> _models;
     };
-
-private:
-    std::map<std::string, texturedModel> _models;
-};
+}
