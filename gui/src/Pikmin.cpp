@@ -18,11 +18,12 @@ Pikmin::~Pikmin()
 
 void Pikmin::updatePosition(std::size_t x, std::size_t y, int orientation)
 {
-    if ((_data.getX() != x || _data.getY() != y) && _status != Pikmin::State::EJECT) {
-        _model.setPositionVector(raylib::Vector3(_data.getX(), 1, _data.getY()));
-        //_model.setAnimation(_animation.get("walk"));
-        _model.setMotionVector(raylib::Vector3(_data.getX() - x, 0, _data.getY() - y));
-    }
+    //if ((_data.getX() != x || _data.getY() != y) && _status != Pikmin::State::EJECT) {
+    //    _model.setPositionVector(raylib::Vector3(_data.getX(), 1, _data.getY()));
+    //    //_model.setAnimation(_animation.get("walk"));
+    //    _model.setMotionVector(raylib::Vector3(_data.getX() - x, 0, _data.getY() - y));
+    //}
+    _model.setPositionVector(raylib::Vector3(x, 1, y));
     _data.setX(x);
     _data.setY(y);
     _data.setDirection(orientation);
