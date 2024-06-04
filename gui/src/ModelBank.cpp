@@ -17,7 +17,7 @@ ModelBank::ModelBank(void)
 
 ModelBank::~ModelBank(void)
 {
-    if (_models.size() > 0) {
+    if (_models.empty()) {
         for (auto &[key, value] : _models) {
             value.model.Unload();
             value.texture.Unload();
@@ -25,7 +25,7 @@ ModelBank::~ModelBank(void)
     }
 }
 
-raylib::Model *ModelBank::get(std::string ressourceName)
+raylib::Model *ModelBank::get(const std::string &ressourceName)
 {
     if (_models.find(ressourceName) == _models.end()) {
         if (nameFile.find(ressourceName) == nameFile.end()) {

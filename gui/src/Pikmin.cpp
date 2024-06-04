@@ -74,7 +74,7 @@ void Pikmin::startIncant(void)
 
 void Pikmin::stopIncant(bool result)
 {
-    if (result == true) {
+    if (result) {
         updateLevel(_data.getLevel() + 1);
         //_model.setAnimation(_animation.get("level up"));
     } else {

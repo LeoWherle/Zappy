@@ -102,7 +102,8 @@ void Warudo::loop()
         handleCommunication();
         prevTime = curTime;
         curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        _delta = (prevTime - curTime) / 1000 / _timeMult;
+        if (_timeMult > 0)
+            _delta = (prevTime - curTime) / 1000 / _timeMult;
         updateGraphic();
     }
 }
@@ -159,6 +160,8 @@ void Warudo::updateGraphic(void)
                 bool line = true;
                 bool white = line;
                 for (auto tile : _map) {
+                    if (_x == 0)
+                        break;
                     raylib::Vector3 pos((index % _x), 0, static_cast<int>((index / _x)));
                     if (index % _x == 0) {
                         line = !line;

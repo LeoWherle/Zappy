@@ -16,7 +16,7 @@ public:
     ModelBank(void);
     ~ModelBank(void);
 
-    raylib::Model *get(std::string ressourceName);
+    raylib::Model *get(const std::string &ressourceName);
 
     struct texturedModel {
         raylib::Model model;
