@@ -12,7 +12,7 @@
 class PikminModel
 {
     public:
-        PikminModel(/* args */);
+        PikminModel(std::size_t x, std::size_t y);
         ~PikminModel() = default;
 
         inline void setModel(raylib::Model *model) { _model = model; }

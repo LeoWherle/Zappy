@@ -45,7 +45,6 @@ bool ActionHandler::operator()(std::string &action)
     for (auto &[regex, reaction] : _regexMap) {
         std::smatch match;
         if (std::regex_match(action, match, regex)) {
-            std::cout << action << std::endl;
             (this->*reaction)(match);
             return true;
         }
@@ -260,9 +259,10 @@ void ActionHandler::layedEgg(std::smatch &arg)
     std::string pikminId = arg[2].str();
     std::size_t x = std::atoi(arg[3].str().c_str());
     std::size_t y = std::atoi(arg[4].str().c_str());
+    Pikmin newPikmin(eggId, x, y);
 
-    _pikmins.emplace_back(Pikmin(eggId, x, y));
-    _pikmins[_pikmins.size() - 1].spawnAsEgg();
+    newPikmin.spawnAsEgg();
+    _pikmins.emplace_back(newPikmin);
 }
 
 void ActionHandler::eggHatche(std::smatch &arg)
@@ -270,8 +270,8 @@ void ActionHandler::eggHatche(std::smatch &arg)
     std::string eggId = arg[1].str();
 
     for (std::size_t i = 0; i < _pikmins.size(); i++) {
-        if (_pikmins[i] == eggId) {
-            _pikmins[i].spawnAsPikmin();
+        if (_pikmins[i] == eggId && _pikmins[i].getStatus() == Pikmin::State::EGG) {
+            _pikmins.erase(_pikmins.begin() + i);
         }
     }
 }

@@ -8,7 +8,7 @@
 #include "Pikmin.hpp"
 #include <iostream>
 
-Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y) : _data(id, x, y)
+Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
 {
 }
 
