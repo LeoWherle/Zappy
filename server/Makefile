@@ -40,7 +40,7 @@ else ifeq ($(DEBUG), y)
 	RULE = "DEBUG=y"
 	BUILD_PATH := $(BUILD_DIR)asan/
 else
-	CFLAGS += -g -fanalyzer -Wanalyzer-too-complex
+	CFLAGS += -g -fanalyzer
 	LDFLAGS += -fwhole-program -flto
 	BUILD_PATH := $(BUILD_DIR)debug/
 endif
