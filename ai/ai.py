@@ -35,7 +35,7 @@ def make_ai_actions(ai_instance, threads, args, logger):
     """
     global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
 
-    if not ai_instance.king and ai_instance.random and ai_instance.get_food_nbr() < 20:
+    if not ai_instance.king and ai_instance.random and ai_instance.get_food_nbr() < 25:
         ai_instance.go_to_obj("food")
         ai_instance.take_all_food()
         if ai_instance.random and ai_instance.lvl == 1:
@@ -54,7 +54,6 @@ def make_ai_actions(ai_instance, threads, args, logger):
         if ai_instance.king:
             if ai_instance.get_nb_player_on_tile() >= 6:
                 ai_instance.broadcast("elevate")
-                #ai_instance.share_food()
                 ai_instance.drop_all()
                 ai_instance.incantation()
             else:

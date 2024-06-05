@@ -482,7 +482,6 @@ class AI:
             if not self.choosen_ones and self.get_nb_player_on_tile() >= 6:
                 self.choosen_ones = True
             if self.choosen_ones:
-                # self.share_food()
                 self.drop_all()
                 if self.lvl == 1:
                     self.incantation()
