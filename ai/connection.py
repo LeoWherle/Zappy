@@ -109,7 +109,6 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         """
         if msg[-1] != '\n':
             msg += '\n'
-        print(f"ADDING THIS MESSAGE TO BUFFER: {msg}")
         self.in_buffer += msg
 
     def add_to_read(self, response):
