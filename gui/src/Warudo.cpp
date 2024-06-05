@@ -13,6 +13,7 @@ namespace GUI {
     Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
         _size(0, 0), _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
         _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
+        _key (KeyHandler(_cam)),
         _client (connection::Client(timeout, ip, port))
     {
         _run = true;
@@ -84,6 +85,7 @@ namespace GUI {
 
         while (_run && !WindowShouldClose()) {
             handleCommunication();
+            handleKey();
             prevTime = curTime;
             curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
             _delta = (prevTime - curTime) / 1000 / _timeMult;
@@ -129,6 +131,11 @@ namespace GUI {
        //         _out.write_to_buffer("\n");
        //     }
        // }
+    }
+
+    void Warudo::handleKey(void)
+    {
+        _key.update();
     }
 
     void Warudo::updateGraphic(void)

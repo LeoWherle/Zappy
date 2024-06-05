@@ -13,6 +13,7 @@
 #include "Communication/ReadBuffer.hpp"
 #include "Camera.hpp"
 #include "ActionHandler.hpp"
+#include "KeyHandler.hpp"
 #include "Pikmin.hpp"
 #include "Tile.hpp"
 
@@ -30,6 +31,7 @@ namespace GUI {
         private:
             void setUpServer(void);
             void setUpMap(void);
+            void handleKey(void);
 
             void updatePikmin(void);
             void updateTile(void);
@@ -43,6 +45,7 @@ namespace GUI {
             std::size_t &_mapY;
             float _timeMult;
             ActionHandler _handler;
+            KeyHandler _key;
 
             connection::Client _client;
             Buffer::ReadBuffer _stdInput;
