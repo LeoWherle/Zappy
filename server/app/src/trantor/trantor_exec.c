@@ -132,9 +132,10 @@ static bool start_new_task(trantor_t *trantor, player_t *player)
 static void try_refill_map(trantor_t *trantor, double delta)
 {
     trantor->map.since_refill += delta;
-    if (trantor->map.since_refill >= MAP_REFILLS_INTERVAL) {
+    if (trantor->map.since_refill
+        >= MAP_REFILLS_INTERVAL / trantor->params.f) {
         add_ressources(&(trantor->map));
-        trantor->map.since_refill -= MAP_REFILLS_INTERVAL;
+        trantor->map.since_refill -= MAP_REFILLS_INTERVAL / trantor->params.f;
     }
 }
 

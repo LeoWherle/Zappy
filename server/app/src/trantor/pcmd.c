@@ -14,13 +14,14 @@ pcommand_t parse_pcmd(const char *pcmd, char **arg, item_t *item)
 {
     size_t slen = 0;
     pcommand_t res = get_pcmd_by_name(pcmd);
+    size_t nline_pos = strcspn(pcmd, "\n");
 
     if (res == NONE_PCMD)
         return NONE_PCMD;
     if (res == BROADCAST_PCMD || PCMD_NEEDS_OBJ(res))
         slen = get_pcmd_name_len(res) + 1;
     if (res == BROADCAST_PCMD)
-        *arg = strdup(pcmd + slen);
+        *arg = strndup(pcmd + slen, nline_pos - slen);
     if (PCMD_NEEDS_OBJ(res))
         *item = get_item_by_name(pcmd + slen);
     if (PCMD_NEEDS_OBJ(res) && *item == NONE_ITEM)
