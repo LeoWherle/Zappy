@@ -7,8 +7,8 @@ import sys
 import argparse
 import json
 from messages import Logger
+from color import color_dic
 from ai import make_new_ai
-from color import *
 
 def run(args):
     """
@@ -36,8 +36,8 @@ def run(args):
                 config = json.load(file)
                 log_level = config["loglevel"]
         except Exception as _: # pylint: disable=broad-except
-            print(FAIL + "Failed to load config file, using default log level" + ENDC)
-    logger = Logger(log_level)
+            print(color_dic["error"] + "Failed to load config file, using default log level" + color_dic["end"])
+    logger = Logger(log_level, args.nocolor)
     return make_new_ai(args, logger)
 
 def get_args():
@@ -57,6 +57,7 @@ def get_args():
     parser.add_argument("-h", type=str, help="Host of the server", required=True)
     parser.add_argument("-t", help="Enable Multi threading", action='store_true')
     parser.add_argument("-nolog", help="Disable logs", action='store_true')
+    parser.add_argument("-nocolor", help="Disable colored logs", action='store_true')
     parser.print_usage = parser.print_help
 
     if len(sys.argv) == 2 and sys.argv[1] == "-h":
