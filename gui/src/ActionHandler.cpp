@@ -54,8 +54,8 @@ bool ActionHandler::operator()(std::string &action)
 
 void ActionHandler::setmapSize(std::smatch &arg)
 {
-    _x = std::atoi(arg[1].str().c_str());
-    _y = std::atoi(arg[2].str().c_str());
+    _x = std::stoi(arg[1].str());
+    _y = std::stoi(arg[2].str());
     _map.clear();
     for (std::size_t i = 0; i < _x; i++) {
         for (std::size_t j = 0; j < _y; j++) {
@@ -67,15 +67,15 @@ void ActionHandler::setmapSize(std::smatch &arg)
 
 void ActionHandler::setTileContent(std::smatch &arg)
 {
-    int x = std::atoi(arg[1].str().c_str());
-    int y = std::atoi(arg[2].str().c_str());
+    int x = std::stoi(arg[1].str());
+    int y = std::stoi(arg[2].str());
     std::size_t index = x * _y + y;
     if (index > _x * _y) {
         return;
     }
     std::map<Kaillou, std::size_t> tileRocks;
     for (std::size_t i = 0; i < NBKAILLOU; i++) {
-        tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::atoi(arg[i + 3].str().c_str())));
+        tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::stoi(arg[i + 3].str())));
     }
     _map[index].setRocks(tileRocks);
 }
@@ -90,10 +90,10 @@ void ActionHandler::addTeamName(std::smatch &arg)
 void ActionHandler::addPlayer(std::smatch &arg)
 {
     std::string id = arg[1].str();
-    int x = std::atoi(arg[2].str().c_str());
-    int y = std::atoi(arg[3].str().c_str());
-    int orientation = std::atoi(arg[4].str().c_str());
-    int level = std::atoi(arg[5].str().c_str());
+    int x = std::stoi(arg[2].str());
+    int y = std::stoi(arg[3].str());
+    int orientation = std::stoi(arg[4].str());
+    int level = std::stoi(arg[5].str());
     std::string team = arg[6].str();
 
     for (auto &player : _pikmins) {
@@ -116,9 +116,9 @@ void ActionHandler::addPlayer(std::smatch &arg)
 void ActionHandler::setPikminPosition(std::smatch &arg)
 {
     std::string id = arg[1].str();
-    int x = std::atoi(arg[2].str().c_str());
-    int y = std::atoi(arg[3].str().c_str());
-    int orientation = std::atoi(arg[4].str().c_str());
+    int x = std::stoi(arg[2].str());
+    int y = std::stoi(arg[3].str());
+    int orientation = std::stoi(arg[4].str());
 
     for (auto &player : _pikmins) {
         if (player == id) {
@@ -130,7 +130,7 @@ void ActionHandler::setPikminPosition(std::smatch &arg)
 void ActionHandler::setPikminLevel(std::smatch &arg)
 {
     std::string id = arg[1].str();
-    int level = std::atoi(arg[2].str().c_str());
+    int level = std::stoi(arg[2].str());
 
     for (auto &player : _pikmins) {
         if (player == id) {
@@ -145,7 +145,7 @@ void ActionHandler::setPikminInventory(std::smatch &arg)
     std::map<Kaillou, std::size_t> tileRocks;
 
     for (std::size_t i = 0; i < NBKAILLOU; i++) {
-        tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::atoi(arg[i + 4].str().c_str())));
+        tileRocks.insert(std::pair<Kaillou, std::size_t>((static_cast<Kaillou>(i)), std::stoi(arg[i + 4].str())));
     }
     for (auto &player : _pikmins) {
         if (player == id) {
@@ -167,15 +167,15 @@ void ActionHandler::ejectPikmin(std::smatch &arg)
 
 void ActionHandler::broadcast(std::smatch &arg)
 {
-    std::string id = arg[1].str().c_str();
+    std::string id = arg[1].str();
     std::string message = arg[2].str();
     return;
 }
 
 void ActionHandler::startIncantation(std::smatch &arg)
 {
-    //int x = std::atoi(arg[1].str().c_str());
-    //int y = std::atoi(arg[2].str().c_str());
+    //int x = std::stoi(arg[1].str());
+    //int y = std::stoi(arg[2].str());
     std::string incanters = arg[4].str();
 
     while (incanters.size() > 0) {
@@ -196,9 +196,9 @@ void ActionHandler::startIncantation(std::smatch &arg)
 
 void ActionHandler::stopIncantation(std::smatch &arg)
 {
-    int x = std::atoi(arg[1].str().c_str());
-    int y = std::atoi(arg[2].str().c_str());
-    bool result = std::atoi(arg[3].str().c_str());
+    int x = std::stoi(arg[1].str());
+    int y = std::stoi(arg[2].str());
+    bool result = std::stoi(arg[3].str());
 
     for (auto &player : _pikmins) {
         if (player.isOnTile(x, y)) {
@@ -221,7 +221,7 @@ void ActionHandler::gonnaLayEgg(std::smatch &arg)
 void ActionHandler::pikminDropRessource(std::smatch &arg)
 {
     std::string id = arg[1].str();
-    int rock = std::atoi(arg[2].str().c_str());
+    int rock = std::stoi(arg[2].str());
 
     for (auto &player : _pikmins) {
         if (player == id) {
@@ -233,7 +233,7 @@ void ActionHandler::pikminDropRessource(std::smatch &arg)
 void ActionHandler::pikminPickRessource(std::smatch &arg)
 {
     std::string id = arg[1].str();
-    int rock = std::atoi(arg[2].str().c_str());
+    int rock = std::stoi(arg[2].str());
 
     for (auto &player : _pikmins) {
         if (player == id) {
@@ -257,8 +257,8 @@ void ActionHandler::layedEgg(std::smatch &arg)
 {
     std::string eggId = arg[1].str();
     std::string pikminId = arg[2].str();
-    std::size_t x = std::atoi(arg[3].str().c_str());
-    std::size_t y = std::atoi(arg[4].str().c_str());
+    std::size_t x = std::stoi(arg[3].str());
+    std::size_t y = std::stoi(arg[4].str());
     Pikmin newPikmin(eggId, x, y);
 
     newPikmin.spawnAsEgg();
@@ -278,7 +278,7 @@ void ActionHandler::eggHatche(std::smatch &arg)
 
 void ActionHandler::setTimeMult(std::smatch &arg)
 {
-    float newMult = std::atof(arg[1].str().c_str());
+    float newMult = std::stof(arg[1].str());
 
     _timeMult = newMult;
 }
