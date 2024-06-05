@@ -23,7 +23,7 @@ public:
     class InvalidAnimation : public std::exception
     {
     public:
-        InvalidAnimation(std::string name) : _str("invalid animation name " + name)
+        InvalidAnimation(const std::string &name) : _str("invalid animation name " + name)
         {}
 
         const char* what() const noexcept override
