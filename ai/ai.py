@@ -35,26 +35,28 @@ def make_ai_actions(ai_instance, threads, args, logger):
     """
     global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
 
-    if not ai_instance.king and ai_instance.random and ai_instance.get_food_nbr() < 15:
-        if ai_instance.choosen_ones:
-            ai_instance.share_food()
-        else:
-            ai_instance.go_to_obj("food")
-            ai_instance.take_all_food()
+    if not ai_instance.king and ai_instance.random and ai_instance.get_food_nbr() < 20:
+        ai_instance.go_to_obj("food")
+        ai_instance.take_all_food()
+        if ai_instance.random and ai_instance.lvl == 1:
+                ai_instance.go_to_obj("linemate")
+                ai_instance.incantation()
     else:
-        if not ai_instance.king and ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
-            connect_new_thread(ai_instance, args, logger, threads)
-        elif (not ai_instance.king and not ai_instance.choosen_ones and NB_THREAD < 9):
-            ai_instance.fork()
+        if not ai_instance.king and not ai_instance.choosen_ones:
+            if ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
+                connect_new_thread(ai_instance, args, logger, threads)
+            elif NB_THREAD < 9:
+                ai_instance.fork()
 
         if not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
             ai_instance.king = True
 
         if ai_instance.king:
             if ai_instance.get_nb_player_on_tile() >= 6:
-                ai_instance.share_food()
                 ai_instance.broadcast("elevate")
+                #ai_instance.share_food()
                 ai_instance.drop_all()
+                ai_instance.incantation()
             else:
                 ai_instance.broadcast("lvl6")
                 ai_instance.look()
