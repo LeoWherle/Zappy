@@ -15,14 +15,15 @@ class AnimationBank
 {
 public:
     AnimationBank() = default;
-    ~AnimationBank() = default;
+    ~AnimationBank();
 
-    std::string get(std::string ressourceName);
+    std::vector<raylib::ModelAnimation> *get(const std::string &ressourceName);
+    float getFps(std::string ressourceName);
 
     class InvalidAnimation : public std::exception
     {
     public:
-        InvalidAnimation(std::string name) : _str("invalid animation name " + name)
+        InvalidAnimation(const std::string &name) : _str("invalid animation name " + name)
         {}
 
         const char* what() const noexcept override
@@ -34,5 +35,5 @@ public:
         std::string _str;
     };
 private:
-    std::map<std::string, std::string> _anims;
+    std::map<std::string, std::vector<raylib::ModelAnimation>> _anims;
 };

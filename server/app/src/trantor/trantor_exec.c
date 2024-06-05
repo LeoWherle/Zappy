@@ -55,20 +55,20 @@ static void handle_game_end(trantor_t *trantor)
 
 static void execute_pcmd(trantor_t *trantor, player_t *player)
 {
-    pcmd_executor_t *executor = &player->pcmd_exec;
+    pcommand_t command = player->pcmd_exec.command;
     pcmd_args_t args = {0};
 
     args.spam_gui = trantor->params.spam_gui;
     args.player = player;
     args.map = &(trantor->map);
-    args.broadcast_msg = executor->arg;
-    args.item = executor->item;
+    args.broadcast_msg = player->pcmd_exec.arg;
+    args.item = player->pcmd_exec.item;
     args.players = &trantor->players;
     args.cnb = count_idxteam_egg(trantor, player->team);
     args.log = &trantor->log;
-    get_pcmd_func(executor->command)(&args);
     player->busy = false;
-    if (executor->command != INCANTATION_PCMD)
+    get_pcmd_func(command)(&args);
+    if (command != INCANTATION_PCMD)
         return;
     trantor->winning_team = winning_team(
             &trantor->players, trantor->params.teams);
@@ -151,20 +151,24 @@ static bool death_from_hunger(trantor_t *trantor, player_t *player)
 }
 
 static void player_time_pass(
-    trantor_t *trantor, double delta, player_t *player)
+    trantor_t *trantor, double delta, unsigned int i)
 {
-    if (player->is_egg || player->is_dead)
+    player_t *p = VEC_AT(&trantor->players, i);
+
+    if (p->is_egg || p->is_dead)
         return;
-    player->time_left -= delta;
-    if (player->time_left <= 0 && death_from_hunger(trantor, player))
+    p->time_left -= delta;
+    if (p->time_left <= 0 && death_from_hunger(trantor, p))
         return;
-    if (player->incantator != NULL)
+    if (p->incantator != NULL)
         return;
-    player->pcmd_exec.exec_time_left -= delta;
-    if (player->busy && player->pcmd_exec.exec_time_left <= 0)
-        execute_pcmd(trantor, player);
-    if (!player->busy || player->pcmd_exec.exec_time_left <= 0)
-        start_new_task(trantor, player);
+    p->pcmd_exec.exec_time_left -= delta;
+    if (p->busy && p->pcmd_exec.exec_time_left <= 0) {
+        execute_pcmd(trantor, p);
+        p = VEC_AT(&trantor->players, i);
+    }
+    if (!p->busy || p->pcmd_exec.exec_time_left <= 0)
+        start_new_task(trantor, p);
 }
 
 bool trantor_time_pass(trantor_t *trantor, double delta)
@@ -173,8 +177,7 @@ bool trantor_time_pass(trantor_t *trantor, double delta)
         return (trantor->winning_team == -1);
     try_refill_map(trantor, delta);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        player_time_pass(trantor, delta,
-            (player_t *) vec_at(&trantor->players, i));
+        player_time_pass(trantor, delta, i);
     }
     if (trantor->params.spam_gui) {
         trantor->since_spam += delta;

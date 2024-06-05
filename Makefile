@@ -30,8 +30,15 @@ MAKE  = make --no-print-directory
 RAYLIB_PATH=gui/raylib/src
 RAYLIB_CPP_PATH=gui/raylib-cpp
 
+RULE =
+# used with make DEBUG=n
+ifeq ($(DEBUG), n)
+	RULE = "DEBUG=n"
+else ifeq ($(DEBUG), y)
+	RULE = "DEBUG=y"
+endif
 
-all: $(BIN_SERVER) $(BIN_AI) $(BIN_GUI)
+all: $(BIN_SERVER) $(BIN_AI)  $(BIN_GUI)
 
 submodules:
 	@git submodule update --init --recursive
@@ -78,6 +85,9 @@ fclean:
 	rm -f $(BIN_GUI)
 
 re: fclean all
+
+launch: all
+	python3 bonus/launcher/main.py
 
 .PHONY: all zappy_ai zappy_server zappy_gui clean fclean re setup \
 install-raylib install-raylib-cpp install build_lib submodules

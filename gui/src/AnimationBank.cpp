@@ -7,17 +7,34 @@
 
 #include "AnimationBank.hpp"
 
-static const std::map<std::string, std::string> nameFile({
-    {"egg", {"", ""}}
+//animation name | animation file name
+static const std::map<std::string, std::pair<std::string, float>> nameFile({
 });
 
-std::string AnimationBank::get(std::string ressourceName)
+AnimationBank::~AnimationBank(void)
+{
+    for (auto &[name, animList] : _anims) {
+        for (auto &anim : animList) {
+            anim.Unload();
+        }
+    }
+}
+
+std::vector<raylib::ModelAnimation> *AnimationBank::get(const std::string &ressourceName)
 {
     if (_anims.find(ressourceName) == _anims.end()) {
         if (nameFile.find(ressourceName) == nameFile.end()) {
-            throw AnimationBank::InvalidAnimation(ressourceName);
+            return nullptr;
         }
-        _anims[ressourceName] = nameFile.at(ressourceName);
+        _anims[ressourceName] = raylib::ModelAnimation::Load(ressourceName);
     }
-    return _anims[ressourceName];
+    return &_anims[ressourceName];
+}
+
+float AnimationBank::getFps(std::string ressourceName)
+{
+    if (nameFile.find(ressourceName) == nameFile.end()) {
+        return 1.0f;
+    }
+    return nameFile.at(ressourceName).second;
 }
