@@ -7,13 +7,14 @@
 
 #pragma once
 
-#include "Material.hpp"
+#include "Color.hpp"
+#include <memory>
 #include <raylib-cpp.hpp>
 #include <map>
 #include <vector>
 
 enum ModelType {
-    DEFAULT, 
+    DEFAULT,
     RED_PIKMIN,
     YELLOW_PIKMIN,
     BLUE_PIKMIN,
@@ -25,26 +26,35 @@ enum ModelType {
 enum AnimType {
     WALK,
     INCANTATION,
-    IDLE,
-    PICK,
-    DROP,
-    DEATH
 };
 
 
 class GuiModel {
     public:
 
-        GuiModel(std::string modelPath, std::string texturePath, std::string animPath);
+        GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type);
         ~GuiModel();
+
+        void Draw();
+        void UpdateAnim(int &frameCount);
+        void SetPosition(raylib::Vector3 pos);
+        void SetRotation(raylib::Vector3 axis, float angle);
+        void SetScale(float scale);
+        void SetColor(raylib::Color color);
+        int GetAnimation();
+        void SetAnimation(AnimType anim);
 
     protected:
     private:
-        int _frameCount;
+        int _animType;
+        float _scale = 1.0f;
+        ModelType _type;
+        raylib::Vector3 _position;
         raylib::Model _model;
         raylib::Texture _texture;
         raylib::Material _material;
-        std::vector<raylib::ModelAnimation> _animations;
+        raylib::Color _color;
+        std::shared_ptr<std::vector<raylib::ModelAnimation>> _animations;
 };
 
 class ModelBank
@@ -58,20 +68,8 @@ class ModelBank
         } ModelInfo_t;
 
         static const std::map<ModelType, ModelInfo> modelInfo;
-        static const std::map<ModelType, std::vector<AnimType>> animInfo;
-        static std::map<ModelType, GuiModel *> models;
+        static std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> loadedAnims;
+        static std::map<ModelType, std::shared_ptr<GuiModel>> models;
 
-        static GuiModel *get(ModelType ressourceName);
-
-        class InvalidModel : public std::exception
-        {
-            public:
-                InvalidModel(std::string name) : _str("invalid model name " + name) {}
-
-                const char* what() const noexcept override { return _str.c_str(); }
-
-            private:
-                std::string _str;
-        };
-
+        static std::shared_ptr<GuiModel> get(ModelType type);
 };
