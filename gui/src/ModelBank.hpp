@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "Color.hpp"
 #include <memory>
 #include <raylib-cpp.hpp>
 #include <map>
@@ -32,6 +31,7 @@ enum AnimType {
 class GuiModel {
     public:
 
+        GuiModel();
         GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type);
         ~GuiModel();
 
@@ -41,13 +41,13 @@ class GuiModel {
         void SetRotation(raylib::Vector3 axis, float angle);
         void SetScale(float scale);
         void SetColor(raylib::Color color);
-        int GetAnimation();
+        AnimType GetAnimation();
         void SetAnimation(AnimType anim);
 
     protected:
     private:
-        int _animType;
         float _scale = 1.0f;
+        AnimType _animType;
         ModelType _type;
         raylib::Vector3 _position;
         raylib::Model _model;
