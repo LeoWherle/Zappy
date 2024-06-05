@@ -58,6 +58,7 @@ static void elevate_players(pcmd_args_t *args)
         talk(&p->response_buffer, msg);
         p->incantator = NULL;
     }
+    free(msg);
 }
 
 void player_incantation(pcmd_args_t *args)
