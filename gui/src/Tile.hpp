@@ -27,7 +27,7 @@ class Tile {
     private:
 
         struct groundedMaterial {
-            Kaillou caillou;
+            Kaillou caillou = Kaillou::FOOD;
             raylib::Vector3 pos;
         };
 

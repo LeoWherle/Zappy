@@ -88,6 +88,7 @@ void Warudo::setUpMap(void)
 void Warudo::setUp(void)
 {
     std::cout << "Initializing the world ..." << std::endl;
+    std::srand(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
     setUpServer();
     setUpMap();
     std::cout << "World initialized" << std::endl;
@@ -160,7 +161,7 @@ void Warudo::updateGraphic(void)
                 bool line = true;
                 bool white = line;
                 for (auto tile : _map) {
-                    if (_x == 0)
+                    if (_x == 0 || _y == 0)
                         break;
                     raylib::Vector3 pos((index % _x), 0, static_cast<int>((index / _x)));
                     if (index % _x == 0) {

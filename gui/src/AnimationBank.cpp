@@ -20,7 +20,7 @@ AnimationBank::~AnimationBank(void)
     }
 }
 
-std::vector<raylib::ModelAnimation> *AnimationBank::get(std::string ressourceName)
+std::vector<raylib::ModelAnimation> *AnimationBank::get(const std::string &ressourceName)
 {
     if (_anims.find(ressourceName) == _anims.end()) {
         if (nameFile.find(ressourceName) == nameFile.end()) {
