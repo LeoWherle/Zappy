@@ -30,13 +30,11 @@ static void add_item(len_t i, tile_t *item_tile, map_t *map)
 {
     item_t tmp;
 
-    for (unsigned int j = 0; j < ITEM_COUNT - 1; j++) {
-        tmp = rand_item(item_tile, map->width * map->height);
-        if (tmp == NONE_ITEM)
-            continue;
-        ADD_ITEM(map->tiles[i], tmp);
-        TAKE_ITEM(*item_tile, tmp);
-    }
+    tmp = rand_item(item_tile, (map->width * map->height) - i);
+    if (tmp == NONE_ITEM)
+        return;
+    ADD_ITEM(map->tiles[i], tmp);
+    TAKE_ITEM(*item_tile, tmp);
 }
 
 // recursive to ensure all items are added

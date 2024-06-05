@@ -8,7 +8,6 @@
 #include "Pikmin.hpp"
 #include <iostream>
 
-
 namespace GUI {
     Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
     {
@@ -76,7 +75,7 @@ namespace GUI {
 
     void Pikmin::stopIncant(bool result)
     {
-        if (result == true) {
+        if (result) {
             updateLevel(_data.getLevel() + 1);
             //_model.setAnimation(_animation.get("level up"));
         } else {

@@ -32,7 +32,7 @@ namespace GUI {
 
     bool PikminModel::animationUpdate(float delta)
     {
-        if (_model == nullptr || _anim == nullptr || _anim->size() == 0) {
+        if (_model == nullptr || _anim == nullptr || _anim->empty()) {
             return true;
         }
         _cumulatedTime += delta;

@@ -18,13 +18,13 @@ namespace GUI {
         AnimationBank() = default;
         ~AnimationBank();
 
-        std::vector<raylib::ModelAnimation> *get(std::string ressourceName);
+        std::vector<raylib::ModelAnimation> *get(const std::string &ressourceName);
         float getFps(std::string ressourceName);
 
         class InvalidAnimation : public std::exception
         {
         public:
-            InvalidAnimation(std::string name) : _str("invalid animation name " + name)
+            InvalidAnimation(const std::string &name) : _str("invalid animation name " + name)
             {}
 
             const char* what() const noexcept override

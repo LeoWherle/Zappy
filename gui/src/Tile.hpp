@@ -14,7 +14,8 @@
 #include "ModelBank.hpp"
 #include "Inventory.hpp"
 
-namespace GUI {
+namespace GUI
+{
     class Tile {
         public:
             Tile(std::size_t x, std::size_t y);
@@ -24,10 +25,11 @@ namespace GUI {
             void addRock(Kaillou rock);
             void removeRock(Kaillou rock);
             void drawTile(void);
-
+        protected:
         private:
+
             struct groundedMaterial {
-                Kaillou caillou;
+                Kaillou caillou = Kaillou::FOOD;
                 raylib::Vector3 pos;
             };
 

@@ -15,7 +15,7 @@
 #include "PikminData.hpp"
 #include "PikminModel.hpp"
 
-namespace GUI{
+namespace GUI {
     class Pikmin {
         public:
             enum Direction {
@@ -60,6 +60,8 @@ namespace GUI{
 
             inline State getStatus(void) { return _status; }
             inline void setStatus(State newStatus) { _status = newStatus; }
+
+            inline PikminData &getData(void) { return _data; }
 
         private:
 

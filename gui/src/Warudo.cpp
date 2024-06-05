@@ -73,6 +73,7 @@ namespace GUI {
     void Warudo::setUp(void)
     {
         std::cout << "Initializing the world ..." << std::endl;
+        std::srand(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
         setUpServer();
         setUpMap();
         std::cout << "World initialized" << std::endl;
@@ -119,18 +120,18 @@ namespace GUI {
             _in.consume(consume + 1);
         }
 
-    //    _out.write_to_buffer("mct\n");
-       // for (auto &player: _pikmins) {
-       //     Pikmin::State status = player.getStatus();
-       //     if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-       //         _out.write_to_buffer("ppo ");
-       //         _out.write_to_buffer(player.getId());
-       //         _out.write_to_buffer("\n");
-       //         _out.write_to_buffer("plv ");
-       //         _out.write_to_buffer(player.getId());
-       //         _out.write_to_buffer("\n");
-       //     }
-       // }
+        _out.write_to_buffer("mct\n");
+        for (auto &player: _pikmins) {
+            Pikmin::State status = player.getStatus();
+            if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+                _out.write_to_buffer("ppo ");
+                _out.write_to_buffer(player.getData().getId());
+                _out.write_to_buffer("\n");
+                _out.write_to_buffer("plv ");
+                _out.write_to_buffer(player.getData().getId());
+                _out.write_to_buffer("\n");
+            }
+        }
     }
 
     void Warudo::handleKey(void)
@@ -150,6 +151,8 @@ namespace GUI {
                     bool line = true;
                     bool white = line;
                     for (auto tile : _map) {
+                        if (_mapX == 0 || _mapY == 0)
+                            break;
                         raylib::Vector3 pos((index % _mapX), 0, static_cast<int>((index / _mapX)));
                         if (index % _mapX == 0) {
                             line = !line;

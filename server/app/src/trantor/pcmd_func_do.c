@@ -36,14 +36,14 @@ void player_fork(pcmd_args_t *args)
 
     SAY_OK(&args->player->response_buffer);
     init_egg(&egg, args->player->team, args->player->coord);
-    if (vec_push(args->players, &egg) != BUF_OK)
-        LOG_ERROR("Error while pushing egg to players");
     talkf(args->log, "enw %d %d %d %d\n", egg.n, args->player->n,
         egg.coord[0], egg.coord[1]);
     if (args->spam_gui)
         talkf(args->log, "eht %d\n", args->player->n);
     else
         talkf(args->log, "pfk %d\n", args->player->n);
+    if (vec_push(args->players, &egg) != BUF_OK)
+        LOG_ERROR("Error while pushing egg to players");
 }
 
 static void warn_player_eject(
@@ -101,5 +101,5 @@ void player_set(pcmd_args_t *args)
     i = TAKE_ITEM(args->player->inventory, args->item);
     ADD_ITEM(*t, i);
     SAY_OK(&args->player->response_buffer);
-    talkf(args->log, "pdr %d %d\n", args->player->n, args->item);
+    talkf(args->log, "pdr %d %d\n", args->player->n, args->item - 1);
 }

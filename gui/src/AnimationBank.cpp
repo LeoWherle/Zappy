@@ -10,6 +10,7 @@
 //animation name | animation file name
 static const std::map<std::string, std::pair<std::string, float>> nameFile({
 });
+
 namespace GUI {
     AnimationBank::~AnimationBank(void)
     {
@@ -20,7 +21,7 @@ namespace GUI {
         }
     }
 
-    std::vector<raylib::ModelAnimation> *AnimationBank::get(std::string ressourceName)
+    std::vector<raylib::ModelAnimation> *AnimationBank::get(const std::string &ressourceName)
     {
         if (_anims.find(ressourceName) == _anims.end()) {
             if (nameFile.find(ressourceName) == nameFile.end()) {
