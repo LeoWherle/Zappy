@@ -86,6 +86,9 @@ fclean:
 
 re: fclean all
 
+launch: all
+	python3 bonus/launcher/main.py
+
 .PHONY: all zappy_ai zappy_server zappy_gui clean fclean re setup \
 install-raylib install-raylib-cpp install build_lib submodules
 .NOTPARALLEL: re install
