@@ -6,31 +6,32 @@
 */
 
 #include "Camera.hpp"
+#include "Transformation.hpp"
 
+#include <iostream>
 namespace GUI {
-    Camera::Camera()
+    Camera::Camera() : _direction (raylib::Vector3(0, 0, 0)), _position (raylib::Vector3(0, 0, 0))
     {
         _cam.SetFovy(45.0f);
         _cam.SetProjection(CAMERA_PERSPECTIVE);
+        _radius = 0;
     }
 
     void Camera::setUpCam(float x, float y)
     {
-        float heightX = (tan(72.5 * M_PI / 180.0f) * x) / 2.0f;
-        float heightY = (tan(72.5 * M_PI / 180.0f) * y) / 2.0f;
-        float height = std::max(heightX, heightY);
-        raylib:Vector3 camPos = raylib::Vector3(0, height, 0);
-        /* rotation X axis, MUST be improved in futur */
-        float angle = 45.0f;
-    //    float tmpY = camPos.y * cos(angle * M_PI / 180) + camPos.z * -sin(angle * M_PI / 180);
-    //    float tmpZ = camPos.y * sin(angle * M_PI / 180) + camPos.z * cos(angle * M_PI / 180);
-    //    camPos.y = tmpY;
-    //    camPos.z = tmpZ;
-        raylib::Matrix rotation = raylib::Matrix::RotateX(angle);
-        camPos.x += x / 2.0f;
-        camPos.z += y / 2.0f;
-        /* rotation X axis, MUST be improved in futur */
-        _cam.SetPosition(camPos);
+        float heightX = (tan(67.5 * M_PI / 180.0f) * (x + 1)) / 2.0f;
+        float heightY = (tan(67.5 * M_PI / 180.0f) * (y + 1)) / 2.0f;
+        float radius = std::max(heightX, heightY);
+
+        _direction.y = radius;
+        _direction = _direction.Normalize();
+        Math::Transformation::rotationX(45.0f * M_PI / 180, _direction);
+
+        _position = _direction * radius;
+        _position.x += x / 2.0f;
+        _position.z += y / 2.0f;
+
+        _cam.SetPosition(_position);
         _cam.SetTarget(raylib::Vector3(x / 2.0f, 0.0f, y / 2.0f));
         _cam.SetUp(raylib::Vector3(0.0f, 1.0f, 0.0f));
     }

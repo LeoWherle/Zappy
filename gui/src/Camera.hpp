@@ -19,5 +19,8 @@ namespace GUI {
         protected:
         private:
             raylib::Camera3D _cam;
+            raylib::Vector3 _direction;
+            raylib::Vector3 _position;
+            float _radius;
     };
 }
