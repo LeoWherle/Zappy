@@ -347,19 +347,28 @@ class AI:
             return
 
         pos = 0
-        stop = False
+        found = []
         for elem in object_list:
+            count = 0
             for obj in elem:
                 if obj == wanted:
-                    stop = True
-                    break
-            if stop:
-                break
+                    count += 1
+            
+            if count > 0:
+                found.append((pos, count))
             pos += 1
-        if pos > self.lvl * 2 + 1:
+        if len(found) == 0:
             self.forward()
             return
-        for elem in self.look_direction[pos]:
+        highest = 0
+        best_pos = 0
+        for pos, count in found:
+            if count > highest:
+                highest = count
+                best_pos = pos
+            if count == highest and len(self.look_direction[pos]) < len(self.look_direction[best_pos]):
+                best_pos = pos
+        for elem in self.look_direction[best_pos]:
             if elem == "f":
                 self.forward()
             elif elem == "l":
@@ -447,13 +456,13 @@ class AI:
             return
         if self.random and broadcast_received == "lvl6":
             self.random = False
+            self.king = False
         if not self.random and broadcast_received == "lvl6":
             self.go_to_broadcast(int(k))
         if broadcast_received == "elevate":
             self.random = False
             if not self.choosen_ones and self.get_nb_player_on_tile() >= 6:
                 self.choosen_ones = True
-            
             if self.choosen_ones:
                 self.share_food()
                 self.drop_all()
