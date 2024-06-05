@@ -94,7 +94,6 @@ class AI:
             for i in range(len(elem) - 1):
                 if elem[i] == "":
                     elem.pop(i)
-        look.pop(-1)
         return look
     
     # Fork the AI
@@ -319,7 +318,47 @@ class AI:
         if inv is None:
             return -1
         return inv["food"]
+
+    look_direction = {
+            0: "",
+            1: "flf",
+            2: "f",
+            3: "frf",
+            4: "fflff",
+            5: "fflf",
+            6: "ff",
+            7: "ffrf",
+            8: "ffrff"
+             }
     
+    def go_to_obj(self, wanted):
+        if (self.dead):
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
+            return
+        object_list = self.look()
+        if object_list is None or object_list == []:
+            return
+        pos = 0
+        stop = False
+        for elem in object_list:
+            for obj in elem:
+                if obj == wanted:
+                    stop = True
+                    break
+            if stop:
+                break
+            pos += 1
+        if pos > self.lvl * 2 + 1:
+            self.forward()
+            return
+        for elem in self.look_direction[pos]:
+            if elem == "f":
+                self.forward()
+            elif elem == "l":
+                self.turn_right()
+            elif elem == "r":
+                self.turn_left()
+        
     #---------------------------------#
     #        Send without read        #
     #---------------------------------#
