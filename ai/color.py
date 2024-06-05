@@ -11,3 +11,12 @@ FAIL = '\033[91m'
 ENDC = '\033[0m'
 BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
+
+color_dic = {"info": OKGREEN,
+            "error": FAIL,
+            "warning": WARNING,
+            "server": OKBLUE,
+            "ai": OKCYAN,
+            "end": ENDC,
+            "bold": BOLD,
+            "underline": UNDERLINE}
