@@ -69,10 +69,8 @@ def make_ai_actions(ai_instance, threads, args, logger):
                 ai_instance.go_to_obj("linemate")
                 ai_instance.incantation()
 
-            if not ai_instance.choosen_ones and ai_instance.lvl == 2:
-                ai_instance.take_all()
-                if ai_instance.random:
-                    ai_instance.move_random()
+            if ai_instance.random and ai_instance.lvl == 2:
+                ai_instance.go_to_needs()
 
 
 def start_ai_logic(ai_instance, threads, args, logger):

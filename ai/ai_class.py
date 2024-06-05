@@ -6,7 +6,7 @@ needs_for_lvl_6 = {"linemate": 6,
                    "sibur": 5,
                    "mendiane": 3,
                    "phiras": 3,
-                   "thystame": 0}
+                   "thystame": 1}
 
 DEATH_MESSAGE = "AI is dead"
 
@@ -331,20 +331,20 @@ class AI:
             8: "ffrff"
              }
     
-    def go_to_obj(self, wanted):
+    def go_to_obj(self, wanted, needs=False):
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
         object_list = self.look()
         if object_list is None or object_list == []:
-            return
+            return False
         count = 0
         for elem in object_list[0]:
             if elem == "player":
                 count += 1
         if count > 1:
             self.move_random()
-            return
+            return False
 
         pos = 0
         found = []
@@ -358,8 +358,9 @@ class AI:
                 found.append((pos, count))
             pos += 1
         if len(found) == 0:
-            self.forward()
-            return
+            if not needs:
+                self.forward()
+            return False
         highest = 0
         best_pos = 0
         for pos, count in found:
@@ -371,10 +372,27 @@ class AI:
         for elem in self.look_direction[best_pos]:
             if elem == "f":
                 self.forward()
-            elif elem == "l":
-                self.turn_right()
             elif elem == "r":
+                self.turn_right()
+            elif elem == "l":
                 self.turn_left()
+        return True
+
+    def go_to_needs(self):
+        if (self.dead):
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
+            return
+        inv = self.inventory()
+        if inv is None:
+            return
+        for key in inv:
+            if key != "food" and inv[key] < needs_for_lvl_6[key]:
+                if not self.go_to_obj(key, True):
+                    continue
+                for _ in range(needs_for_lvl_6[key] - inv[key]):
+                    self.take(key)
+                return
+        self.forward()
         
     #---------------------------------#
     #        Send without read        #
