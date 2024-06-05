@@ -338,6 +338,14 @@ class AI:
         object_list = self.look()
         if object_list is None or object_list == []:
             return
+        count = 0
+        for elem in object_list[0]:
+            if elem == "player":
+                count += 1
+        if count > 1:
+            self.move_random()
+            return
+
         pos = 0
         stop = False
         for elem in object_list:
