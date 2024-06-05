@@ -6,7 +6,7 @@ needs_for_lvl_6 = {"linemate": 6,
                    "sibur": 5,
                    "mendiane": 3,
                    "phiras": 3,
-                   "thystame": 0}
+                   "thystame": 1}
 
 DEATH_MESSAGE = "AI is dead"
 
@@ -94,7 +94,6 @@ class AI:
             for i in range(len(elem) - 1):
                 if elem[i] == "":
                     elem.pop(i)
-        look.pop(-1)
         return look
     
     # Fork the AI
@@ -319,7 +318,82 @@ class AI:
         if inv is None:
             return -1
         return inv["food"]
+
+    look_direction = {
+            0: "",
+            1: "flf",
+            2: "f",
+            3: "frf",
+            4: "fflff",
+            5: "fflf",
+            6: "ff",
+            7: "ffrf",
+            8: "ffrff"
+             }
     
+    def go_to_obj(self, wanted, needs=False):
+        if (self.dead):
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
+            return
+        object_list = self.look()
+        if object_list is None or object_list == []:
+            return False
+        count = 0
+        for elem in object_list[0]:
+            if elem == "player":
+                count += 1
+        if count > 1:
+            self.move_random()
+            return False
+
+        pos = 0
+        found = []
+        for elem in object_list:
+            count = 0
+            for obj in elem:
+                if obj == wanted:
+                    count += 1
+            
+            if count > 0:
+                found.append((pos, count))
+            pos += 1
+        if len(found) == 0:
+            if not needs:
+                self.forward()
+            return False
+        highest = 0
+        best_pos = 0
+        for pos, count in found:
+            if count > highest:
+                highest = count
+                best_pos = pos
+            if count == highest and len(self.look_direction[pos]) < len(self.look_direction[best_pos]):
+                best_pos = pos
+        for elem in self.look_direction[best_pos]:
+            if elem == "f":
+                self.forward()
+            elif elem == "r":
+                self.turn_right()
+            elif elem == "l":
+                self.turn_left()
+        return True
+
+    def go_to_needs(self):
+        if (self.dead):
+            self.net.logger.warning(DEATH_MESSAGE, self.id)
+            return
+        inv = self.inventory()
+        if inv is None:
+            return
+        for key in inv:
+            if key != "food" and inv[key] < needs_for_lvl_6[key]:
+                if not self.go_to_obj(key, True):
+                    continue
+                for _ in range(needs_for_lvl_6[key] - inv[key]):
+                    self.take(key)
+                return
+        self.forward()
+        
     #---------------------------------#
     #        Send without read        #
     #---------------------------------#
@@ -400,16 +474,16 @@ class AI:
             return
         if self.random and broadcast_received == "lvl6":
             self.random = False
+            self.king = False
         if not self.random and broadcast_received == "lvl6":
             self.go_to_broadcast(int(k))
         if broadcast_received == "elevate":
             self.random = False
             if not self.choosen_ones and self.get_nb_player_on_tile() >= 6:
                 self.choosen_ones = True
-            
             if self.choosen_ones:
-                self.share_food()
                 self.drop_all()
-                self.incantation()
+                if self.lvl == 1:
+                    self.incantation()
             else:
                 self.food_supply = True

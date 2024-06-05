@@ -101,5 +101,5 @@ void player_set(pcmd_args_t *args)
     i = TAKE_ITEM(args->player->inventory, args->item);
     ADD_ITEM(*t, i);
     SAY_OK(&args->player->response_buffer);
-    talkf(args->log, "pdr %d %d\n", args->player->n, args->item);
+    talkf(args->log, "pdr %d %d\n", args->player->n, args->item - 1);
 }

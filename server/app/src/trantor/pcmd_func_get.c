@@ -157,5 +157,5 @@ void player_take(pcmd_args_t *args)
     i = TAKE_ITEM(*t, args->item);
     ADD_ITEM(args->player->inventory, i);
     SAY_OK(&args->player->response_buffer);
-    talkf(args->log, "pgt %d %d\n", args->player->n, args->item);
+    talkf(args->log, "pgt %d %d\n", args->player->n, args->item - 1);
 }
