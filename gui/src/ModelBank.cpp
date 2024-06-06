@@ -84,16 +84,19 @@ void GuiModel::SetRotation(raylib::Vector3 axis, float angle)
 
 void GuiModel::UpdateAnim(int &frameCount)
 {
-    if (_animations == nullptr)
-        return;
-    _model.UpdateAnimation((*_animations)[_animType], frameCount);
-    if (frameCount >= (*_animations)[_animType].frameCount)
+    if (_animations == nullptr) {
         frameCount = 0;
+        return;
+    }
+    _model.UpdateAnimation((*_animations)[_animType], frameCount);
+    if (frameCount >= (*_animations)[_animType].frameCount) {
+        frameCount = 0;
+    }
 }
 
-void GuiModel::Draw()
+void GuiModel::Draw(raylib::Vector3 pos, raylib::Vector3 axis, float rotation, raylib::Vector3 scale, raylib::Color color)
 {
-    _model.Draw(_position, _scale, _color);
+    _model.Draw(pos, axis, rotation, scale, color);
 }
 
 std::shared_ptr<GuiModel> ModelBank::get(ModelType type)

@@ -107,7 +107,7 @@ void Pikmin::die(void)
 void Pikmin::spawnAsEgg(void)
 {
     _status = Pikmin::State::EGG;
-    //_model.setModel(_model.get("egg"));
+    _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
     //_model.setAnimation(_animation.get("egg"));
 }
 
@@ -116,7 +116,6 @@ void Pikmin::spawnAsPikmin(void)
     raylib::Color red = raylib::Color::Red();
 
     _status = Pikmin::State::ALIVE;
-    //_model.setModel(_model.get("pikmin"));
+    _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
     //_model.setAnimation(_animation.get("idle"));
-    _model.setColor(red);
 }

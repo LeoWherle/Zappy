@@ -67,7 +67,7 @@ void Warudo::setUpMap(void)
     float heightX = (tan(72.5 * M_PI / 180.0f) * _x) / 2.0f;
     float heightY = (tan(72.5 * M_PI / 180.0f) * _y) / 2.0f;
     float height = std::max(heightX, heightY);
-    raylib:Vector3 camPos = raylib::Vector3(0, height, 0);
+    raylib::Vector3 camPos = raylib::Vector3(0, height, 0);
     /* rotation X axis, MUST be improved in futur */
     float angle = 45.0f;
     float tmpY = camPos.y * cos(angle * M_PI / 180) + camPos.z * -sin(angle * M_PI / 180);
@@ -135,18 +135,18 @@ void Warudo::handleCommunication(void)
         _in.consume(consume + 1);
     }
 
-   _out.write_to_buffer("mct\n");
-   for (auto &player: _pikmins) {
-       Pikmin::State status = player.getStatus();
-       if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-           _out.write_to_buffer("ppo ");
-           _out.write_to_buffer(player.getData().getId());
-           _out.write_to_buffer("\n");
-           _out.write_to_buffer("plv ");
-           _out.write_to_buffer(player.getData().getId());
-           _out.write_to_buffer("\n");
-       }
-   }
+   //_out.write_to_buffer("mct\n");
+   //for (auto &player: _pikmins) {
+   //    Pikmin::State status = player.getStatus();
+   //    if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+   //        _out.write_to_buffer("ppo ");
+   //        _out.write_to_buffer(player.getData().getId());
+   //        _out.write_to_buffer("\n");
+   //        _out.write_to_buffer("plv ");
+   //        _out.write_to_buffer(player.getData().getId());
+   //        _out.write_to_buffer("\n");
+   //    }
+   //}
 }
 
 void Warudo::updateGraphic(void)

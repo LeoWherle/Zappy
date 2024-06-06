@@ -14,6 +14,7 @@
 
 enum ModelType {
     DEFAULT,
+    EGG,
     RED_PIKMIN,
     YELLOW_PIKMIN,
     BLUE_PIKMIN,
@@ -42,7 +43,7 @@ class GuiModel {
         GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type);
         ~GuiModel();
 
-        void Draw();
+        void Draw(raylib::Vector3 pos, raylib::Vector3 axis, float rotation, raylib::Vector3 scale, raylib::Color color);
         void UpdateAnim(int &frameCount);
         void SetPosition(raylib::Vector3 pos);
         void SetRotation(raylib::Vector3 axis, float angle);
