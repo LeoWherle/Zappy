@@ -11,6 +11,7 @@
 #include <vector>
 #include "Kaillou.hpp"
 #include "ModelBank.hpp"
+#include "Inventory.hpp"
 
 class Tile {
     public:
@@ -25,12 +26,12 @@ class Tile {
     private:
 
         struct groundedMaterial {
-            Kaillou caillou;
+            Kaillou caillou = Kaillou::FOOD;
             raylib::Vector3 pos;
         };
 
-        std::map<Kaillou, std::size_t> _rocks;
-        std::map<Kaillou, FullModel_t *> _models;
+        Inventory _inv;
+        std::map<Kaillou, std::shared_ptr<GuiModel>> _models;
         std::vector<groundedMaterial> _materials;
         float _x;
         float _y;

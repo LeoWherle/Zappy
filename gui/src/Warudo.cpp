@@ -88,6 +88,7 @@ void Warudo::setUpMap(void)
 void Warudo::setUp(void)
 {
     std::cout << "Initializing the world ..." << std::endl;
+    std::srand(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
     setUpServer();
     setUpMap();
     std::cout << "World initialized" << std::endl;
@@ -102,7 +103,8 @@ void Warudo::loop()
         handleCommunication();
         prevTime = curTime;
         curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        _delta = (prevTime - curTime) / 1000 / _timeMult;
+        if (_timeMult > 0)
+            _delta = (prevTime - curTime) / 1000 / _timeMult;
         updateGraphic();
     }
 }
@@ -133,18 +135,18 @@ void Warudo::handleCommunication(void)
         _in.consume(consume + 1);
     }
 
-//    _out.write_to_buffer("mct\n");
-   // for (auto &player: _pikmins) {
-   //     Pikmin::State status = player.getStatus();
-   //     if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-   //         _out.write_to_buffer("ppo ");
-   //         _out.write_to_buffer(player.getId());
-   //         _out.write_to_buffer("\n");
-   //         _out.write_to_buffer("plv ");
-   //         _out.write_to_buffer(player.getId());
-   //         _out.write_to_buffer("\n");
-   //     }
-   // }
+   _out.write_to_buffer("mct\n");
+   for (auto &player: _pikmins) {
+       Pikmin::State status = player.getStatus();
+       if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+           _out.write_to_buffer("ppo ");
+           _out.write_to_buffer(player.getData().getId());
+           _out.write_to_buffer("\n");
+           _out.write_to_buffer("plv ");
+           _out.write_to_buffer(player.getData().getId());
+           _out.write_to_buffer("\n");
+       }
+   }
 }
 
 void Warudo::updateGraphic(void)
@@ -159,6 +161,8 @@ void Warudo::updateGraphic(void)
                 bool line = true;
                 bool white = line;
                 for (auto tile : _map) {
+                    if (_x == 0 || _y == 0)
+                        break;
                     raylib::Vector3 pos((index % _x), 0, static_cast<int>((index / _x)));
                     if (index % _x == 0) {
                         line = !line;
@@ -173,14 +177,6 @@ void Warudo::updateGraphic(void)
                     }
                     index++;
                 }
-                for (auto &player : _pikmins) {
-                    player.drawModel(_delta);
-                    if (player.animationUpdate(_delta)) {
-                        // dunno
-                    } else {
-                        // dunno
-                    }
-                }
 
                 updateTile();
                 updatePikmin();
@@ -194,12 +190,15 @@ void Warudo::updateGraphic(void)
 void Warudo::updatePikmin(void)
 {
     bool animState = false;
-    for (auto &pikmin : _pikmins) {
-        animState = pikmin.animationUpdate(_delta);
-        pikmin.drawModel(_delta);
-        if (pikmin.getStatus() == Pikmin::State::DYING && animState) {
-            //erase
+    std::vector<std::size_t> toDel;
+    for (std::size_t i = 0; i < _pikmins.size(); i++) {
+        animState = _pikmins[i].draw(_delta);
+        if (_pikmins[i].getStatus() == Pikmin::State::DYING && animState) {
+            toDel.push_back(i - toDel.size());
         }
+    }
+    for (auto del : toDel) {
+        _pikmins.erase(_pikmins.begin() + del);
     }
 }
 

@@ -19,7 +19,14 @@ enum ModelType {
     BLUE_PIKMIN,
     LEAF_TOP,
     BUD_TOP,
-    FLOWER_TOP
+    FLOWER_TOP,
+    FOOD,
+    LINEMATE,
+    DERAUMERE,
+    SIBUR,
+    MENDIANE,
+    PHIRAS,
+    THYSTAME
 };
 
 enum AnimType {

@@ -60,7 +60,7 @@ int main_graphic() {
 
 int main(int ac, char **av)
 {
-    return main_graphic();
+    //return main_graphic();
     // if (ac < 3) {
     //     return 84;
     // }

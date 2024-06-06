@@ -43,7 +43,7 @@ vector_t *vec_new(size_t elem_size, dtor_t dtor, cpctor_t cpctor)
 
 buf_error_t vec_reserve(vector_t *vec, size_t additional)
 {
-    u_char *items_new = NULL;
+    char *items_new = NULL;
     size_t new_capacity = 0;
 
     if (vec == NULL) {
