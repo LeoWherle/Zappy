@@ -8,7 +8,7 @@
 #include "KeyHandler.hpp"
 
 namespace GUI {
-    KeyHandler::KeyHandler(Camera &cam) : _cam(cam)
+    KeyHandler::KeyHandler(Camera &cam, std::vector<Pikmin> &pikmins) : _cam(cam), _pikmins(pikmins)
     {
         /* raylib handle QWERTY configuration */
         _keyMap = {
@@ -17,7 +17,8 @@ namespace GUI {
             {KEY_A, &KeyHandler::moveCamLeft},
             {KEY_D, &KeyHandler::moveCamRight},
             {KEY_I, &KeyHandler::moveCamForward},
-            {KEY_J, &KeyHandler::moveCamBackward}
+            {KEY_J, &KeyHandler::moveCamBackward},
+            {MOUSE_BUTTON_LEFT, &KeyHandler::setFocus}
         };
     }
 
@@ -29,6 +30,9 @@ namespace GUI {
     {
         for (auto &[val, func] : _keyMap) {
             if (IsKeyDown(val)) {
+                (this->*func)();
+            }
+            if (IsMouseButtonReleased(val)) {
                 (this->*func)();
             }
         }
@@ -63,5 +67,13 @@ namespace GUI {
     void KeyHandler::moveCamBackward(void)
     {
         _cam.changeDistance(1);
+    }
+
+    void KeyHandler::setFocus(void)
+    {
+        Vector2 mousePos = GetMousePosition();
+        for (auto &pikmin : _pikmins) {
+            return;
+        }
     }
 }

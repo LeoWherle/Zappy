@@ -8,11 +8,12 @@
 #pragma once
 
 #include "Camera.hpp"
+#include "Pikmin.hpp"
 
 namespace GUI {
     class KeyHandler {
         public:
-            KeyHandler(Camera &cam);
+            KeyHandler(Camera &cam, std::vector<Pikmin> &pikmins);
             ~KeyHandler();
 
             void update(void);
@@ -23,8 +24,10 @@ namespace GUI {
             void moveCamLeft(void);
             void moveCamForward(void);
             void moveCamBackward(void);
+            void setFocus(void);
 
             std::vector<std::pair<int, void (KeyHandler::*)(void)>> _keyMap;
             Camera &_cam;
+            std::vector<Pikmin> &_pikmins;
     };
 }

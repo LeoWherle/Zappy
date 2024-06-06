@@ -13,7 +13,7 @@ namespace GUI {
     Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
         _size(0, 0), _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
         _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
-        _key (KeyHandler(_cam)),
+        _key (KeyHandler(_cam, _pikmins)),
         _client (connection::Client(timeout, ip, port))
     {
         _run = true;
@@ -120,18 +120,18 @@ namespace GUI {
             _in.consume(consume + 1);
         }
 
-        _out.write_to_buffer("mct\n");
-        for (auto &player: _pikmins) {
-            Pikmin::State status = player.getStatus();
-            if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-                _out.write_to_buffer("ppo ");
-                _out.write_to_buffer(player.getData().getId());
-                _out.write_to_buffer("\n");
-                _out.write_to_buffer("plv ");
-                _out.write_to_buffer(player.getData().getId());
-                _out.write_to_buffer("\n");
-            }
-        }
+       // _out.write_to_buffer("mct\n");
+       // for (auto &player: _pikmins) {
+       //     Pikmin::State status = player.getStatus();
+       //     if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+       //         _out.write_to_buffer("ppo ");
+       //         _out.write_to_buffer(player.getData().getId());
+       //         _out.write_to_buffer("\n");
+       //         _out.write_to_buffer("plv ");
+       //         _out.write_to_buffer(player.getData().getId());
+       //         _out.write_to_buffer("\n");
+       //     }
+       // }
     }
 
     void Warudo::handleKey(void)

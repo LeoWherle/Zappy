@@ -24,7 +24,7 @@ namespace GUI {
             bool animationUpdate(float delta);
 
             inline void setMotionVector(raylib::Vector3 newVect) { _motionVector = newVect; }
-            inline void setPositionVector(raylib::Vector3 newPos) { _position = newPos; }
+            void setPositionVector(raylib::Vector3 newPos);
 
             inline void setRotation(float rotation) { _rotation = rotation; }
 
@@ -46,5 +46,9 @@ namespace GUI {
             float _cumulatedTime;
             float _animationTime;
             float _walkTime;
+
+            raylib::BoundingBox _entityBox;
+            raylib::Vector3 _size;
+            raylib::Vector3 _boxOffset;
     };
 }

@@ -18,6 +18,9 @@ namespace GUI {
         _rotationAxis = raylib::Vector3(0, 1, 0);
         _rotation = 0;
         _scale = raylib::Vector3(0.5, 0.5, 0.5);
+        _size = (raylib::Vector3(1, 1, 1) * _scale);
+        _boxOffset = raylib::Vector3(-0.5, -0.5, -0.5) * _scale;
+        _entityBox = raylib::BoundingBox(_position + _boxOffset, _position + _size + _boxOffset);
         _colorMod = raylib::Color::Blue();
         _cumulatedTime = 0.0f;
         _animationTime = 0.0f;
@@ -29,6 +32,14 @@ namespace GUI {
         _animCount = 0;
         _anim = anim;
     }
+
+    void PikminModel::setPositionVector(raylib::Vector3 newPos)
+    {
+        _position = newPos;
+        _entityBox.SetMin(_position + _boxOffset);
+        _entityBox.SetMax(_position + _size + _boxOffset);
+    }
+
 
     bool PikminModel::animationUpdate(float delta)
     {
@@ -58,6 +69,7 @@ namespace GUI {
         //        _motionVector = raylib::Vector3::Zero();
         //    }
         //}
+        _entityBox.Draw();
         if (_model) {
             _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
         } else {
