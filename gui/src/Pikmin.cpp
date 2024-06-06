@@ -6,10 +6,10 @@
 */
 
 #include "Pikmin.hpp"
-#include <iostream>
+#include "Color.hpp"
 
 namespace GUI {
-    Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
+    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
     {
     }
 

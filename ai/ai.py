@@ -58,11 +58,11 @@ def make_ai_actions(ai_instance, threads, args, logger):
                 ai_instance.incantation()
             else:
                 ai_instance.broadcast("lvl6")
-                ai_instance.look()
-                ai_instance.look()
-                ai_instance.look()  # To delay broadcast
-                ai_instance.look()
-                ai_instance.look()
+                ai_instance.turn_right()
+                ai_instance.turn_right()
+                ai_instance.turn_right()  # To delay broadcast
+                ai_instance.turn_right()
+                ai_instance.turn_right()
         else:
             if ai_instance.random and ai_instance.lvl == 1:
                 ai_instance.go_to_obj("linemate")

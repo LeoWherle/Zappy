@@ -7,39 +7,77 @@
 
 #pragma once
 
+#include <memory>
 #include <raylib-cpp.hpp>
 #include <map>
+#include <vector>
 
 namespace GUI {
+    enum ModelType {
+        DEFAULT,
+        RED_PIKMIN,
+        YELLOW_PIKMIN,
+        BLUE_PIKMIN,
+        LEAF_TOP,
+        BUD_TOP,
+        FLOWER_TOP,
+        FOOD_MOD,
+        LINEMATE_MOD,
+        DERAUMERE_MOD,
+        SIBUR_MOD,
+        MENDIANE_MOD,
+        PHIRAS_MOD,
+        THYSTAME_MOD
+    };
+
+    enum AnimType {
+        WALK,
+        INCANTATION,
+    };
+
+    class GuiModel {
+        public:
+
+            GuiModel();
+            GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type);
+            ~GuiModel();
+
+            void Draw();
+            void UpdateAnim(int &frameCount);
+            void SetPosition(raylib::Vector3 pos);
+            void SetRotation(raylib::Vector3 axis, float angle);
+            void SetScale(float scale);
+            void SetColor(raylib::Color color);
+            AnimType GetAnimation();
+            void SetAnimation(AnimType anim);
+
+        protected:
+        private:
+            float _scale = 1.0f;
+            AnimType _animType;
+            ModelType _type;
+            raylib::Vector3 _position;
+            raylib::Model _model;
+            raylib::Texture _texture;
+            raylib::Material _material;
+            raylib::Color _color;
+            std::shared_ptr<std::vector<raylib::ModelAnimation>> _animations;
+    };
+
     class ModelBank
     {
-    public:
-        ModelBank(void);
-        ~ModelBank(void);
-
-        raylib::Model *get(const std::string &ressourceName);
-
-        struct texturedModel {
-            raylib::Model model;
-            raylib::Texture2D texture;
-        };
-
-        class InvalidModel : public std::exception
-        {
         public:
-            InvalidModel(std::string name) : _str("invalid model name " + name)
-            {}
 
-            const char* what() const noexcept override
-            {
-                return _str.c_str();
-            }
+            typedef struct ModelInfo {
+                std::string modelPath;
+                std::string texturePath;
+                std::string animPath;
+            } ModelInfo_t;
 
-        private:
-            std::string _str;
-        };
+            static const std::map<ModelType, ModelInfo> modelInfo;
+            static std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> loadedAnims;
+            static std::map<ModelType, std::shared_ptr<GuiModel>> models;
 
-    private:
-        std::map<std::string, texturedModel> _models;
+            static std::shared_ptr<GuiModel> get(ModelType type);
     };
 }
