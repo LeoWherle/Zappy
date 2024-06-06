@@ -39,7 +39,7 @@ static int winning_team(vector_t *players, unsigned int teams)
     for (i = 0; i < tcounts.nmemb; i++)
         if (((unsigned int *) tcounts.items)[i] >= 6)
             return i;
-    vec_delete(&tcounts);
+    vec_reset(&tcounts);
     return -1;
 }
 
@@ -105,36 +105,37 @@ static void start_invocation(
     }
 }
 
-static void start_new_task(trantor_t *trantor, player_t *player)
+static bool start_new_task(trantor_t *trantor, player_t *player)
 {
     player->busy = false;
     if (player->npcmd == 0 || player->is_dead || player->is_egg)
-        return;
+        return false;
     LOG_TRACE("Starting new task for player %d", player->n);
     init_pcmd_executor(player->pcmd_buffer.items,
         trantor->params.f, &player->pcmd_exec);
     if (player->pcmd_exec.command == NONE_PCMD) {
         SAY_KO(&player->response_buffer);
-        return;
+        return true;
     }
     if (player->pcmd_exec.command == INCANTATION_PCMD) {
         if (!can_invocate(&trantor->players, player, &(trantor->map))) {
             SAY_KO(&player->response_buffer);
-            return;
+            return true;
         }
         start_invocation(&trantor->players, player, &trantor->log);
     }
     player->busy = true;
-    pop_line(&player->pcmd_buffer);
     player->npcmd--;
+    return true;
 }
 
 static void try_refill_map(trantor_t *trantor, double delta)
 {
     trantor->map.since_refill += delta;
-    if (trantor->map.since_refill >= MAP_REFILLS_INTERVAL) {
+    if (trantor->map.since_refill
+        >= MAP_REFILLS_INTERVAL / trantor->params.f) {
         add_ressources(&(trantor->map));
-        trantor->map.since_refill -= MAP_REFILLS_INTERVAL;
+        trantor->map.since_refill -= MAP_REFILLS_INTERVAL / trantor->params.f;
     }
 }
 
@@ -167,8 +168,9 @@ static void player_time_pass(
         execute_pcmd(trantor, p);
         p = VEC_AT(&trantor->players, i);
     }
-    if (!p->busy || p->pcmd_exec.exec_time_left <= 0)
-        start_new_task(trantor, p);
+    if ((!p->busy || p->pcmd_exec.exec_time_left <= 0)
+        && start_new_task(trantor, p))
+        pop_line(&p->pcmd_buffer);
 }
 
 bool trantor_time_pass(trantor_t *trantor, double delta)

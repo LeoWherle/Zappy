@@ -64,6 +64,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         msg (str): The message to send.
         ai_instance (AI): The AI instance sending the message.
         """
+        self.send_buffer(ai_instance)
         if msg[-1] != '\n':
             msg += '\n'
         if ai_instance is None:

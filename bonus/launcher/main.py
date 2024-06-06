@@ -4,6 +4,7 @@ from ttkthemes import ThemedTk
 import datetime
 from processManager import ProcessManager
 from configuratorManager import ConfiguratorManager, Config
+import time
 
 class App:
     def __init__(self, root):
@@ -85,6 +86,7 @@ class App:
                 pm = ProcessManager(command.split())
                 pm.start_process()
                 self.process_managers.append(pm)
+                time.sleep(5)
 
     def stop_all_processes(self):
         if self.is_running:
