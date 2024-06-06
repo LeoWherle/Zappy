@@ -6,55 +6,55 @@
 #include "raylib.h"
 
 int main_graphic() {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
-
-    // Define the camera to look into our 3d world
-    Camera3D camera = { 0 };
-    camera.position = (Vector3){ 0.0f, 30.0f, 30.0f };  // Camera position
-    camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
-    camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
-    camera.fovy = 45.0f;                                // Camera field-of-view Y
-    camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
-
-    Pikmin pikmin("yes", 0, 0);
-    pikmin.setModel(ModelBank::get("RedPikmin"));
-    pikmin.setTop(ModelBank::get("LeafTop"));
-
-    SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
-    while (!WindowShouldClose())    // Detect window close button or ESC key
-    {
-        if (IsKeyDown(KEY_SPACE)) {
-            pikmin.animationUpdate(0);
-        }
-
-        if (IsKeyPressed(KEY_C)) {
-            pikmin.levelUp();
-        }
-        BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            BeginMode3D(camera);
-
-                DrawGrid(20, 1.0f);
-
-                pikmin.drawModel(0);
-
-            EndMode3D();
-
-            std::string level = "Lvl " + std::to_string(pikmin.getLevel());
-            DrawText("P I K M I N", 10, 40, 20, DARKGRAY);
-            DrawText(level.c_str(), 400, 400, 50, DARKGRAY);
-
-            DrawFPS(10, 10);
-
-        EndDrawing();
-    }
-    CloseWindow();
-    return 0;
+    //const int screenWidth = 800;
+    //const int screenHeight = 450;
+//
+    //InitWindow(screenWidth, screenHeight, "raylib [core] example - 3d camera mode");
+//
+    //// Define the camera to look into our 3d world
+    //Camera3D camera = { 0 };
+    //camera.position = (Vector3){ 0.0f, 30.0f, 30.0f };  // Camera position
+    //camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+    //camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+    //camera.fovy = 45.0f;                                // Camera field-of-view Y
+    //camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
+//
+    //Pikmin pikmin("yes", 0, 0);
+    //pikmin.setModel(ModelBank::get("RedPikmin"));
+    //pikmin.setTop(ModelBank::get("LeafTop"));
+//
+    //SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
+    //while (!WindowShouldClose())    // Detect window close button or ESC key
+    //{
+    //    if (IsKeyDown(KEY_SPACE)) {
+    //        pikmin.animationUpdate(0);
+    //    }
+//
+    //    if (IsKeyPressed(KEY_C)) {
+    //        pikmin.levelUp();
+    //    }
+    //    BeginDrawing();
+//
+    //        ClearBackground(RAYWHITE);
+//
+    //        BeginMode3D(camera);
+//
+    //            DrawGrid(20, 1.0f);
+//
+    //            pikmin.drawModel(0);
+//
+    //        EndMode3D();
+//
+    //        std::string level = "Lvl " + std::to_string(pikmin.getLevel());
+    //        DrawText("P I K M I N", 10, 40, 20, DARKGRAY);
+    //        DrawText(level.c_str(), 400, 400, 50, DARKGRAY);
+//
+    //        DrawFPS(10, 10);
+//
+    //    EndDrawing();
+    //}
+    //CloseWindow();
+    //return 0;
 }
 
 

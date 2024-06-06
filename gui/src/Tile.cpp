@@ -30,13 +30,13 @@ void Tile::setRocks(std::map<Kaillou, std::size_t> &rocks)
 
 void Tile::getRockModel(ModelBank &bank)
 {
-    _models[Kaillou::FOOD] = ModelBank::get(ModelType::FOOD);
-    _models[Kaillou::LINEMATE] = ModelBank::get(ModelType::LINEMATE);
-    _models[Kaillou::DERAUMERE] = ModelBank::get(ModelType::DERAUMERE);
-    _models[Kaillou::SIBUR] = ModelBank::get(ModelType::SIBUR);
-    _models[Kaillou::MENDIANE] = ModelBank::get(ModelType::MENDIANE);
-    _models[Kaillou::PHIRAS] = ModelBank::get(ModelType::PHIRAS);
-    _models[Kaillou::THYSTAME] = ModelBank::get(ModelType::THYSTAME);
+    _models[Kaillou::FOOD] = ModelBank::get(ModelType::FOOD_MOD);
+    _models[Kaillou::LINEMATE] = ModelBank::get(ModelType::LINEMATE_MOD);
+    _models[Kaillou::DERAUMERE] = ModelBank::get(ModelType::DERAUMERE_MOD);
+    _models[Kaillou::SIBUR] = ModelBank::get(ModelType::SIBUR_MOD);
+    _models[Kaillou::MENDIANE] = ModelBank::get(ModelType::MENDIANE_MOD);
+    _models[Kaillou::PHIRAS] = ModelBank::get(ModelType::PHIRAS_MOD);
+    _models[Kaillou::THYSTAME] = ModelBank::get(ModelType::THYSTAME_MOD);
 }
 
 void Tile::addRock(Kaillou rock)

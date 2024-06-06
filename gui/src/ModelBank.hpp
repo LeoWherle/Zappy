@@ -20,13 +20,13 @@ enum ModelType {
     LEAF_TOP,
     BUD_TOP,
     FLOWER_TOP,
-    FOOD,
-    LINEMATE,
-    DERAUMERE,
-    SIBUR,
-    MENDIANE,
-    PHIRAS,
-    THYSTAME
+    FOOD_MOD,
+    LINEMATE_MOD,
+    DERAUMERE_MOD,
+    SIBUR_MOD,
+    MENDIANE_MOD,
+    PHIRAS_MOD,
+    THYSTAME_MOD
 };
 
 enum AnimType {
