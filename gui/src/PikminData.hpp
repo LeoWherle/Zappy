@@ -13,7 +13,7 @@
 class PikminData
 {
     public:
-        PikminData(std::string &id, std::size_t x, std::size_t y);
+        PikminData(const std::string &id, std::size_t x, std::size_t y);
         ~PikminData() = default;
 
         inline void setX(std::size_t val) { _x = val; }

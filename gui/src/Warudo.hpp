@@ -34,9 +34,9 @@ class Warudo {
         void updateUI(void);
 
         std::vector<Pikmin> _pikmins;
-        std::pair<std::size_t, std::size_t> _size;
         std::vector<Tile> _map;
         std::vector<std::string> _teams;
+        std::pair<std::size_t, std::size_t> _size;
         std::size_t &_x;
         std::size_t &_y;
         float _timeMult;

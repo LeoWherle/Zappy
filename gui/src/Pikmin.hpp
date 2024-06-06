@@ -30,7 +30,7 @@ class Pikmin {
             EGG,
             DYING
         };
-        Pikmin(std::string &id, std::size_t x, std::size_t y);
+        Pikmin(const std::string &id, std::size_t x, std::size_t y);
         Pikmin() = delete;
         Pikmin(const Pikmin &) = default;
         ~Pikmin();

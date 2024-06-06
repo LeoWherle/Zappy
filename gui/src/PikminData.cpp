@@ -7,7 +7,7 @@
 
 #include "PikminData.hpp"
 
-PikminData::PikminData(std::string &id, std::size_t x, std::size_t y)
+PikminData::PikminData(const std::string &id, std::size_t x, std::size_t y)
 {
     _x = x;
     _y = y;

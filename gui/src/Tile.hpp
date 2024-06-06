@@ -9,7 +9,6 @@
 
 #include <map>
 #include <vector>
-#include <string>
 #include "Kaillou.hpp"
 #include "ModelBank.hpp"
 #include "Inventory.hpp"
@@ -32,7 +31,7 @@ class Tile {
         };
 
         Inventory _inv;
-        std::map<Kaillou, raylib::Model *> _models;
+        std::map<Kaillou, std::shared_ptr<GuiModel>> _models;
         std::vector<groundedMaterial> _materials;
         float _x;
         float _y;
