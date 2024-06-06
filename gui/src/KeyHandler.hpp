@@ -21,6 +21,8 @@ namespace GUI {
             void moveCamDown(void);
             void moveCamRight(void);
             void moveCamLeft(void);
+            void moveCamForward(void);
+            void moveCamBackward(void);
 
             std::vector<std::pair<int, void (KeyHandler::*)(void)>> _keyMap;
             Camera &_cam;

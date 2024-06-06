@@ -18,6 +18,7 @@ namespace GUI {
             ~Camera() = default;
             void rotateCamX(int direction);
             void rotateCamY(int direction);
+            void changeDistance(int direction);
             void setUpCam(float x, float y);
             inline raylib::Camera3D &getCam(void) { return _cam; }
         private:
@@ -29,6 +30,7 @@ namespace GUI {
             float _radius;
             float _currAngleX;
             float _currAngleY;
+            float _minRadius;
             float const _maxAngleX = 80;
             float const _minAngleX = 30;
             float _offsetX;

@@ -19,6 +19,7 @@ namespace GUI {
         _currAngleY = 0.0f;
         _offsetX = 0;
         _offsetY = 0;
+        _minRadius = 2;
     }
 
     void Camera::setCamPos(void)
@@ -49,6 +50,16 @@ namespace GUI {
     {
         float move = ROTATION_SPEED * direction;
         _currAngleY += move;
+        setCamPos();
+    }
+
+    void Camera::changeDistance(int direction)
+    {
+        float move = ROTATION_SPEED * direction;
+        _radius += move / 4;
+        if (_radius < _minRadius) {
+            _radius = _minRadius;
+        }
         setCamPos();
     }
 
