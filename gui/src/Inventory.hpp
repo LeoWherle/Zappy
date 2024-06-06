@@ -10,16 +10,18 @@
 #include <map>
 #include "Kaillou.hpp"
 
-class Inventory
-{
-public:
-    Inventory(void);
-    ~Inventory(void) = default;
+namespace GUI {
+    class Inventory
+    {
+    public:
+        Inventory(void);
+        ~Inventory(void) = default;
 
-    void setRock(std::map<Kaillou, std::size_t> &rocks);
+        void setRock(std::map<Kaillou, std::size_t> &rocks);
 
-    std::size_t getNbRock(Kaillou rock);
+        std::size_t getNbRock(Kaillou rock);
 
-private:
-    std::map<Kaillou, std::size_t> _rocks;
-};
+    private:
+        std::map<Kaillou, std::size_t> _rocks;
+    };
+}

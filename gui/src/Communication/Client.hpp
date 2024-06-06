@@ -44,11 +44,11 @@ namespace connection {
             ~Client();
 
             void setUpConnection(void);
-            void handleSelect(ReadBuffer &in, WriteBuffer &out, ReadBuffer &stdInput, WriteBuffer &stdOutput);
+            void handleSelect(Buffer::ReadBuffer &in, Buffer::WriteBuffer &out, Buffer::ReadBuffer &stdInput, Buffer::WriteBuffer &stdOutput);
         private:
             /* Must never be called outside the class */
-            void handleStd(ReadBuffer &in, WriteBuffer &out);
-            void handleConnection(ReadBuffer &in, WriteBuffer &out);
+            void handleStd(Buffer::ReadBuffer &in, Buffer::WriteBuffer &out);
+            void handleConnection(Buffer::ReadBuffer &in, Buffer::WriteBuffer &out);
 
             fd_set _readFd;
             fd_set _writeFd;

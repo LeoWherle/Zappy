@@ -10,39 +10,41 @@
 #include <raylib-cpp.hpp>
 #include "ModelBank.hpp"
 
-class PikminModel
-{
-    public:
-        PikminModel(std::size_t x, std::size_t y);
-        ~PikminModel() = default;
+namespace GUI {
+    class PikminModel
+    {
+        public:
+            PikminModel(std::size_t x, std::size_t y);
+            ~PikminModel() = default;
 
-        inline void setModel(std::shared_ptr<GuiModel> model) { _model = model; }
-        void drawModel(float delta);
-        inline void setAnimation(AnimType anim) { _model->SetAnimation(anim); }
-        inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
+            inline void setModel(std::shared_ptr<GuiModel> model) { _model = model; }
+            void drawModel(float delta);
+            inline void setAnimation(AnimType anim) { _model->SetAnimation(anim); }
+            inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
 
-        bool animationUpdate(float delta);
+            bool animationUpdate(float delta);
 
-        inline void setMotionVector(raylib::Vector3 newVect) { _motionVector = newVect; }
-        inline void setPositionVector(raylib::Vector3 newPos) { _position = newPos; }
+            inline void setMotionVector(raylib::Vector3 newVect) { _motionVector = newVect; }
+            inline void setPositionVector(raylib::Vector3 newPos) { _position = newPos; }
 
-        inline void setRotation(float rotation) { _rotation = rotation; }
+            inline void setRotation(float rotation) { _rotation = rotation; }
 
-        inline void setColor(raylib::Color &color) { _colorMod = color; }
+            inline void setColor(raylib::Color &color) { _colorMod = color; }
 
-    private:
-        std::shared_ptr<GuiModel> _model;
-        int _animCount;
-        int _frameCount;
+        private:
+            std::shared_ptr<GuiModel> _model;
+            int _animCount;
+            int _frameCount;
 
-        raylib::Vector3 _position;
-        raylib::Vector3 _motionVector;
-        raylib::Vector3 _rotationAxis;
-        float _rotation;
-        raylib::Vector3 _scale;
-        raylib::Color _colorMod;
+            raylib::Vector3 _position;
+            raylib::Vector3 _motionVector;
+            raylib::Vector3 _rotationAxis;
+            float _rotation;
+            raylib::Vector3 _scale;
+            raylib::Color _colorMod;
 
-        float _cumulatedTime;
-        float _animationTime;
-        float _walkTime;
-};
+            float _cumulatedTime;
+            float _animationTime;
+            float _walkTime;
+    };
+}

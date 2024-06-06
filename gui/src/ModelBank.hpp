@@ -12,72 +12,72 @@
 #include <map>
 #include <vector>
 
-enum ModelType {
-    DEFAULT,
-    EGG,
-    RED_PIKMIN,
-    YELLOW_PIKMIN,
-    BLUE_PIKMIN,
-    LEAF_TOP,
-    BUD_TOP,
-    FLOWER_TOP,
-    FOOD_MOD,
-    LINEMATE_MOD,
-    DERAUMERE_MOD,
-    SIBUR_MOD,
-    MENDIANE_MOD,
-    PHIRAS_MOD,
-    THYSTAME_MOD
-};
+namespace GUI {
+    enum ModelType {
+        DEFAULT,
+        EGG,
+        RED_PIKMIN,
+        YELLOW_PIKMIN,
+        BLUE_PIKMIN,
+        LEAF_TOP,
+        BUD_TOP,
+        FLOWER_TOP,
+        FOOD_MOD,
+        LINEMATE_MOD,
+        DERAUMERE_MOD,
+        SIBUR_MOD,
+        MENDIANE_MOD,
+        PHIRAS_MOD,
+        THYSTAME_MOD
+    };
 
-enum AnimType {
-    WALK,
-    INCANTATION,
-};
+    enum AnimType {
+        WALK,
+        INCANTATION,
+    };
 
+    class GuiModel {
+        public:
 
-class GuiModel {
-    public:
+            GuiModel();
+            GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type);
+            ~GuiModel();
 
-        GuiModel();
-        GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type);
-        ~GuiModel();
+            void Draw(raylib::Vector3 pos, raylib::Vector3 axis, float rotation, raylib::Vector3 scale, raylib::Color color);
+            void UpdateAnim(int &frameCount);
+            void SetPosition(raylib::Vector3 pos);
+            void SetRotation(raylib::Vector3 axis, float angle);
+            void SetScale(float scale);
+            void SetColor(raylib::Color color);
+            AnimType GetAnimation();
+            void SetAnimation(AnimType anim);
+        protected:
+        private:
+            float _scale = 1.0f;
+            AnimType _animType;
+            ModelType _type;
+            raylib::Vector3 _position;
+            raylib::Model _model;
+            raylib::Texture _texture;
+            raylib::Material _material;
+            raylib::Color _color;
+            std::shared_ptr<std::vector<raylib::ModelAnimation>> _animations;
+    };
 
-        void Draw(raylib::Vector3 pos, raylib::Vector3 axis, float rotation, raylib::Vector3 scale, raylib::Color color);
-        void UpdateAnim(int &frameCount);
-        void SetPosition(raylib::Vector3 pos);
-        void SetRotation(raylib::Vector3 axis, float angle);
-        void SetScale(float scale);
-        void SetColor(raylib::Color color);
-        AnimType GetAnimation();
-        void SetAnimation(AnimType anim);
+    class ModelBank
+    {
+        public:
 
-    protected:
-    private:
-        float _scale = 1.0f;
-        AnimType _animType;
-        ModelType _type;
-        raylib::Vector3 _position;
-        raylib::Model _model;
-        raylib::Texture _texture;
-        raylib::Material _material;
-        raylib::Color _color;
-        std::shared_ptr<std::vector<raylib::ModelAnimation>> _animations;
-};
+            typedef struct ModelInfo {
+                std::string modelPath;
+                std::string texturePath;
+                std::string animPath;
+            } ModelInfo_t;
 
-class ModelBank
-{
-    public:
+            static const std::map<ModelType, ModelInfo> modelInfo;
+            static std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> loadedAnims;
+            static std::map<ModelType, std::shared_ptr<GuiModel>> models;
 
-        typedef struct ModelInfo {
-            std::string modelPath;
-            std::string texturePath;
-            std::string animPath;
-        } ModelInfo_t;
-
-        static const std::map<ModelType, ModelInfo> modelInfo;
-        static std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> loadedAnims;
-        static std::map<ModelType, std::shared_ptr<GuiModel>> models;
-
-        static std::shared_ptr<GuiModel> get(ModelType type);
-};
+            static std::shared_ptr<GuiModel> get(ModelType type);
+    };
+}
