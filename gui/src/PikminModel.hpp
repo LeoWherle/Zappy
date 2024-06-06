@@ -40,7 +40,7 @@ namespace GUI {
             raylib::Vector3 _motionVector;
             raylib::Vector3 _rotationAxis;
             float _rotation;
-            raylib::Vector3 _scale;
+            float _scale;
             raylib::Color _colorMod;
 
             float _cumulatedTime;

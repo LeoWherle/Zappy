@@ -14,11 +14,11 @@ namespace GUI {
         _model = nullptr;
         _animCount = 0;
         _frameCount = 0;
-        _position = raylib::Vector3(x, 1, y);
-        _motionVector = raylib::Vector3(0, 0, 0);
-        _rotationAxis = raylib::Vector3(0, 0.5, 0);
+        _position = raylib::Vector3(x, 0.5f, y);
+        _motionVector = raylib::Vector3(0.0f, 0.0f, 0.0f);
+        _rotationAxis = raylib::Vector3(0.0f, 0.0f, 1.0f);
         _rotation = 0;
-        _scale = raylib::Vector3(0.05, 0.05, 0.05);
+        _scale = 0.05f;
         _colorMod = raylib::Color::White();
         _cumulatedTime = 0.0f;
         _animationTime = 0.0f;
@@ -52,7 +52,7 @@ namespace GUI {
         if (_model) {
             _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
         } else {
-            DrawCubeV(_position, _scale, _colorMod);
+            DrawCubeV(_position, raylib::Vector3(_scale, _scale, _scale), _colorMod);
         }
     }
 }
