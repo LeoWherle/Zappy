@@ -70,11 +70,11 @@ static const std::map<Kaillou, raylib::Color> colorMap = {
 void Tile::drawTile(void)
 {
     for (auto &i : _materials) {
-        if (_models[i.caillou] != nullptr) {
-            _models[i.caillou]->SetPosition(i.pos);
-            _models[i.caillou]->Draw();
-        } else {
+        //if (_models[i.caillou] != nullptr) {
+        //    _models[i.caillou]->SetPosition(i.pos);
+        //    _models[i.caillou]->Draw();
+        //} else {
             DrawCube(i.pos, 0.1f, 0.1f, 0.1f, colorMap.at(i.caillou));
-        }
+        //}
     }
 }
