@@ -11,7 +11,6 @@
 #include <vector>
 #include "Pikmin.hpp"
 #include "Tile.hpp"
-#include "AnimationBank.hpp"
 #include "ModelBank.hpp"
 
 namespace GUI {
@@ -51,7 +50,6 @@ namespace GUI {
         std::size_t &_y;
         std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>> _regexMap;
         ModelBank _model;
-        AnimationBank _animation;
         float &_timeMult;
     };
 }
