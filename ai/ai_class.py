@@ -403,7 +403,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
-        self.net.add_to_send("Forward")
+        self.net.send("Forward", self)
         self.net.logger.info("Moved forward", self.id)
     
     # Turn the AI right
@@ -411,7 +411,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
-        self.net.add_to_send("Right")
+        self.net.send("Right", self)
         self.net.logger.info("Turned right", self.id)
 
     # Turn the AI left
@@ -419,7 +419,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
-        self.net.add_to_send("Left")
+        self.net.send("Left", self)
         self.net.logger.info("Turned left", self.id)
 
     def move_random(self):
@@ -439,7 +439,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
-        self.net.add_to_send(f"Broadcast {msg}")
+        self.net.send(f"Broadcast {msg}", self)
         self.net.logger.info(f"Broadcasted: {msg}", self.id)
     
     # Eject
@@ -447,7 +447,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
-        self.net.add_to_send("Eject")
+        self.net.send("Eject", self)
         self.net.logger.info("Ejection sended", self.id)
     
     def go_to_broadcast(self, k):
