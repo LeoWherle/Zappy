@@ -19,15 +19,23 @@ namespace GUI {
         _rotationAxis = raylib::Vector3(0.0f, 0.0f, 1.0f);
         _rotation = 0;
         _scale = 0.05f;
-        _colorMod = raylib::Color::White();
+        _pikminColor = raylib::Color::White();
         _cumulatedTime = 0.0f;
         _animationTime = 0.0f;
         _walkTime = 0.0f;
     }
 
+    void PikminModel::setAnimation(AnimType anim)
+    {
+        if (_model)
+            _model->SetAnimation(anim);
+        if (_bulb)
+            _bulb->SetAnimation(anim);
+    }
+
     bool PikminModel::animationUpdate(float delta)
     {
-        if (_model == nullptr) {
+        if (_model == nullptr || _bulb == nullptr) {
             return true;
         }
         _cumulatedTime += delta;
@@ -35,6 +43,7 @@ namespace GUI {
             _cumulatedTime = 0.0f;
             _frameCount++;
             _model->UpdateAnim(_frameCount);
+            _bulb->UpdateAnim(_frameCount);
         }
         return (_frameCount == 0);
     }
@@ -49,10 +58,11 @@ namespace GUI {
         //        _motionVector = raylib::Vector3::Zero();
         //    }
         //}
-        if (_model) {
-            _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
+        if (_model && _bulb) {
+            _model->Draw(_position, _rotationAxis, _rotation, _scale, _pikminColor);
+            _bulb->Draw(_position, _rotationAxis, _rotation, _scale, _bulbColor);
         } else {
-            DrawCubeV(_position, raylib::Vector3(_scale, _scale, _scale), _colorMod);
+            DrawCubeV(_position, raylib::Vector3(_scale, _scale, _scale), _pikminColor);
         }
     }
 }
