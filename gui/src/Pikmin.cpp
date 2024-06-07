@@ -55,7 +55,7 @@ namespace GUI {
         {raylib::Color::Yellow(), LEAF_TOP},
         {raylib::Color::Red(), LEAF_TOP},
         {raylib::Color::White(), BUD_TOP},
-        {raylib::Color::White(), BUD_TOP},
+        {raylib::Color::Yellow(), BUD_TOP},
         {raylib::Color::White(), FLOWER_TOP},
         {raylib::Color::Yellow(), FLOWER_TOP},
         {raylib::Color::Red(), FLOWER_TOP},
