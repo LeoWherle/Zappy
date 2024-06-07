@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "serrorh.h"
 
@@ -23,8 +24,11 @@ FILE *global_log_file(bool set, FILE *value)
 
 static bool load_env_log_file_open(const char *log_file)
 {
-    FILE *file = fopen(log_file, "a");
+    FILE *file = NULL;
 
+    if (access(log_file, F_OK) == 0)
+        remove(log_file);
+    file = fopen(log_file, "a");
     if (file == NULL) {
         LOG_ERROR("Failed to open log file %s", log_file);
         return false;
@@ -41,10 +45,10 @@ void load_env_log_file(void)
 
     printf("log_file: %s\n", log_file);
     fflush(stdout);
-    if (log_file != NULL) {
+    if (log_file != NULL && log_file[0] != '\0') {
         loaded = load_env_log_file_open(log_file);
     }
     if (!loaded) {
-        global_log_file(true, stderr);
+        global_log_file(true, stdout);
     }
 }

@@ -84,6 +84,7 @@ void execute_gcmd(trantor_t *trantor, const char *gcmd)
         gui_error(trantor, &args);
         return;
     }
+    LOG_TRACE("Executing gui cmd %s", gcmd);
     get_gcmd_func(command)(trantor, &args);
 }
 
@@ -105,27 +106,26 @@ static void start_invocation(
     }
 }
 
-static bool start_new_task(trantor_t *trantor, player_t *player)
+static bool start_new_task(trantor_t *t, player_t *p)
 {
-    player->busy = false;
-    if (player->npcmd == 0 || player->is_dead || player->is_egg)
+    p->busy = false;
+    if (p->npcmd == 0 || p->is_dead || p->is_egg)
         return false;
-    LOG_TRACE("Starting new task for player %d", player->n);
-    init_pcmd_executor(player->pcmd_buffer.items,
-        trantor->params.f, &player->pcmd_exec);
-    if (player->pcmd_exec.command == NONE_PCMD) {
-        SAY_KO(&player->response_buffer);
+    init_pcmd_executor(p->pcmd_buffer.items, t->params.f, &p->pcmd_exec);
+    if (p->pcmd_exec.command == NONE_PCMD) {
+        SAY_KO(&p->response_buffer);
         return true;
     }
-    if (player->pcmd_exec.command == INCANTATION_PCMD) {
-        if (!can_invocate(&trantor->players, player, &(trantor->map))) {
-            SAY_KO(&player->response_buffer);
+    LOG_TRACE("P %d starting %s\n", get_pcmd_name(p->pcmd_exec.command), p->n);
+    if (p->pcmd_exec.command == INCANTATION_PCMD) {
+        if (!can_invocate(&t->players, p, &(t->map))) {
+            SAY_KO(&p->response_buffer);
             return true;
         }
-        start_invocation(&trantor->players, player, &trantor->log);
+        start_invocation(&t->players, p, &t->log);
     }
-    player->busy = true;
-    player->npcmd--;
+    p->busy = true;
+    p->npcmd--;
     return true;
 }
 

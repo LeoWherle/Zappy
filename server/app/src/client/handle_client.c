@@ -36,8 +36,6 @@ static void client_read(client_t *client, server_t *server)
         return;
     }
     client->read_buf.nmemb += red;
-    LOG_TRACE("Read buffer: -%.*s-", (int) client->read_buf.nmemb,
-        (char *) client->read_buf.items);
 }
 
 // Write the client's write buffer to the client's socket
@@ -58,15 +56,11 @@ static void client_write(client_t *client)
         LOG_ERROR("Failed to erase written bytes from write buffer");
         return;
     }
-    LOG_TRACE("Wrote %ld bytes to client with fd: %d", written, client->sd);
 }
 
 static void client_consume_read_buffer(client_t *client, size_t consumed)
 {
     if (consumed > 0) {
-        LOG_TRACE("Will erase %ld bytes from read buffer", consumed);
-        LOG_TRACE("Read buffer: -%.*s-", (int) client->read_buf.nmemb,
-            (char *) client->read_buf.items);
         if (str_erase(&client->read_buf, 0, consumed) != BUF_OK) {
             LOG_ERROR("Failed to erase consumed bytes from read buffer");
         }

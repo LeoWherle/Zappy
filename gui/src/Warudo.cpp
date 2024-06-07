@@ -13,11 +13,12 @@ namespace GUI {
     Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
         _size(0, 0), _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
         _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
-        _key (KeyHandler(_cam)),
-        _client (connection::Client(timeout, ip, port))
+        _key (KeyHandler(_cam, _pikmins)),
+        _client (connection::Client(timeout, ip, port)),
+        _cam(_pikmins)
     {
         _run = true;
-        InitWindow(1920, 1080, "Zapikmin");
+        InitWindow(1920, 1080, "ZapPikmin");
         SetTargetFPS(60);
     }
 
@@ -59,7 +60,7 @@ namespace GUI {
                 std::string delimiter = "\n";
                 auto end = inBuff.find(delimiter);
                 std::string tmp = inBuff.substr(0, end);
-                if (std::strncmp(tmp.c_str(), "msz", 3) == 0) {
+                if (tmp.substr(0, 3) == "msz") {
                     _handler(tmp);
                     mapReady = true;
                 }
@@ -87,6 +88,7 @@ namespace GUI {
         while (_run && !WindowShouldClose()) {
             handleCommunication();
             handleKey();
+            _cam.update();
             prevTime = curTime;
             curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
             _delta = (prevTime - curTime) / 1000 / _timeMult;
@@ -120,22 +122,23 @@ namespace GUI {
             _in.consume(consume + 1);
         }
 
-        _out.write_to_buffer("mct\n");
-        for (auto &player: _pikmins) {
-            Pikmin::State status = player.getStatus();
-            if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-                _out.write_to_buffer("ppo ");
-                _out.write_to_buffer(player.getData().getId());
-                _out.write_to_buffer("\n");
-                _out.write_to_buffer("plv ");
-                _out.write_to_buffer(player.getData().getId());
-                _out.write_to_buffer("\n");
-            }
-        }
+       // _out.write_to_buffer("mct\n");
+       // for (auto &player: _pikmins) {
+       //     Pikmin::State status = player.getStatus();
+       //     if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+       //         _out.write_to_buffer("ppo ");
+       //         _out.write_to_buffer(player.getData().getId());
+       //         _out.write_to_buffer("\n");
+       //         _out.write_to_buffer("plv ");
+       //         _out.write_to_buffer(player.getData().getId());
+       //         _out.write_to_buffer("\n");
+       //     }
+       // }
     }
 
     void Warudo::handleKey(void)
     {
+    //    PollInputEvents();
         _key.update();
     }
 
@@ -175,6 +178,7 @@ namespace GUI {
                 EndMode3D();
 
         EndDrawing();
+     //   SwapScreenBuffer();
     }
 
     void Warudo::updatePikmin(void)

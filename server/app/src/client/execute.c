@@ -46,7 +46,7 @@ static void cl_send_start(client_t *client, player_t *player, unsigned int cnb)
         return;
     }
     if (player == NULL) {
-        talk(&client->write_buf, "0\n0 0\n");
+        talk(&client->write_buf, "ko\n");
     }
 }
 
@@ -120,7 +120,6 @@ static size_t client_process_data(
     if (next_packet <= 0)
         return 0;
     data[next_packet - 1] = '\0';
-    LOG_DEBUG("rbuf1: -%s-", data);
     if (client->is_gui) {
         gui_feed_trantor_line(trantor, data);
     } else {

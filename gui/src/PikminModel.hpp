@@ -26,12 +26,17 @@ namespace GUI {
             bool animationUpdate(float delta);
 
             inline void setMotionVector(const raylib::Vector3 newVect) { _motionVector = newVect; }
-            inline void setPositionVector(const raylib::Vector3 newPos) { _position = newPos; }
+            void setPositionVector(raylib::Vector3 newPos);
 
             inline void setRotation(const float rotation) { _rotation = rotation; }
 
             inline void setPikminColor(const raylib::Color &color) { _pikminColor = color; }
             inline void setBulbColor(const raylib::Color &color) { _bulbColor = color; }
+
+            bool getColision(raylib::Ray &) const;
+
+            inline std::size_t getX(void) { return _position.x; }
+            inline std::size_t getY(void) { return _position.z; }
 
         private:
             std::shared_ptr<GuiModel> _model;
@@ -50,5 +55,9 @@ namespace GUI {
             float _cumulatedTime;
             float _animationTime;
             float _walkTime;
+
+            raylib::BoundingBox _entityBox;
+            raylib::Vector3 _size;
+            raylib::Vector3 _boxOffset;
     };
 }

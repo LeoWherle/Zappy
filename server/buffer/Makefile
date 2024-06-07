@@ -58,11 +58,11 @@ CRITFLAGS = -lcriterion --coverage
 
 $(BUILD_DIR)tests/$(NAME)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $^ -c -o $@
+	$(CC) $(CFLAGS) $< -c -o $@
 
 $(BUILD_PATH)$(NAME)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $^ -c -o $@
+	$(CC) $(CFLAGS) $< -c -o $@
 
 $(BUILD_PATH)$(LIBNAME): $(OBJ)
 	ar rc $(BUILD_PATH)$(LIBNAME) $(OBJ)
@@ -91,5 +91,3 @@ tests_run: $(OBJ_CRIT)
 
 .PHONY: all clean fclean re
 .NOTPARALLEL: re
-
--include $(DEPS)
