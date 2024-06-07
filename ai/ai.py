@@ -35,6 +35,8 @@ def make_ai_actions(ai_instance, threads, args, logger):
     """
     global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
 
+    if NB_THREAD < 9 and ai_instance.get_unused_slots() > 0:
+        connect_new_thread(ai_instance, args, logger, threads)
     if not ai_instance.king and ai_instance.random and ai_instance.get_food_nbr() < 25:
         ai_instance.go_to_obj("food")
         ai_instance.take_all_food()
@@ -43,9 +45,7 @@ def make_ai_actions(ai_instance, threads, args, logger):
                 ai_instance.incantation()
     else:
         if not ai_instance.king and not ai_instance.choosen_ones:
-            if ai_instance.get_unused_slots() > 0 and NB_THREAD < 9:
-                connect_new_thread(ai_instance, args, logger, threads)
-            elif NB_THREAD < 9:
+            if ai_instance.get_unused_slots() == 0 and NB_THREAD < 9:
                 ai_instance.fork()
 
         if not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
