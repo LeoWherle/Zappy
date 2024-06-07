@@ -24,8 +24,9 @@ namespace GUI {
             void update();
             void setFocus(Pikmin &focus);
             void unfocus(void);
+            void reset();
         private:
-            void setCamPos(float x, float z, float radius);
+            void setCamPos(float x, float y, float z, float radius);
 
             raylib::Camera3D _cam;
             raylib::Vector3 _position;

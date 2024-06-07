@@ -23,7 +23,7 @@ namespace GUI {
         _minRadius = 2;
     }
 
-    void Camera::setCamPos(float x, float z, float radius)
+    void Camera::setCamPos(float x, float y, float z, float radius)
     {
         raylib::Vector3 direction(raylib::Vector3(0, 1, 0));
 
@@ -33,10 +33,11 @@ namespace GUI {
 
         _position = _position * radius;
         _position.x += x;
+        _position.y += y;
         _position.z += z;
 
         _cam.SetPosition(_position);
-        _cam.SetTarget(raylib::Vector3(x, 0.0f, z));
+        _cam.SetTarget(raylib::Vector3(x, y, z));
     }
 
     void Camera::rotateCamX(int direction)
@@ -94,10 +95,18 @@ namespace GUI {
         }
     }
 
+    void Camera::reset()
+    {
+        _cam.SetFovy(45.0f);
+        _currAngleX = 45.0f;
+        _currAngleY = 0.0f;
+    }
+
     void Camera::unfocus(void)
     {
         _cam.SetFovy(45.0f);
         _focusId.clear();
+        reset();
     }
 
     void Camera::update()
@@ -106,13 +115,13 @@ namespace GUI {
             for (auto &pikmin : _focus) {
                 if (pikmin == _focusId) {
                     _currAngleY += 0.2;
-                    setCamPos(pikmin.getData().getX(), pikmin.getData().getY(), 5);
+                    setCamPos(pikmin.getModel().getX(), 1, pikmin.getModel().getY(), 5);
                     return;
                 }
             }
             unfocus();
         } else {
-            setCamPos(_offsetX, _offsetY, _radius);
+            setCamPos(_offsetX, 0, _offsetY, _radius);
         }
     }
 }

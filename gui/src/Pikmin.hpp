@@ -62,6 +62,7 @@ namespace GUI {
             inline void setStatus(State newStatus) { _status = newStatus; }
 
             inline PikminData &getData(void) { return _data; }
+            inline PikminModel &getModel(void) { return _model; }
 
             bool getColision(raylib::Ray &);
         private:
