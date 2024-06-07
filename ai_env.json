@@ -1,0 +1,9 @@
+{
+    "loglevel" : {
+        "info" : true,
+        "error" : true,
+        "warning" : true,
+        "server" : true,
+        "ai" : true
+    }
+}

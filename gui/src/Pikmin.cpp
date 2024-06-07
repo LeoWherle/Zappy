@@ -6,73 +6,116 @@
 */
 
 #include "Pikmin.hpp"
+#include "Color.hpp"
 
-Pikmin::Pikmin(std::string &id, std::size_t x, std::size_t y)
-{
-    _x = x;
-    _y = y;
-    _inventory = {
-        {FOOD, 0},
-        {LINEMATE, 0},
-        {DERAUMERE, 0},
-        {SIBUR, 0},
-        {MENDIANE, 0},
-        {PHIRAS, 0},
-        {THYSTAME, 0}
-    };
-    _id = id;
-    _model = nullptr;
-    _anim = nullptr;
-    _animCount = 0;
-    _frameCount = 0;
-    _direction = 1;
-    _level = 1;
-}
-
-Pikmin::~Pikmin()
-{
-    UnloadModelAnimations(_anim, _animCount);
-}
-
-
-void Pikmin::pickRock(Kaillou rock)
-{
-    if (_inventory.find(rock) != _inventory.end()) {
-        _inventory[rock]++;
+namespace GUI {
+    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
+    {
     }
-}
 
-void Pikmin::dropRock(Kaillou rock)
-{
-    if (_inventory.find(rock) != _inventory.end()) {
-        _inventory[rock]--;
+    Pikmin::~Pikmin()
+    {
     }
-}
 
-void Pikmin::setAnimation(std::string fileName)
-{
-    if (_anim) {
-        UnloadModelAnimations(_anim, _animCount);
-        _animCount = 0;
+    void Pikmin::updatePosition(std::size_t x, std::size_t y, int orientation)
+    {
+        //if ((_data.getX() != x || _data.getY() != y) && _status != Pikmin::State::EJECT) {
+        //    _model.setPositionVector(raylib::Vector3(_data.getX(), 1, _data.getY()));
+        //    //_model.setAnimation(_animation.get("walk"));
+        //    _model.setMotionVector(raylib::Vector3(_data.getX() - x, 0, _data.getY() - y));
+        //}
+        _model.setPositionVector(raylib::Vector3(x, 0.5, y));
+        _data.setX(x);
+        _data.setY(y);
+        _data.setDirection(orientation);
+        _model.setRotation(90 * orientation - 90);
     }
-    _anim = LoadModelAnimations(fileName.c_str(), &_animCount);
-}
 
-bool Pikmin::animationUpdate(void)
-{
-    if (_model == nullptr || _anim == nullptr) {
-        return false;
+    bool Pikmin::draw(float delta)
+    {
+        bool result = _model.animationUpdate(delta);
+        _model.drawModel(delta);
+        return result;
     }
-    UpdateModelAnimation(*_model, _anim[0], _frameCount);
-    _frameCount++;
-    if (_frameCount > _anim[0].frameCount) {
-        _frameCount = 0;
-        return true;
-    }
-    return false;
-}
 
-void Pikmin::levelUp()
-{
-    _level++;
+
+    bool Pikmin::isOnTile(std::size_t x, std::size_t y)
+    {
+        return (_data.getX() == x && _data.getY() == y);
+    }
+
+    void Pikmin::setTeam(std::string &team)
+    {
+        _data.setTeam(team);
+    }
+
+    void Pikmin::updateLevel(std::size_t level)
+    {
+        if (_data.getLevel() != level) {
+            _data.setLevel(level);
+            //update model
+        }
+    }
+
+    void Pikmin::updateInventory(std::map<Kaillou, std::size_t> &inventory)
+    {
+        _data.setInventory(inventory);
+    }
+
+    void Pikmin::eject(void)
+    {
+        //_model.setAnimation(_animation.get("eject"));
+        _status = Pikmin::State::EJECT;
+    }
+
+    void Pikmin::startIncant(void)
+    {
+        //_model.setAnimation(_animation.get("incant"));
+    }
+
+    void Pikmin::stopIncant(bool result)
+    {
+        if (result) {
+            updateLevel(_data.getLevel() + 1);
+            //_model.setAnimation(_animation.get("level up"));
+        } else {
+            //_model.setAnimation(_animation.get("failure"));
+        }
+    }
+
+    void Pikmin::LayingEgg(void)
+    {
+        //_model.setAnimation(_animation.get("laying egg"));
+    }
+
+
+    void Pikmin::dropRock(Kaillou rock)
+    {
+        //animation where pikmin drop given rock
+    }
+
+    void Pikmin::pickRock(Kaillou rock)
+    {
+        //animation where pikmin pick given rock
+    }
+
+    void Pikmin::die(void)
+    {
+        //_model.setAnimation(_animation.get("death"));
+        _status = Pikmin::State::DYING;
+    }
+
+    void Pikmin::spawnAsEgg(void)
+    {
+        _status = Pikmin::State::EGG;
+        _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
+        //_model.setAnimation(_animation.get("egg"));
+    }
+
+    void Pikmin::spawnAsPikmin(void)
+    {
+        _status = Pikmin::State::ALIVE;
+        _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
+        _model.setAnimation(AnimType::INCANTATION);
+    }
 }

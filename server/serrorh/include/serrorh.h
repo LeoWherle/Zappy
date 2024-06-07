@@ -8,6 +8,9 @@
 #ifndef SERRORH_H_
     #define SERRORH_H_
 
+    #include <stdbool.h>
+    #include <stdio.h>
+
 #ifndef ERRORHANDLING_H_
     #define ERRORHANDLING_H_
     #define ERROR      84
@@ -32,14 +35,19 @@
 #endif /* COLOR_H */
 
 /************* Using Header and Line Return *************/
-    #define LOG_ERROR(...) log_msg(LG_ERROR, __VA_ARGS__)
-    #define LOG_WARN(...)  log_msg(LG_WARNING, __VA_ARGS__)
-    #define LOG_INFO(...)  log_msg(LG_INFO, __VA_ARGS__)
-    #define LOG_DEBUG(...) log_msg(LG_DEBUG, __VA_ARGS__)
-    #define LOG_TRACE(...) log_msg(LG_TRACE, __VA_ARGS__)
+    #define LOG_ERROR(...)     log_msg(LG_ERROR, __VA_ARGS__)
+    #define LOG_WARN(...)      log_msg(LG_WARNING, __VA_ARGS__)
+    #define LOG_INFO(...)      log_msg(LG_INFO, __VA_ARGS__)
+    #define LOG_DEBUG(...)     log_msg(LG_DEBUG, __VA_ARGS__)
+    #define LOG_TRACE(...)     log_msg(LG_TRACE, __VA_ARGS__)
     #define DEBUG_ASSERT(expr) expr_assert(expr, #expr)
 
-    #define LOG_LEVEL_ENV "LOG_LEVEL"
+    #define LOG_LEVEL_ENV    "LOG_LEVEL"
+    #define LOG_FILE_ENV     "LOG_FILE"
+    #define LOG_COLOR_ENV    "LOG_COLOR"
+    #define ENV_FILE_DEFAULT "server.env"
+
+    #define MAX_LEVEL_STR_LEN 5
 
 enum LogLevel {
     LG_ERROR = 0,
@@ -49,10 +57,25 @@ enum LogLevel {
     LG_TRACE,
 };
 
+typedef struct {
+    const char *color;
+    const char name[MAX_LEVEL_STR_LEN + 1];
+} loglevelmap_t;
+
 void log_set_level(enum LogLevel level);
 int load_env(const char *env_file);
 void load_env_log_level(void);
+void load_env_log_file(void);
+void load_env_log_color(void);
 
+FILE *global_log_file(bool set, FILE *value);
+bool global_log_color(bool no_color, bool set);
+
+__attribute__((constructor)) void pre_load_env(void);
+__attribute__((destructor)) void post_load_env(void);
+
+int vflog_msg(FILE *file, enum LogLevel level, const char *__restrict format,
+    va_list args);
 __attribute__((__format__(printf, 2, 3))) int log_msg(
     enum LogLevel level, const char *__restrict format, ...);
 

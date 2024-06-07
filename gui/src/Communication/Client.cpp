@@ -36,7 +36,7 @@ namespace connection {
         }
     }
 
-    void Client::handleStd(ReadBuffer &in, WriteBuffer &out)
+    void Client::handleStd(Buffer::ReadBuffer &in, Buffer::WriteBuffer &out)
     {
         if (FD_ISSET(STDIN_FILENO, &_readFd)) {
             auto reader = [&](char *buffer, uint32_t size) -> ssize_t {
@@ -46,20 +46,20 @@ namespace connection {
                 std::cout << "test" << std::endl;
                 in.fill_buffer(reader);
                 std::cout << "STD: " << in.buffer() << std::endl;
-            } catch (ReadBuffer::ReadError const &) {
+            } catch (Buffer::ReadBuffer::ReadError const &) {
                 std::cerr << "Couldn't read STDIN" << std::endl;
             }
         }
         if (FD_ISSET(STDOUT_FILENO, &_writeFd)) {
             try {
                 out._write(STDOUT_FILENO);
-            } catch (WriteBuffer::WriteError const &) {
+            } catch (Buffer::WriteBuffer::WriteError const &) {
                 std::cerr << "Couldn't write to STDOUT" << std::endl;
             }
         }
     }
 
-    void Client::handleConnection(ReadBuffer &in, WriteBuffer &out)
+    void Client::handleConnection(Buffer::ReadBuffer &in, Buffer::WriteBuffer &out)
     {
         if (FD_ISSET(_socket, &_readFd)) {
             auto reader = [&](char *buffer, uint32_t size) -> ssize_t {
@@ -72,7 +72,7 @@ namespace connection {
         }
     }
 
-    void Client::handleSelect(ReadBuffer &in, WriteBuffer &out, ReadBuffer &stdInput, WriteBuffer &stdOutput)
+    void Client::handleSelect(Buffer::ReadBuffer &in, Buffer::WriteBuffer &out, Buffer::ReadBuffer &stdInput, Buffer::WriteBuffer &stdOutput)
     {
         FD_ZERO(&_readFd);
         FD_ZERO(&_writeFd);
@@ -96,11 +96,11 @@ namespace connection {
             try {
                 handleStd(stdInput, stdOutput);
                 handleConnection(in, out);
-            }  catch (WriteBuffer::WriteError const &) {
+            }  catch (Buffer::WriteBuffer::WriteError const &) {
                 throw Client::Disconnection("Couldn't write to the server, closing connection");
-            } catch (ReadBuffer::ConnectionClosed const &) {
-                throw ReadBuffer::ConnectionClosed("Connection closed, closing GUI");
-            } catch (ReadBuffer::ReadError const &e) {
+            } catch (Buffer::ReadBuffer::ConnectionClosed const &) {
+                throw Buffer::ReadBuffer::ConnectionClosed("Connection closed, closing GUI");
+            } catch (Buffer::ReadBuffer::ReadError const &e) {
                 throw e;
             }
         }

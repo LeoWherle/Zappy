@@ -30,7 +30,7 @@ CC = gcc
 RULE =
 # used with make DEBUG=n
 ifeq ($(DEBUG), n)
-	CFLAGS += -O2
+	CFLAGS += -O2 -march=native -mtune=native -flto -fwhole-program
 	RULE = "DEBUG=n"
 	BUILD_PATH := $(BUILD_DIR)release/
 # used with make DEBUG=y
@@ -40,7 +40,8 @@ else ifeq ($(DEBUG), y)
 	RULE = "DEBUG=y"
 	BUILD_PATH := $(BUILD_DIR)asan/
 else
-	CFLAGS += -g
+	CFLAGS += -g -fanalyzer
+	LDFLAGS += -fwhole-program -flto
 	BUILD_PATH := $(BUILD_DIR)debug/
 endif
 
@@ -55,8 +56,9 @@ CFLAGS += -W -Wall -Wextra $(LIBINC)
 
 CFLAGS += -Iapp/include
 CFLAGS += -std=gnu2x
+CFLAGS += -MMD -MP
 
-LDFLAGS += $(LIB_FLAGS)
+LDFLAGS += $(LIB_FLAGS) -lm
 CRITFLAGS = -lcriterion --coverage
 
 
@@ -66,6 +68,8 @@ $(BUILD_PATH)%.o: %.c
 
 
 all: app
+
+-include $(DEPS_SERV)
 
 $(BUILD_PATH)$(BIN): lib_build $(OBJ_SERV)
 	$(CC) -o $(BUILD_PATH)$(BIN) $(OBJ_SERV) $(LDFLAGS)
@@ -92,6 +96,7 @@ fclean: clean
 	@rm -f $(BUILD_DIR)asan/$(BIN)
 	@rm -f $(BUILD_DIR)debug/$(BIN)
 	@rm -f $(BUILD_DIR)release/$(BIN)
+	@rm -f ../server.log
 
 re: fclean all
 

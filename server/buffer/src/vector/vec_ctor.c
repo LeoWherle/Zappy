@@ -20,7 +20,7 @@ buf_error_t vec_init(
     vec->dtor = dtor;
     vec->cpctor = cpctor;
     vec->item_size = elem_size;
-    vec->items = malloc(VEC_INIT_CAPACITY * elem_size);
+    vec->items = calloc(VEC_INIT_CAPACITY, elem_size);
     if (vec->items == NULL) {
         return (BUF_ALLOC);
     }
@@ -43,7 +43,7 @@ vector_t *vec_new(size_t elem_size, dtor_t dtor, cpctor_t cpctor)
 
 buf_error_t vec_reserve(vector_t *vec, size_t additional)
 {
-    u_char *items_new = NULL;
+    char *items_new = NULL;
     size_t new_capacity = 0;
 
     if (vec == NULL) {
