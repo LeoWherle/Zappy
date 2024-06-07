@@ -118,4 +118,9 @@ namespace GUI {
         _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
         _model.setAnimation(AnimType::INCANTATION);
     }
+
+    bool Pikmin::getColision(raylib::Ray &mousePos)
+    {
+        return _model.getColision(mousePos);
+    }
 }

@@ -10,7 +10,8 @@
 
 #include <iostream>
 namespace GUI {
-    Camera::Camera() : _direction (raylib::Vector3(0, 1, 0)), _position (raylib::Vector3(0, 0, 0))
+    Camera::Camera(std::vector<Pikmin> &pikmins) : _position (raylib::Vector3(0, 0, 0)),
+        _focus(pikmins)
     {
         _cam.SetFovy(45.0f);
         _cam.SetProjection(CAMERA_PERSPECTIVE);
@@ -22,20 +23,26 @@ namespace GUI {
         _minRadius = 2;
     }
 
-    void Camera::setCamPos(void)
+    void Camera::setCamPos(float x, float y, float z, float radius)
     {
-        _position = _direction;
+        raylib::Vector3 direction(raylib::Vector3(0, 1, 0));
+
+        _position = direction;
         Math::Transformation::rotationX(_currAngleX * M_PI / 180, _position);
         Math::Transformation::rotationY(_currAngleY * M_PI / 180, _position);
-        _position = _position * _radius;
-        _position.x += _offsetX;
-        _position.z += _offsetY;
+
+        _position = _position * radius;
+        _position.x += x;
+        _position.y += y;
+        _position.z += z;
+
         _cam.SetPosition(_position);
+        _cam.SetTarget(raylib::Vector3(x, y, z));
     }
 
     void Camera::rotateCamX(int direction)
     {
-        float move = ROTATION_SPEED * direction;
+        float move = _rotationSpeed * direction;
         _currAngleX += move;
         if (_currAngleX < _minAngleX) {
             _currAngleX = _minAngleX;
@@ -43,24 +50,21 @@ namespace GUI {
         if (_currAngleX > _maxAngleX) {
             _currAngleX = _maxAngleX;
         }
-        setCamPos();
     }
 
     void Camera::rotateCamY(int direction)
     {
-        float move = ROTATION_SPEED * direction;
+        float move = _rotationSpeed * direction;
         _currAngleY += move;
-        setCamPos();
     }
 
     void Camera::changeDistance(int direction)
     {
-        float move = ROTATION_SPEED * direction;
+        float move = _rotationSpeed * direction;
         _radius += move / 4;
         if (_radius < _minRadius) {
             _radius = _minRadius;
         }
-        setCamPos();
     }
 
     void Camera::setUpCam(float x, float y)
@@ -76,8 +80,48 @@ namespace GUI {
         float heightY = (tan(67.5 * M_PI / 180.0f) * (y + 1)) / 2.0f;
         _radius = std::max(heightX, heightY);
 
-        setCamPos();
-        _cam.SetTarget(raylib::Vector3(_offsetX, 0.0f, _offsetY));
         _cam.SetUp(raylib::Vector3(0.0f, 1.0f, 0.0f));
+    }
+
+    void Camera::setFocus(Pikmin &focus)
+    {
+        _cam.SetFovy(30.0f);
+        std::string newId = focus.getData().getId();
+        if (_focusId == newId) {
+                //unfocus();
+                // key issue
+        } else {
+            _focusId = newId;
+        }
+    }
+
+    void Camera::reset()
+    {
+        _cam.SetFovy(45.0f);
+        _currAngleX = 45.0f;
+        _currAngleY = 0.0f;
+    }
+
+    void Camera::unfocus(void)
+    {
+        _cam.SetFovy(45.0f);
+        _focusId.clear();
+        reset();
+    }
+
+    void Camera::update()
+    {
+        if (!_focusId.empty()) {
+            for (auto &pikmin : _focus) {
+                if (pikmin == _focusId) {
+                    _currAngleY += 0.2;
+                    setCamPos(pikmin.getModel().getX(), 1, pikmin.getModel().getY(), 5);
+                    return;
+                }
+            }
+            unfocus();
+        } else {
+            setCamPos(_offsetX, 0, _offsetY, _radius);
+        }
     }
 }
