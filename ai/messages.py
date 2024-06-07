@@ -20,7 +20,7 @@ class Logger:
         """
         self.log_level = log_level
         self.colors = color_dic
-    
+
         if nocolor:
             for key in self.colors:
                 self.colors[key] = ""

@@ -96,6 +96,7 @@ fclean: clean
 	@rm -f $(BUILD_DIR)asan/$(BIN)
 	@rm -f $(BUILD_DIR)debug/$(BIN)
 	@rm -f $(BUILD_DIR)release/$(BIN)
+	@rm -f ../server.log
 
 re: fclean all
 

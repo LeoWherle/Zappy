@@ -8,6 +8,7 @@
 #pragma once
 
 #include <raylib-cpp.hpp>
+#include "ModelBank.hpp"
 
 namespace GUI {
     class PikminModel
@@ -16,9 +17,9 @@ namespace GUI {
             PikminModel(std::size_t x, std::size_t y);
             ~PikminModel() = default;
 
-            inline void setModel(raylib::Model *model) { _model = model; }
+            inline void setModel(std::shared_ptr<GuiModel> model) { _model = model; }
             void drawModel(float delta);
-            void setAnimation(std::vector<raylib::ModelAnimation> *anim);
+            inline void setAnimation(AnimType anim) { _model->SetAnimation(anim); }
             inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
 
             bool animationUpdate(float delta);
@@ -36,8 +37,7 @@ namespace GUI {
             inline std::size_t getY(void) { return _position.z; }
 
         private:
-            raylib::Model *_model;
-            std::vector<raylib::ModelAnimation> *_anim;
+            std::shared_ptr<GuiModel> _model;
             int _animCount;
             int _frameCount;
 
@@ -45,7 +45,7 @@ namespace GUI {
             raylib::Vector3 _motionVector;
             raylib::Vector3 _rotationAxis;
             float _rotation;
-            raylib::Vector3 _scale;
+            float _scale;
             raylib::Color _colorMod;
 
             float _cumulatedTime;

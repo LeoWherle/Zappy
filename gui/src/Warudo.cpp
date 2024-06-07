@@ -18,7 +18,7 @@ namespace GUI {
         _cam(_pikmins)
     {
         _run = true;
-        InitWindow(1920, 1080, "Zapikmin");
+        InitWindow(1920, 1080, "ZapPikmin");
         SetTargetFPS(60);
     }
 

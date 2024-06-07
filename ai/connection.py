@@ -64,6 +64,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         msg (str): The message to send.
         ai_instance (AI): The AI instance sending the message.
         """
+        self.send_buffer(ai_instance)
         if msg[-1] != '\n':
             msg += '\n'
         if ai_instance is None:
@@ -99,7 +100,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.in_buffer = ""
         return ai_id
 
-    def add_to_send(self, msg):
+    def send(self, msg, ai_instance):
         """
         Adds a message to the input buffer.
 
@@ -109,6 +110,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         if msg[-1] != '\n':
             msg += '\n'
         self.in_buffer += msg
+        self.send_buffer(ai_instance)
 
     def add_to_read(self, response):
         """
