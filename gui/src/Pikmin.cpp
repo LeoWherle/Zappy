@@ -5,6 +5,7 @@
 ** Pikmin
 */
 
+#include <vector>
 #include "Pikmin.hpp"
 #include "Color.hpp"
 
@@ -49,11 +50,26 @@ namespace GUI {
         _data.setTeam(team);
     }
 
+    static const std::vector<std::pair<raylib::Color, ModelType>> bulbMap({
+        {raylib::Color::Green(), LEAF_TOP},
+        {raylib::Color::Yellow(), LEAF_TOP},
+        {raylib::Color::Red(), LEAF_TOP},
+        {raylib::Color::White(), BUD_TOP},
+        {raylib::Color::Yellow(), BUD_TOP},
+        {raylib::Color::White(), FLOWER_TOP},
+        {raylib::Color::Yellow(), FLOWER_TOP},
+        {raylib::Color::Red(), FLOWER_TOP},
+    });
+
     void Pikmin::updateLevel(std::size_t level)
     {
         if (_data.getLevel() != level) {
             _data.setLevel(level);
-            //update model
+            if (level != 0) {
+                const auto &newModel = bulbMap[level - 1];
+                _model.setBulbModel(ModelBank::get(newModel.second));
+                _model.setBulbColor(newModel.first);
+            }
         }
     }
 
@@ -76,7 +92,6 @@ namespace GUI {
     void Pikmin::stopIncant(bool result)
     {
         if (result) {
-            updateLevel(_data.getLevel() + 1);
             //_model.setAnimation(_animation.get("level up"));
         } else {
             //_model.setAnimation(_animation.get("failure"));
@@ -108,15 +123,15 @@ namespace GUI {
     void Pikmin::spawnAsEgg(void)
     {
         _status = Pikmin::State::EGG;
-        _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
+        _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
         //_model.setAnimation(_animation.get("egg"));
     }
 
     void Pikmin::spawnAsPikmin(void)
     {
         _status = Pikmin::State::ALIVE;
-        _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
-        _model.setAnimation(AnimType::INCANTATION);
+        _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
+        _model.setAnimation(AnimType::WALK);
     }
 
     bool Pikmin::getColision(raylib::Ray &mousePos)

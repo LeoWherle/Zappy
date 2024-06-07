@@ -22,10 +22,19 @@ namespace GUI {
         _size = (raylib::Vector3(1, 1, 1) * _scale);
         _boxOffset = raylib::Vector3(-0.5, -0.5, -0.5) * _scale;
         _entityBox = raylib::BoundingBox(_position + _boxOffset, _position + _size + _boxOffset);
-        _colorMod = raylib::Color::White();
+        _pikminColor = raylib::Color::White();
+        _bulbColor = raylib::Color::White();
         _cumulatedTime = 0.0f;
         _animationTime = 0.0f;
         _walkTime = 0.0f;
+    }
+
+    void PikminModel::setAnimation(AnimType anim)
+    {
+        if (_model)
+            _model->SetAnimation(anim);
+        if (_bulb)
+            _bulb->SetAnimation(anim);
     }
 
     void PikminModel::setPositionVector(raylib::Vector3 newPos)
@@ -37,7 +46,7 @@ namespace GUI {
 
     bool PikminModel::animationUpdate(float delta)
     {
-        if (_model == nullptr) {
+        if (_model == nullptr || _bulb == nullptr) {
             return true;
         }
         _cumulatedTime += delta;
@@ -45,6 +54,7 @@ namespace GUI {
             _cumulatedTime = 0.0f;
             _frameCount++;
             _model->UpdateAnim(_frameCount);
+            _bulb->UpdateAnim(_frameCount);
         }
         return (_frameCount == 0);
     }
@@ -60,10 +70,11 @@ namespace GUI {
         //    }
         //}
         _entityBox.Draw();
-        if (_model) {
-            _model->Draw(_position, _rotationAxis, _rotation, _scale, _colorMod);
+        if (_model && _bulb) {
+            _model->Draw(_position, _rotationAxis, _rotation, _scale, _pikminColor);
+            _bulb->Draw(_position, _rotationAxis, _rotation, _scale, _bulbColor);
         } else {
-            DrawCubeV(_position, raylib::Vector3(_scale, _scale, _scale), _colorMod);
+            DrawCubeV(_position, raylib::Vector3(_scale, _scale, _scale), _pikminColor);
         }
     }
 
