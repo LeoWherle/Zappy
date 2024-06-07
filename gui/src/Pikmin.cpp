@@ -24,11 +24,11 @@ namespace GUI {
         //    //_model.setAnimation(_animation.get("walk"));
         //    _model.setMotionVector(raylib::Vector3(_data.getX() - x, 0, _data.getY() - y));
         //}
-        _model.setPositionVector(raylib::Vector3(x, 1, y));
+        _model.setPositionVector(raylib::Vector3(x, 0.5, y));
         _data.setX(x);
         _data.setY(y);
         _data.setDirection(orientation);
-        _model.setRotation(90 * orientation);
+        _model.setRotation(90 * orientation - 90);
     }
 
     bool Pikmin::draw(float delta)
@@ -108,17 +108,14 @@ namespace GUI {
     void Pikmin::spawnAsEgg(void)
     {
         _status = Pikmin::State::EGG;
-        //_model.setModel(_model.get("egg"));
+        _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
         //_model.setAnimation(_animation.get("egg"));
     }
 
     void Pikmin::spawnAsPikmin(void)
     {
-        raylib::Color red = raylib::Color::Red();
-
         _status = Pikmin::State::ALIVE;
-        //_model.setModel(_model.get("pikmin"));
-        //_model.setAnimation(_animation.get("idle"));
-        _model.setColor(red);
+        _model.setModel(ModelBank::get(ModelType::RED_PIKMIN));
+        _model.setAnimation(AnimType::INCANTATION);
     }
 }

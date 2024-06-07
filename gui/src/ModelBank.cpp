@@ -45,8 +45,8 @@ namespace GUI {
         if (ModelBank::loadedAnims.find(animPath) == ModelBank::loadedAnims.end())
             ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
         _animations = ModelBank::loadedAnims[animPath];
-        SetRotation(raylib::Vector3(1, 0, 0), -90);
-        SetScale(0.5);
+        _defaultRotation = -90;
+        //SetRotation(raylib::Vector3(1, 0, 0), -90);
     }
 
     GuiModel::~GuiModel()
@@ -63,26 +63,6 @@ namespace GUI {
         _animType = anim;
     }
 
-    void GuiModel::SetColor(raylib::Color color)
-    {
-        _color = color;
-    }
-
-    void GuiModel::SetScale(float scale)
-    {
-        _scale = scale;
-    }
-
-    void GuiModel::SetPosition(raylib::Vector3 pos)
-    {
-        _position = pos;
-    }
-
-    void GuiModel::SetRotation(raylib::Vector3 axis, float angle)
-    {
-        _model.transform = raylib::Matrix::Rotate(axis, angle);
-    }
-
     void GuiModel::UpdateAnim(int &frameCount)
     {
         if (_animations == nullptr)
@@ -92,9 +72,13 @@ namespace GUI {
             frameCount = 0;
     }
 
-    void GuiModel::Draw()
+    void GuiModel::Draw(raylib::Vector3 pos, raylib::Vector3 axis, float rotation, float scale, raylib::Color color)
     {
-        _model.Draw(_position, _scale, _color);
+        axis *= rotation;
+        axis.x += _defaultRotation;
+        axis *= 0.01745329251f;
+        _model.transform = MatrixRotateXYZ(axis);
+        _model.Draw(pos, scale, color);
     }
 
     std::shared_ptr<GuiModel> ModelBank::get(ModelType type)
