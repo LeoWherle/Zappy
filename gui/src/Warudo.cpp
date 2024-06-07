@@ -17,7 +17,7 @@ namespace GUI {
         _client (connection::Client(timeout, ip, port))
     {
         _run = true;
-        InitWindow(1920, 1080, "Zapikmin");
+        InitWindow(1920, 1080, "ZapPikmin");
         SetTargetFPS(60);
     }
 
