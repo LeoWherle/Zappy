@@ -24,14 +24,18 @@ bool global_log_color(bool no_color, bool set)
 void load_env_log_color(void)
 {
     char *env = getenv(LOG_COLOR_ENV);
+    size_t len = strlen(env);
 
-    if (env != NULL) {
-        if (!strcasecmp(env, "false") || !strcasecmp(env, "0")
-            || !strcasecmp(env, "n") || !strcasecmp(env, "null")
-            || !strcasecmp(env, "no") || !strcasecmp(env, "off")) {
-            global_log_color(true, 1);
-        } else {
+    if (env != NULL && len > 0) {
+        if (strncasecmp(env, "false", len - 1) == 0
+            || strncasecmp(env, "0", len - 1) == 0
+            || strncasecmp(env, "n", len - 1) == 0
+            || strncasecmp(env, "null", len - 1) == 0
+            || strncasecmp(env, "no", len - 1) == 0
+            || strncasecmp(env, "off", len - 1) == 0) {
             global_log_color(false, 1);
+        } else {
+            global_log_color(true, 1);
         }
     }
 }

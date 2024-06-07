@@ -25,7 +25,6 @@ void pop_line(string_t *buf)
 
     if (nline == NULL)
         return;
-    LOG_TRACE("Popping line: %s", (char *) buf->items);
     if (str_erase(buf, 0, nline - (char *)buf->items + 1) != BUF_OK)
         LOG_ERROR("Error while popping line\n");
 }
@@ -49,7 +48,6 @@ void talkf(string_t *buf, const char *fmt, ...)
     str = ((char *) buf->items) + buf->nmemb;
     vsprintf(str, fmt, args2);
     buf->nmemb += len;
-    LOG_TRACE("Pushing message: -%s-", str);
     va_end(args);
     va_end(args2);
 }

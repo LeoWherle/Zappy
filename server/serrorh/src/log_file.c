@@ -41,18 +41,10 @@ void load_env_log_file(void)
 
     printf("log_file: %s\n", log_file);
     fflush(stdout);
-    if (log_file != NULL) {
+    if (log_file != NULL && log_file[0] != '\0') {
         loaded = load_env_log_file_open(log_file);
     }
     if (!loaded) {
-        if (log_file != NULL) {
-            LOG_WARN(
-                "Failed to load log file \"%s\", switching to default: \"%s\"",
-                log_file, ENV_FILE_DEFAULT);
-        }
-        if (load_env_log_file_open(ENV_FILE_DEFAULT)) {
-            LOG_WARN(
-                "Failed to load default log file \"%s\"", ENV_FILE_DEFAULT);
-        }
+        global_log_file(true, stdout);
     }
 }
