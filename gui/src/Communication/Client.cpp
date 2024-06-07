@@ -43,9 +43,7 @@ namespace connection {
                 return read(STDIN_FILENO, buffer, size);
             };
             try {
-                std::cout << "test" << std::endl;
                 in.fill_buffer(reader);
-                std::cout << "STD: " << in.buffer() << std::endl;
             } catch (Buffer::ReadBuffer::ReadError const &) {
                 std::cerr << "Couldn't read STDIN" << std::endl;
             }
@@ -89,7 +87,7 @@ namespace connection {
             FD_SET(STDOUT_FILENO, &_writeFd);
         }
         /* Max fd is the socket, client must handle connection with the server only*/
-        int nbReady = select(_socket + 1, &_readFd, &_writeFd, NULL, NULL);
+        int nbReady = select(_socket + 1, &_readFd, &_writeFd, nullptr, nullptr);
         if (nbReady < 0) {
             throw Client::ConnectionExecption(strerror(errno));
         } else if (nbReady > 0) {

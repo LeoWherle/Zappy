@@ -63,6 +63,7 @@ namespace GUI {
 
             inline PikminData &getData(void) { return _data; }
 
+            bool getColision(raylib::Ray &);
         private:
 
             PikminData _data;

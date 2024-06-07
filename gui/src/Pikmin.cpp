@@ -121,4 +121,9 @@ namespace GUI {
         //_model.setAnimation(_animation.get("idle"));
         _model.setColor(red);
     }
+
+    bool Pikmin::getColision(raylib::Ray &mousePos)
+    {
+        return _model.getColision(mousePos);
+    }
 }

@@ -25,6 +25,7 @@ namespace GUI {
             void moveCamForward(void);
             void moveCamBackward(void);
             void setFocus(void);
+            void unfocus(void);
 
             std::vector<std::pair<int, void (KeyHandler::*)(void)>> _keyMap;
             Camera &_cam;

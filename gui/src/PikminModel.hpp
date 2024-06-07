@@ -30,6 +30,7 @@ namespace GUI {
 
             inline void setColor(raylib::Color &color) { _colorMod = color; }
 
+            bool getColision(raylib::Ray &) const;
         private:
             raylib::Model *_model;
             std::vector<raylib::ModelAnimation> *_anim;

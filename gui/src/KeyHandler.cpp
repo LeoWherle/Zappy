@@ -7,6 +7,8 @@
 
 #include "KeyHandler.hpp"
 
+#include <iostream>
+
 namespace GUI {
     KeyHandler::KeyHandler(Camera &cam, std::vector<Pikmin> &pikmins) : _cam(cam), _pikmins(pikmins)
     {
@@ -18,7 +20,8 @@ namespace GUI {
             {KEY_D, &KeyHandler::moveCamRight},
             {KEY_I, &KeyHandler::moveCamForward},
             {KEY_J, &KeyHandler::moveCamBackward},
-            {MOUSE_BUTTON_LEFT, &KeyHandler::setFocus}
+            {MOUSE_BUTTON_LEFT, &KeyHandler::setFocus},
+            {MOUSE_BUTTON_RIGHT, &KeyHandler::unfocus}
         };
     }
 
@@ -71,9 +74,20 @@ namespace GUI {
 
     void KeyHandler::setFocus(void)
     {
-        Vector2 mousePos = GetMousePosition();
+        raylib::Vector2 mousePos = GetMousePosition();
         for (auto &pikmin : _pikmins) {
-            return;
+            raylib::Ray mouseRay(mousePos, _cam.getCam());
+            if (pikmin.getColision(mouseRay)) {
+                _cam.setFocus(pikmin);
+                std::cout << "hit" << std::endl;
+            } else {
+                std::cout << "not hit" << std::endl;
+            }
         }
+    }
+
+    void KeyHandler::unfocus(void)
+    {
+        _cam.unfocus();
     }
 }

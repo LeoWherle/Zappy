@@ -76,4 +76,10 @@ namespace GUI {
             DrawCubeV(_position, _scale, _colorMod);
         }
     }
+
+    bool PikminModel::getColision(raylib::Ray &mousePos) const
+    {
+        raylib::RayCollision colision = GetRayCollisionBox(mousePos, _entityBox);
+        return colision.hit;
+    }
 }
