@@ -33,7 +33,6 @@ def make_ai_actions(ai_instance, threads, args, logger):
     args (argparse.Namespace): The command line arguments.
     logger (Logger): The logger.
     """
-    global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
 
     if NB_THREAD < 9 and ai_instance.get_unused_slots() > 0:
         connect_new_thread(ai_instance, args, logger, threads)
@@ -41,8 +40,8 @@ def make_ai_actions(ai_instance, threads, args, logger):
         ai_instance.go_to_obj("food")
         ai_instance.take_all_food()
         if ai_instance.random and ai_instance.lvl == 1:
-                ai_instance.go_to_obj("linemate")
-                ai_instance.incantation()
+            ai_instance.go_to_obj("linemate")
+            ai_instance.incantation()
     else:
         if not ai_instance.king and not ai_instance.choosen_ones:
             if ai_instance.get_unused_slots() == 0 and NB_THREAD < 9:
