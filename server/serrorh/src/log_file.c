@@ -26,7 +26,7 @@ static bool load_env_log_file_open(const char *log_file)
 {
     FILE *file = NULL;
 
-    if(access(log_file, F_OK ) == 0)
+    if (access(log_file, F_OK) == 0)
         remove(log_file);
     file = fopen(log_file, "a");
     if (file == NULL) {
