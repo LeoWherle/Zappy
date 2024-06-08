@@ -13,7 +13,7 @@ platformpth = $(subst /,$(PATHSEP),$1)
 buildDirName := build
 executable := zappy_gui
 
-CFLAGS += -W -Wall -Wextra
+CFLAGS += -W -Wall -Wextra -Wno-narrowing
 
 RULE =
 # used with make DEBUG=n
@@ -33,8 +33,9 @@ else
 endif
 
 target := $(buildDir)/$(executable)
-sources := $(call rwildcard,src/,*.cpp)
+sources := $(call rwildcard,src/,*.cpp) $(call rwildcard,src/,*.c)
 objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
+objects += $(patsubst src/%, $(buildDir)/%, $(patsubst %.c, %.o, $(sources)))
 depends := $(patsubst %.o, %.d, $(objects))
 compileFlags := -std=c++17 -I include -I src
 linkFlags = -L lib/$(platform) -l raylib -fsanitize=address
@@ -44,6 +45,7 @@ ifeq ($(OS), Windows_NT)
 	# Set Windows macros
 	platform := Windows
 	CXX ?= g++
+	CC ?= gcc
 	linkFlags += -Wl,--allow-multiple-definition -pthread -lopengl32 -lgdi32 -lwinmm -mwindows -static -static-libgcc -static-libstdc++
 	THEN := &&
 	PATHSEP := \$(BLANK)
@@ -57,12 +59,14 @@ else
 		# Set Linux macros
 		platform := Linux
 		CXX ?= g++
+		CC ?= gcc
 		linkFlags += -l GL -l m -l pthread -l dl -l rt -l X11
 	endif
 	ifeq ($(UNAMEOS), Darwin)
 		# Set macOS macros
 		platform := macOS
 		CXX ?= clang++
+		CC ?= clang
 		linkFlags += -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
 	endif
 
@@ -75,7 +79,7 @@ else
 endif
 
 # Lists phony targets for Makefile
-.PHONY: all setup submodules execute clean
+.PHONY: all setup submodules execute clean raygui_setup
 
 # Default target, compiles, executes and cleans
 all: $(target)
@@ -95,8 +99,16 @@ include: submodules
 	$(call COPY,raylib-cpp/include,./include,*.hpp)
 	$(call COPY,raygui/src,./include,raygui.h)
 
+RAYGUI_FILE_PATH=raylib/src/raygui.c
+raygui_setup:
+	cd raylib/src $(THEN) \
+	RAYLIB_MODULE_RAYGUI=TRUE "$(MAKE)" PLATFORM=PLATFORM_DESKTOP raygui.c
+	echo "#include <stdlib.h>\n\
+	#define TextToFloat(text) atof(text)\n\
+	$$(cat $(RAYGUI_FILE_PATH))" > $(RAYGUI_FILE_PATH)
+
 # Build the raylib static library file and copy it into lib
-lib: submodules
+lib: submodules raygui_setup
 	cd raylib/src $(THEN) \
 	RAYLIB_MODULE_RAYGUI=TRUE "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
 	$(MKDIR) $(call platformpth, lib/$(platform))
@@ -114,6 +126,10 @@ $(target): $(objects)
 $(buildDir)/%.o: src/%.cpp Makefile
 	$(MKDIR) $(call platformpth, $(@D))
 	$(CXX) -MMD -MP -c $(compileFlags) $< -o $@ $(CXXFLAGS) $(CFLAGS)
+
+$(buildDir)/%.o: src/%.c Makefile
+	$(MKDIR) $(call platformpth, $(@D))
+	$(CC) -MMD -MP -c $(compileFlags) $< -o $@ $(CFLAGS)
 
 # Clean up all relevant files
 clean:
