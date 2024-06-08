@@ -4,8 +4,8 @@
 ** File description:
 ** Model Bank
 */
-#include <iostream>
 #include "ModelBank.hpp"
+#include "Functions.hpp"
 #include <memory>
 #include <raylib-cpp.hpp>
 #include <map>
@@ -14,9 +14,11 @@
 namespace GUI {
     const std::map<ModelType, ModelBank::ModelInfo> ModelBank::modelInfo = {
         {RED_PIKMIN, {"gui/res/models/RedPikmin.iqm", "gui/res/textures/RedPikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {YELLOW_PIKMIN, {"gui/res/models/YellowPikmin.iqm", "gui/res/textures/YellowPikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {BLUE_PIKMIN, {"gui/res/models/BluePikmin.iqm", "gui/res/textures/BluePikmin.png", "gui/res/animations/PikminAnim.iqm"}},
         {FLOWER_TOP, {"gui/res/models/FlowerTop.iqm", "gui/res/textures/FlowerTop.png", "gui/res/animations/PikminAnim.iqm"}},
         {BUD_TOP, {"gui/res/models/BudTop.iqm", "gui/res/textures/BudTop.png", "gui/res/animations/PikminAnim.iqm"}},
-        {LEAF_TOP, {"gui/res/models/LeafToptest.iqm", "gui/res/textures/LeafTop.png", "gui/res/animations/PikminAnim.iqm"}},
+        {LEAF_TOP, {"gui/res/models/LeafTop.iqm", "gui/res/textures/LeafTop.png", "gui/res/animations/PikminAnim.iqm"}},
     };
 
     std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> ModelBank::loadedAnims;
@@ -25,18 +27,17 @@ namespace GUI {
 
     GuiModel::GuiModel()
     {
-        _type = DEFAULT;
-        _color = raylib::Color::White();
-        raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
-        _texture.Load(image);
-        _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
-        _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
-        _animations = nullptr;
+        DefaultSetup();
     }
 
     GuiModel::GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type)
     {
-        _animType = WALK;
+        if (!raylib::FileExists(modelPath) || !raylib::FileExists(texturePath)
+            || !raylib::FileExists(animPath)) {
+            DefaultSetup();
+            return;
+        }
+        _animType = IDLE;
         _type = type;
         _model.Load(modelPath);
         _texture.Load(texturePath);
@@ -46,7 +47,6 @@ namespace GUI {
             ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
         _animations = ModelBank::loadedAnims[animPath];
         _defaultRotation = -90;
-        //SetRotation(raylib::Vector3(1, 0, 0), -90);
     }
 
     GuiModel::~GuiModel()
@@ -56,6 +56,17 @@ namespace GUI {
     AnimType GuiModel::GetAnimation()
     {
         return _animType;
+    }
+
+    void GuiModel::DefaultSetup()
+    {
+        _type = DEFAULT;
+        _color = raylib::Color::White();
+        raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
+        _texture.Load(image);
+        _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
+        _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
+        _animations = nullptr;
     }
 
     void GuiModel::SetAnimation(AnimType anim)
@@ -68,7 +79,7 @@ namespace GUI {
         if (_animations == nullptr)
             return;
         _model.UpdateAnimation((*_animations)[_animType], frameCount);
-        if (frameCount >= (*_animations)[_animType].frameCount)
+        if (frameCount >= (*_animations)[_animType].frameCount - 2)
             frameCount = 0;
     }
 
@@ -85,7 +96,8 @@ namespace GUI {
     {
         if (models.find(type) == models.end()) {
             if (modelInfo.find(type) == modelInfo.end()) {
-                models[DEFAULT] = std::make_shared<GuiModel>();
+                if (models.find(DEFAULT) == models.end())
+                    models[DEFAULT] = std::make_shared<GuiModel>();
                 return models[DEFAULT];
             }
             std::string modelPath = modelInfo.at(type).modelPath;

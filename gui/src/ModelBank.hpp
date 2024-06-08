@@ -32,8 +32,14 @@ namespace GUI {
     };
 
     enum AnimType {
+        IDLE,
         WALK,
         INCANTATION,
+        BROADCAST,
+        DEATH,
+        PUSH,
+        FALL,
+        PLANT,
     };
 
     class GuiModel {
@@ -43,10 +49,12 @@ namespace GUI {
             GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type);
             ~GuiModel();
 
+            void DefaultSetup();
             void Draw(raylib::Vector3 pos, raylib::Vector3 axis, float rotation, float scale, raylib::Color color);
             void UpdateAnim(int &frameCount);
             AnimType GetAnimation();
             void SetAnimation(AnimType anim);
+
         protected:
         private:
             float _scale = 1.0f;
