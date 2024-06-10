@@ -116,6 +116,18 @@ string_t *get_gui_buffer(trantor_t *trantor);
 void trantor_pause(trantor_t *trantor);
 
 
+/**
+ * @brief resets Trantor to its initial state
+ */
+void reset_trantor(trantor_t *trantor);
+
+
+/**
+ * @brief returns the time required for the next action to be executed
+ */
+float trantor_min_time(trantor_t *trantor);
+
+
 // internal
 void execute_gcmd(trantor_t *trantor, const char *gcmd);
 unsigned int count_idxteam_egg(trantor_t *trantor, team_t t);

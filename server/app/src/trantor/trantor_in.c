@@ -101,3 +101,9 @@ void free_trantor(trantor_t *trantor)
     destroy_params(&trantor->params);
     str_reset(&trantor->log);
 }
+
+void reset_trantor(trantor_t *trantor)
+{
+    free_trantor(trantor);
+    init_trantor(trantor);
+}
