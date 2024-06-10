@@ -110,6 +110,11 @@ string_t *get_player_buffer(player_t *player);
  */
 string_t *get_gui_buffer(trantor_t *trantor);
 
+/**
+ * @brief pauses or unpauses the server, saving the multiplicatore di tempo
+ */
+void trantor_pause(trantor_t *trantor);
+
 
 // internal
 void execute_gcmd(trantor_t *trantor, const char *gcmd);

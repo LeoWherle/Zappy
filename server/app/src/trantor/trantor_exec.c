@@ -163,7 +163,7 @@ bool trantor_time_pass(trantor_t *trantor, float delta, bool real_time)
 {
     float _delta = real_time ? delta * trantor->params.f : delta;
 
-    if (trantor->paused)
+    if (trantor->paused || _delta <= 0.0f)
         return (trantor->winning_team == -1);
     try_refill_map(trantor, _delta);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
@@ -196,4 +196,9 @@ float trantor_min_time(trantor_t *trantor)
     if (MAP_REFILLS_INTERVAL - trantor->map.since_refill < min_time)
         min_time = MAP_REFILLS_INTERVAL - trantor->map.since_refill;
     return min_time;
+}
+
+void trantor_pause(trantor_t *trantor)
+{
+    trantor->paused = !trantor->paused;
 }
