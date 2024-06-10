@@ -7,7 +7,6 @@
 
 #include "trantor/gcmd.h"
 #include "trantor/config.h"
-#include "serrorh.h"
 
 #include <stdlib.h>
 

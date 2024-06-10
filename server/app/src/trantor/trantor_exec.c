@@ -92,6 +92,16 @@ static void start_invocation(
     }
 }
 
+static void send_anim_signal(trantor_t *t, player_t *p)
+{
+    if (PCMD_NEEDS_OBJ(p->pcmd_exec.command)) {
+        talkf(&t->log, get_pcmd_anim_ev_fmt(p->pcmd_exec.command),
+            p->n, p->pcmd_exec.item);
+    } else {
+        talkf(&t->log, get_pcmd_anim_ev_fmt(p->pcmd_exec.command), p->n);
+    }
+}
+
 static bool start_new_task(trantor_t *t, player_t *p)
 {
     p->busy = false;
@@ -110,6 +120,8 @@ static bool start_new_task(trantor_t *t, player_t *p)
         }
         start_invocation(&t->players, p, &t->log);
     }
+    if (PCMD_ANIMATED(p->pcmd_exec.command))
+        send_anim_signal(t, p);
     p->busy = true;
     p->npcmd--;
     return true;
