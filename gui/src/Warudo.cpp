@@ -91,7 +91,8 @@ namespace GUI {
             _cam.update();
             prevTime = curTime;
             curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-            _delta = (prevTime - curTime) / 1000 / _timeMult;
+            _delta = (float)(curTime - prevTime) / 1000.0f * _timeMult;
+            std::cout << "delta " << _delta << std::endl;
             updateGraphic();
         }
     }

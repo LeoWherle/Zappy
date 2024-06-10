@@ -38,6 +38,8 @@ namespace GUI {
             inline std::size_t getX(void) { return _position.x; }
             inline std::size_t getY(void) { return _position.z; }
 
+            inline void setRotationSpeed(const float speed) { _rotationSpeed = speed; }
+
         private:
             std::shared_ptr<GuiModel> _model;
             std::shared_ptr<GuiModel> _bulb;
@@ -54,10 +56,13 @@ namespace GUI {
 
             float _cumulatedTime;
             float _animationTime;
-            float _walkTime;
 
             raylib::BoundingBox _entityBox;
             raylib::Vector3 _size;
             raylib::Vector3 _boxOffset;
+
+            float _rotationSpeed;
+
+            float _nbFrame;
     };
 }

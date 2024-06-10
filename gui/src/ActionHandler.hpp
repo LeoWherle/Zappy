@@ -42,6 +42,13 @@ namespace GUI {
         void layedEgg(std::smatch &arg);
         void eggHatche(std::smatch &arg);
         void setTimeMult(std::smatch &arg);
+        void pikminMoving(std::smatch &arg);
+        void pikminTurningRight(std::smatch &arg);
+        void pikminTurningLeft(std::smatch &arg);
+        void pikminLookingAround(std::smatch &arg);
+        void pikminForking(std::smatch &arg);
+        void pikminTakeObject(std::smatch &arg);
+        void pikminDropObject(std::smatch &arg);
 
         std::vector<Pikmin> &_pikmins;
         std::vector<Tile> &_map;
