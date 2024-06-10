@@ -86,7 +86,7 @@ fclean:
 
 re: fclean all
 
-launch: all
+launch:
 	python3 bonus/launcher/main.py
 
 .PHONY: all zappy_ai zappy_server zappy_gui clean fclean re setup \
