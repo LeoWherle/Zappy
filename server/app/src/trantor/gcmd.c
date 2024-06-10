@@ -7,9 +7,9 @@
 
 #include "trantor/gcmd.h"
 #include "trantor/config.h"
+#include "serrorh.h"
 
 #include <stdlib.h>
-
 
 // WRONG (2nd atoi for bct)
 gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
@@ -30,4 +30,17 @@ gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
     if (gcmd_type == SST_GCMD)
         args->t = atof(gcmd + slen);
     return gcmd_type;
+}
+
+void execute_gcmd(trantor_t *trantor, const char *gcmd)
+{
+    gcmd_args_t args = {0};
+    gcommand_t command = parse_gcmd(gcmd, &args);
+
+    if (command == NONE_GCMD) {
+        gui_error(trantor, &args);
+        return;
+    }
+    LOG_TRACE("Executing gui cmd %s", gcmd);
+    get_gcmd_func(command)(trantor, &args);
 }

@@ -94,8 +94,9 @@ void gui_feed_trantor_line(trantor_t *trantor, const char *line);
  *
  * @param trantor a pointer to trantor
  * @param delta the time passed since last time
+ * @param real_time if true, the delta will be multiplied by the server speed
  */
-bool trantor_time_pass(trantor_t *trantor, double delta);
+bool trantor_time_pass(trantor_t *trantor, double delta, bool real_time);
 
 /**
  * @brief returns the list of lines to send to a player
