@@ -35,14 +35,15 @@ static int get_next_packet(string_t *buf, size_t start)
  * <-- CLIENT - NUM \n
  * <-- X Y \n
  */
-static void cl_send_start(client_t *client, player_t *player, unsigned int cnb)
+static void cl_send_start(
+    client_t *client, player_t *player, unsigned int cnb, map_t *map)
 {
     if (player != NULL) {
-        talkf(&client->write_buf, "%d\n%d %d\n",
-            cnb, player->coord[0], player->coord[1]);
+        talkf(&client->write_buf,
+            "%d\n%d %d\n", cnb, map->width, map->height);
     }
     if (client->is_gui) {
-        talk(&client->write_buf, "1\n0 0\n");
+        talkf(&client->write_buf, "1\n%d %d\n", map->width, map->height);
         return;
     }
     if (player == NULL) {
@@ -67,7 +68,8 @@ static void player_get_connection(
         cl->delete = true;
     }
     cl->player_id = p->n;
-    cl_send_start(cl, p, count_team_egg(&(srv->trantor), tname));
+    cl_send_start(cl, p,
+        count_team_egg(&(srv->trantor), tname), &srv->trantor.map);
 }
 
 /**
