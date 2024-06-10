@@ -10,7 +10,7 @@ from messages import Logger
 from color import color_dic
 from ai import make_new_ai
 
-def run(args):
+def run(args: list):
     """
     This function sets the log level and creates a new AI.
 
@@ -20,7 +20,7 @@ def run(args):
     Returns:
     AI: The new AI.
     """
-    log_level = {
+    log_level: dict = {
             "info" : True,
             "error" : True,
             "warning" : True,
@@ -37,7 +37,7 @@ def run(args):
                 log_level = config["loglevel"]
         except Exception as _: # pylint: disable=broad-except
             print(color_dic["error"] + "Failed to load config file, using default log level" + color_dic["end"])
-    logger = Logger(log_level, args.nocolor)
+    logger: Logger = Logger(log_level, args.nocolor)
     return make_new_ai(args, logger)
 
 def get_args():
