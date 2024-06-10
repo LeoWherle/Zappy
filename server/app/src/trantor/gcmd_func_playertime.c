@@ -57,20 +57,3 @@ void gui_sst(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
     trantor->params.f = args->t;
     talkf(&trantor->log, "sst %d\n", (int) trantor->params.f);
 }
-
-void gui_psd(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
-{
-    trantor_pause(trantor);
-}
-
-void gui_rst(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
-{
-    reset_trantor(trantor);
-}
-
-void gui_nxt(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
-{
-    float fake_delta = trantor_min_time(trantor);
-
-    trantor_time_pass(trantor, fake_delta, false);
-}

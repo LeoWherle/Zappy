@@ -40,6 +40,5 @@ void execute_gcmd(trantor_t *trantor, const char *gcmd)
         gui_error(trantor, &args);
         return;
     }
-    LOG_TRACE("Executing gui cmd %s", gcmd);
     get_gcmd_func(command)(trantor, &args);
 }
