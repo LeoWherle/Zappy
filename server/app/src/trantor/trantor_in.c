@@ -85,7 +85,7 @@ void remove_player(trantor_t *trantor, player_t *player)
     player_t *other;
 
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        other = (player_t *) vec_at(&trantor->players, i);
+        other = VEC_AT(&trantor->players, i);
         if (other->incantator == player)
             other->incantator = NULL;
     }
