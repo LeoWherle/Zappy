@@ -12,7 +12,6 @@
 #include "trantor/config.h"
 #include "trantor/item.h"
 #include "trantor/pcmd_args.h"
-#include "trantor/gcmd.h"
 #include "trantor/pcmd.h"
 #include "trantor/player.h"
 #include "trantor/map_fn.h"
@@ -75,19 +74,6 @@ static void execute_pcmd(trantor_t *trantor, player_t *player)
     handle_game_end(trantor);
 }
 
-void execute_gcmd(trantor_t *trantor, const char *gcmd)
-{
-    gcmd_args_t args = {0};
-    gcommand_t command = parse_gcmd(gcmd, &args);
-
-    if (command == NONE_GCMD) {
-        gui_error(trantor, &args);
-        return;
-    }
-    LOG_TRACE("Executing gui cmd %s", gcmd);
-    get_gcmd_func(command)(trantor, &args);
-}
-
 static void start_invocation(
     vector_t *players, player_t *invocator, string_t *log)
 {
@@ -111,10 +97,10 @@ static bool start_new_task(trantor_t *t, player_t *p)
     p->busy = false;
     if (p->npcmd == 0 || p->is_dead || p->is_egg)
         return false;
-    init_pcmd_executor(p->pcmd_buffer.items, t->params.f, &p->pcmd_exec);
+    init_pcmd_executor(p->pcmd_buffer.items, &p->pcmd_exec);
     if (p->pcmd_exec.command == NONE_PCMD) {
         SAY_KO(&p->response_buffer);
-        return true;
+        return false;
     }
     LOG_TRACE("P %d starting %s\n", p->n, get_pcmd_name(p->pcmd_exec.command));
     if (p->pcmd_exec.command == INCANTATION_PCMD) {
@@ -133,9 +119,9 @@ static void try_refill_map(trantor_t *trantor, double delta)
 {
     trantor->map.since_refill += delta;
     if (trantor->map.since_refill
-        >= MAP_REFILLS_INTERVAL / trantor->params.f) {
+        >= MAP_REFILLS_INTERVAL) {
         add_ressources(&(trantor->map));
-        trantor->map.since_refill -= MAP_REFILLS_INTERVAL / trantor->params.f;
+        trantor->map.since_refill -= MAP_REFILLS_INTERVAL;
     }
 }
 
@@ -143,7 +129,7 @@ static bool death_from_hunger(trantor_t *trantor, player_t *player)
 {
     if (HAS_ITEM(player->inventory, FOOD_ITEM)) {
         TAKE_ITEM(player->inventory, FOOD_ITEM);
-        player->time_left += FOOD_LIFE_UNIT / trantor->params.f;
+        player->time_left += FOOD_LIFE_UNIT;
         return false;
     } else {
         remove_player(trantor, player);
@@ -173,20 +159,41 @@ static void player_time_pass(
         pop_line(&p->pcmd_buffer);
 }
 
-bool trantor_time_pass(trantor_t *trantor, double delta)
+bool trantor_time_pass(trantor_t *trantor, double delta, bool real_time)
 {
+    double _delta = real_time ? delta * trantor->params.f : delta;
+
     if (trantor->paused)
         return (trantor->winning_team == -1);
-    try_refill_map(trantor, delta);
+    try_refill_map(trantor, _delta);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        player_time_pass(trantor, delta, i);
+        player_time_pass(trantor, _delta, i);
     }
     if (trantor->params.spam_gui) {
-        trantor->since_spam += delta;
+        trantor->since_spam += _delta;
         if (trantor->since_spam >= SPAM_INTERVAL) {
             execute_gcmd(trantor, "mct");
             trantor->since_spam -= SPAM_INTERVAL;
         }
     }
     return (trantor->winning_team == -1);
+}
+
+double trantor_min_time(trantor_t *trantor)
+{
+    player_t *p;
+    double min_time = 999999999.0;
+
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        p = VEC_AT(&trantor->players, i);
+        if (p->is_egg || p->is_dead)
+            continue;
+        if (p->time_left < min_time)
+            min_time = p->time_left;
+        if (p->busy && p->pcmd_exec.exec_time_left < min_time)
+            min_time = p->pcmd_exec.exec_time_left;
+    }
+    if (MAP_REFILLS_INTERVAL - trantor->map.since_refill < min_time)
+        min_time = MAP_REFILLS_INTERVAL - trantor->map.since_refill;
+    return min_time;
 }
