@@ -34,6 +34,7 @@ namespace GUI {
     enum AnimType {
         WALK,
         INCANTATION,
+        NONE
     };
 
     class GuiModel {

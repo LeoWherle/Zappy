@@ -6,6 +6,7 @@
 */
 
 #include <vector>
+#include <iostream>
 #include "Pikmin.hpp"
 #include "Color.hpp"
 
@@ -135,7 +136,6 @@ namespace GUI {
     {
         _status = Pikmin::State::ALIVE;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
-        _model.setAnimation(AnimType::WALK);
         //_model.setAnimation(AnimType::IDLE);
     }
 

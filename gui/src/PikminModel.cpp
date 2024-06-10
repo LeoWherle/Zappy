@@ -52,7 +52,6 @@ namespace GUI {
             return true;
         }
         _cumulatedTime += delta;
-        std::cout << "cur time: "<<  _cumulatedTime << " goal: " << _animationTime / _nbFrame << " nbframe: " << _nbFrame << std::endl;
         if (_cumulatedTime >= _animationTime / _nbFrame) {
             _cumulatedTime = 0.0f;
             _frameCount++;
