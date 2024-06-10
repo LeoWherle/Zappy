@@ -89,6 +89,7 @@ static void start_invocation(
         p->incantator = invocator;
         talkf(log, " %d", p->n);
     }
+    talk(log, "\n");
 }
 
 static void send_anim_signal(trantor_t *t, player_t *p)

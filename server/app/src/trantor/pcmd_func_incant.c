@@ -49,8 +49,8 @@ static void unfreeze_players(pcmd_args_t *args)
 
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
         p = vec_at(args->players, i);
-        if (!(COORD_EQ(p->coord, args->player->coord)
-            || p->elevation != args->player->elevation))
+        if (!COORD_EQ(p->coord, args->player->coord)
+            || p->elevation != args->player->elevation)
             continue;
         p->incantator = NULL;
     }
@@ -64,15 +64,15 @@ static void elevate_players(pcmd_args_t *args)
     msg = aprintf(ELEV_MSG, args->player->elevation + 1);
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
         p = vec_at(args->players, i);
-        if (p->is_egg || p->is_dead
-            || !(COORD_EQ(p->coord, args->player->coord)
+        if (p->is_egg || p->is_dead || p == args->player
+            || !COORD_EQ(p->coord, args->player->coord)
             || p->elevation != args->player->elevation)
-            || p == args->player)
             continue;
         p->elevation++;
         talk(&p->response_buffer, msg);
     }
     args->player->elevation++;
+    talk(&args->player->response_buffer, msg);
     free(msg);
 }
 
