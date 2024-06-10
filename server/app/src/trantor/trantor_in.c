@@ -80,20 +80,6 @@ void gui_feed_trantor_line(trantor_t *trantor, const char *line)
     execute_gcmd(trantor, line);
 }
 
-void remove_player(trantor_t *trantor, player_t *player)
-{
-    player_t *other;
-
-    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        other = VEC_AT(&trantor->players, i);
-        if (other->incantator == player)
-            other->incantator = NULL;
-    }
-    talk(&player->response_buffer, "dead\n");
-    player->is_dead = true;
-    talkf(&trantor->log, "pdi %d\n", player->n);
-}
-
 void free_trantor(trantor_t *trantor)
 {
     free_map(&trantor->map);

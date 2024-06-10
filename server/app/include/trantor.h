@@ -131,3 +131,4 @@ float trantor_min_time(trantor_t *trantor);
 // internal
 void execute_gcmd(trantor_t *trantor, const char *gcmd);
 unsigned int count_idxteam_egg(trantor_t *trantor, team_t t);
+void player_time_pass(trantor_t *trantor, float delta, unsigned int i);
