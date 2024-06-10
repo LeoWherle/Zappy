@@ -115,7 +115,7 @@ static bool start_new_task(trantor_t *t, player_t *p)
     return true;
 }
 
-static void try_refill_map(trantor_t *trantor, double delta)
+static void try_refill_map(trantor_t *trantor, float delta)
 {
     trantor->map.since_refill += delta;
     if (trantor->map.since_refill
@@ -138,7 +138,7 @@ static bool death_from_hunger(trantor_t *trantor, player_t *player)
 }
 
 static void player_time_pass(
-    trantor_t *trantor, double delta, unsigned int i)
+    trantor_t *trantor, float delta, unsigned int i)
 {
     player_t *p = VEC_AT(&trantor->players, i);
 
@@ -159,9 +159,9 @@ static void player_time_pass(
         pop_line(&p->pcmd_buffer);
 }
 
-bool trantor_time_pass(trantor_t *trantor, double delta, bool real_time)
+bool trantor_time_pass(trantor_t *trantor, float delta, bool real_time)
 {
-    double _delta = real_time ? delta * trantor->params.f : delta;
+    float _delta = real_time ? delta * trantor->params.f : delta;
 
     if (trantor->paused)
         return (trantor->winning_team == -1);
@@ -179,10 +179,10 @@ bool trantor_time_pass(trantor_t *trantor, double delta, bool real_time)
     return (trantor->winning_team == -1);
 }
 
-double trantor_min_time(trantor_t *trantor)
+float trantor_min_time(trantor_t *trantor)
 {
     player_t *p;
-    double min_time = 999999999.0;
+    float min_time = 999999999.0;
 
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
         p = VEC_AT(&trantor->players, i);

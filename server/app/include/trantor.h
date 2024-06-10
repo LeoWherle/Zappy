@@ -28,7 +28,7 @@ typedef struct trantor_s {
     vector_t players;
     string_t log;
     int winning_team;
-    double since_spam;
+    float since_spam;
     bool paused;
 } trantor_t;
 
@@ -96,7 +96,7 @@ void gui_feed_trantor_line(trantor_t *trantor, const char *line);
  * @param delta the time passed since last time
  * @param real_time if true, the delta will be multiplied by the server speed
  */
-bool trantor_time_pass(trantor_t *trantor, double delta, bool real_time);
+bool trantor_time_pass(trantor_t *trantor, float delta, bool real_time);
 
 /**
  * @brief returns the list of lines to send to a player
