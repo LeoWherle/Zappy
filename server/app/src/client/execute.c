@@ -66,6 +66,7 @@ static void player_get_connection(
     if (p == NULL) {
         LOG_DEBUG("Failed to find available team name %s for cl", tname);
         cl->delete = true;
+        return;
     }
     cl->player_id = p->n;
     cl_send_start(cl, p,
@@ -134,8 +135,7 @@ static size_t client_process_data(
 // simply takes whats in player->response buffer and puts its in the client one
 static void client_process_output(client_t *client, player_t *player)
 {
-    if (player->is_egg || player->is_dead
-        || player->response_buffer.nmemb == 0)
+    if (player->is_egg || player->response_buffer.nmemb == 0)
         return;
     if (str_push_str(&client->write_buf, &player->response_buffer) != BUF_OK)
         return;
