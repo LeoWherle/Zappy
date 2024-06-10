@@ -58,6 +58,7 @@ def get_args():
     parser.add_argument("-t", help="Enable Multi threading", action='store_true')
     parser.add_argument("-nolog", help="Disable logs", action='store_true')
     parser.add_argument("-nocolor", help="Disable colored logs", action='store_true')
+    parser.add_argument("-ref", help="Reverse right and left", action='store_true')
     parser.print_usage = parser.print_help
 
     if len(sys.argv) == 2 and sys.argv[1] == "-h":

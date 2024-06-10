@@ -114,7 +114,7 @@ def make_new_ai(args, logger: Logger):
         return 84
     net.multi_threading = args.t
 
-    ai_instance: AI = AI(args.n, net)  # AI Creation
+    ai_instance: AI = AI(args.n, net, args.ref)  # AI Creation
     start_ai_logic(ai_instance, threads, args, logger)  # AI Logic
     net.close_connection(ai_instance)  # End of the AI
     NB_THREAD -= 1

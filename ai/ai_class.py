@@ -12,7 +12,7 @@ needs_for_lvl_6 = {"linemate": 6,
 DEATH_MESSAGE = "AI is dead"
 
 class AI:
-    def __init__(self, team, net):
+    def __init__(self, team, net, ref):
         self.net = net #ServerConnection class
         self.team: str = team
         self.lvl: int = 1
@@ -25,6 +25,7 @@ class AI:
         self.food_supply = False
         self.king: bool = False
         self.choosen_ones: bool = False
+        self.ref: bool = ref
 
         team_slots_left: int = net.send_team(team)
         if (team_slots_left == -1):
@@ -458,10 +459,16 @@ class AI:
         if (k == 5 ):
             self.turn_right()
             self.turn_right()
-        if (k < 5 and k > 1):
-            self.turn_left()
-        if (k > 5):
-            self.turn_right()
+        if (self.ref):
+            if (k < 5 and k > 1):
+                self.turn_left()
+            if (k > 5):
+                self.turn_right()
+        else:
+            if (k < 5 and k > 1):
+                self.turn_right()
+            if (k > 5):
+                self.turn_left()
         self.forward()
     
     #---------------------------------#
