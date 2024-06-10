@@ -4,11 +4,12 @@ This module contains the AI logic for the game.
 
 import threading
 from connection import ServerConnection
+from messages import Logger
 from ai_class import AI
 
 NB_THREAD = 0  # (Temporary) Global variable to limit the number of AI on map
 
-def connect_new_thread(ai_instance, args, logger, threads):
+def connect_new_thread(ai_instance: AI, args, logger: Logger, threads: list):
     """
     This function connects a new thread.
 
@@ -23,7 +24,7 @@ def connect_new_thread(ai_instance, args, logger, threads):
         threads.append(threading.Thread(target=make_new_ai, args=(args, logger)))
         threads[-1].start()
 
-def make_ai_actions(ai_instance, threads, args, logger):
+def make_ai_actions(ai_instance: AI, threads: list, args, logger: Logger):
     """
     This function defines the actions of the AI.
 
@@ -71,7 +72,7 @@ def make_ai_actions(ai_instance, threads, args, logger):
                 ai_instance.go_to_needs()
 
 
-def start_ai_logic(ai_instance, threads, args, logger):
+def start_ai_logic(ai_instance: AI, threads: list, args, logger: Logger):
     """
     This function starts the AI logic.
 
@@ -93,7 +94,7 @@ def start_ai_logic(ai_instance, threads, args, logger):
         ai_instance.net.send_buffer(ai_instance)
 
 
-def make_new_ai(args, logger):
+def make_new_ai(args, logger: Logger):
     """
     This function creates a new AI.
 
@@ -107,13 +108,13 @@ def make_new_ai(args, logger):
     """
     global NB_THREAD # (Temporary) Global variable to limit the number of AI on map pylint: disable=global-statement
 
-    threads = []
-    net = ServerConnection(logger, args.h, args.p)  # AI Connection to Server
+    threads: list = []
+    net: ServerConnection = ServerConnection(logger, args.h, args.p)  # AI Connection to Server
     if not net.connect():
         return 84
     net.multi_threading = args.t
 
-    ai_instance = AI(args.n, net)  # AI Creation
+    ai_instance: AI = AI(args.n, net)  # AI Creation
     start_ai_logic(ai_instance, threads, args, logger)  # AI Logic
     net.close_connection(ai_instance)  # End of the AI
     NB_THREAD -= 1
