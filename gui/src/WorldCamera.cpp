@@ -2,15 +2,17 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** Camera
+** WorldCamera
 */
 
-#include "Camera.hpp"
+#include "WorldCamera.hpp"
 #include "Transformation.hpp"
 
 #include <iostream>
 namespace GUI {
-    Camera::Camera(std::vector<Pikmin> &pikmins) : _position (raylib::Vector3(0, 0, 0)),
+    WorldCamera::WorldCamera(std::vector<Pikmin> &pikmins) :
+        _screen (LoadRenderTexture(1920, 1080)),
+        _position (raylib::Vector3(0, 0, 0)),
         _focus(pikmins)
     {
         _cam.SetFovy(45.0f);
@@ -23,7 +25,7 @@ namespace GUI {
         _minRadius = 2;
     }
 
-    void Camera::setCamPos(float x, float y, float z, float radius)
+    void WorldCamera::setCamPos(float x, float y, float z, float radius)
     {
         raylib::Vector3 direction(raylib::Vector3(0, 1, 0));
 
@@ -40,7 +42,7 @@ namespace GUI {
         _cam.SetTarget(raylib::Vector3(x, y, z));
     }
 
-    void Camera::rotateCamX(int direction)
+    void WorldCamera::rotateCamX(int direction)
     {
         float move = _rotationSpeed * direction;
         _currAngleX += move;
@@ -52,13 +54,13 @@ namespace GUI {
         }
     }
 
-    void Camera::rotateCamY(int direction)
+    void WorldCamera::rotateCamY(int direction)
     {
         float move = _rotationSpeed * direction;
         _currAngleY += move;
     }
 
-    void Camera::changeDistance(int direction)
+    void WorldCamera::changeDistance(int direction)
     {
         float move = _rotationSpeed * direction;
         _radius += move / 4;
@@ -67,7 +69,7 @@ namespace GUI {
         }
     }
 
-    void Camera::setUpCam(float x, float y)
+    void WorldCamera::setUpCam(float x, float y)
     {
         /*
             The map center is:
@@ -83,7 +85,7 @@ namespace GUI {
         _cam.SetUp(raylib::Vector3(0.0f, 1.0f, 0.0f));
     }
 
-    void Camera::setFocus(Pikmin &focus)
+    void WorldCamera::setFocus(Pikmin &focus)
     {
         _cam.SetFovy(30.0f);
         std::string newId = focus.getData().getId();
@@ -95,21 +97,21 @@ namespace GUI {
         }
     }
 
-    void Camera::reset()
+    void WorldCamera::reset()
     {
         _cam.SetFovy(45.0f);
         _currAngleX = 45.0f;
         _currAngleY = 0.0f;
     }
 
-    void Camera::unfocus(void)
+    void WorldCamera::unfocus(void)
     {
         _cam.SetFovy(45.0f);
         _focusId.clear();
         reset();
     }
 
-    void Camera::update()
+    void WorldCamera::update()
     {
         if (!_focusId.empty()) {
             for (auto &pikmin : _focus) {
@@ -123,5 +125,10 @@ namespace GUI {
         } else {
             setCamPos(_offsetX, 0, _offsetY, _radius);
         }
+    }
+
+    std::string WorldCamera::getFocus(void) const
+    {
+        return (_focusId);
     }
 }

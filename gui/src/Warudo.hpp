@@ -11,7 +11,8 @@
 #include "Communication/Client.hpp"
 #include "Communication/WriteBuffer.hpp"
 #include "Communication/ReadBuffer.hpp"
-#include "Camera.hpp"
+#include "WorldCamera.hpp"
+#include "GuiCamera.hpp"
 #include "ActionHandler.hpp"
 #include "KeyHandler.hpp"
 #include "Pikmin.hpp"
@@ -54,7 +55,8 @@ namespace GUI {
             Buffer::WriteBuffer _out;
             bool _run;
 
-            Camera _cam;
+            WorldCamera _worldCam;
+            GuiCamera _guiCam;
 
             float _delta;
     };
