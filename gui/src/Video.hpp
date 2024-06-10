@@ -63,8 +63,8 @@ namespace GUI {
         bool _loop = false;
         bool _ended = false;
         bool _pause = false;
-        double _speed;
         double _base_time;
+        double _speed;
 
     public:
         // clang-format off

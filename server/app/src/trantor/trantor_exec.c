@@ -116,7 +116,7 @@ static bool start_new_task(trantor_t *t, player_t *p)
         SAY_KO(&p->response_buffer);
         return true;
     }
-    LOG_TRACE("P %d starting %s\n", get_pcmd_name(p->pcmd_exec.command), p->n);
+    LOG_TRACE("P %d starting %s\n", p->n, get_pcmd_name(p->pcmd_exec.command));
     if (p->pcmd_exec.command == INCANTATION_PCMD) {
         if (!can_invocate(&t->players, p, &(t->map))) {
             SAY_KO(&p->response_buffer);

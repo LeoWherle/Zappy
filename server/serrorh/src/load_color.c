@@ -7,7 +7,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 
 #include "serrorh.h"
 
