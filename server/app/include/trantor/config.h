@@ -12,7 +12,7 @@
 #include "trantor/gcmd.h"
 
 #define PCMD_COUNT 13
-#define GCMD_COUNT 10
+#define GCMD_COUNT 13
 #define ITEM_COUNT 8
 #define MAX_LEVEL 8
 
