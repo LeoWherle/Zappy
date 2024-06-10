@@ -2,6 +2,8 @@
 This module provides a ServerConnection class for handling socket communication with a server.
 """
 import socket
+from messages import Logger
+from ai_class import AI
 
 READING_SIZE = 8192
 
@@ -30,17 +32,17 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
     multi_threading : bool
         a boolean to indicate if multi-threading is enabled
     """
-    def __init__(self, logger, host, port=4242):
+    def __init__(self, logger: Logger, host: str, port: int=4242):
         """Initializes ServerConnection with the given parameters."""
-        self.host = host
-        self.port = port
+        self.host: str = host
+        self.port: int = port
         self.sock = None
-        self.map_x = 0
-        self.map_y = 0
-        self.logger = logger
-        self.out_buffer = ""
-        self.in_buffer = ""
-        self.multi_threading = False
+        self.map_x: int = 0
+        self.map_y: int = 0
+        self.logger: Logger = logger
+        self.out_buffer: str = ""
+        self.in_buffer: str = ""
+        self.multi_threading: bool = False
 
     def connect(self):
         """Establishes a connection to the server."""
@@ -56,7 +58,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.logger.ai_log("Connected to the server\n", 0)
         return True
 
-    def send_and_read(self, msg, ai_instance):
+    def send_and_read(self, msg: str, ai_instance: AI|None):
         """
         Sends a message to the server and reads the response.
 
@@ -81,7 +83,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
             self.add_to_read(response)
         return response
 
-    def send_buffer(self, ai_instance):
+    def send_buffer(self, ai_instance: AI):
         """
         Sends the contents of the input buffer to the server.
 
@@ -100,7 +102,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.in_buffer = ""
         return ai_id
 
-    def send(self, msg, ai_instance):
+    def send(self, msg: str, ai_instance: AI):
         """
         Adds a message to the input buffer.
 
@@ -112,7 +114,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.in_buffer += msg
         self.send_buffer(ai_instance)
 
-    def add_to_read(self, response):
+    def add_to_read(self, response: str):
         """
         Adds a response to the output buffer.
 
@@ -133,7 +135,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
             return ""
         return response
 
-    def read(self, ai_instance, timeout=False):
+    def read(self, ai_instance: AI, timeout: bool=False):
         """
         Reads from the socket.
 
@@ -152,7 +154,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
             self.add_to_read(response)
         return response
 
-    def empty_buffer(self, ai_instance):
+    def empty_buffer(self, ai_instance: AI):
         """
         Empties the output buffer.
 
@@ -188,7 +190,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.out_buffer = ""
         ai_instance.block_k_reception = False
 
-    def send_team(self, team):
+    def send_team(self, team: str):
         """
         Sends the team name to the server.
 
@@ -205,7 +207,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.map_y = int(coord[1])
         return int(infos[0])
 
-    def close_connection(self, ai_instance):
+    def close_connection(self, ai_instance: AI):
         """Closes the connection to the server."""
         self.sock.close()
         self.logger.warning("Disconnected", ai_instance.id)
