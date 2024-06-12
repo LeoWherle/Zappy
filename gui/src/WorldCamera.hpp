@@ -15,7 +15,7 @@ namespace GUI {
     class WorldCamera {
         public:
             WorldCamera(std::vector<Pikmin> &);
-            ~WorldCamera() = default;
+            ~WorldCamera();
             void rotateCamX(int direction);
             void rotateCamY(int direction);
             void changeDistance(int direction);

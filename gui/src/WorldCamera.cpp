@@ -11,7 +11,6 @@
 #include <iostream>
 namespace GUI {
     WorldCamera::WorldCamera(std::vector<Pikmin> &pikmins) :
-        _screen (LoadRenderTexture(1920, 1080)),
         _position (raylib::Vector3(0, 0, 0)),
         _focus(pikmins)
     {
@@ -23,6 +22,11 @@ namespace GUI {
         _offsetX = 0;
         _offsetY = 0;
         _minRadius = 2;
+    }
+
+    WorldCamera::~WorldCamera()
+    {
+       UnloadRenderTexture(_screen);
     }
 
     void WorldCamera::setCamPos(float x, float y, float z, float radius)
@@ -71,8 +75,9 @@ namespace GUI {
 
     void WorldCamera::setUpCam(float x, float y)
     {
+        _screen = LoadRenderTexture(1920, 1080);
         /*
-            The map center is:
+            The map center is (approximated):
             x / 2
             y / 2
         */

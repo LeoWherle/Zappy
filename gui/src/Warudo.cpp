@@ -18,8 +18,9 @@ namespace GUI {
         _worldCam (WorldCamera(_pikmins)),
         _guiCam (GuiCamera())
     {
-        _run = true;
         InitWindow(1920, 1080, "ZapPikmin");
+        _guiCam.setUpCam();
+        _run = true;
         SetTargetFPS(60);
     }
 
@@ -144,11 +145,9 @@ namespace GUI {
 
     void Warudo::updateGraphic(void)
     {
-
-        ClearWindowState(0);
-        ClearBackground(BLACK);
-
         BeginTextureMode(_worldCam.getTexture());
+            ClearWindowState(0);
+            ClearBackground(BLACK);
             BeginMode3D(_worldCam.getCam());
 
                 std::size_t index = 0;
@@ -178,12 +177,11 @@ namespace GUI {
             EndMode3D();
         EndTextureMode();
 
-        //updateUI();
+        updateUI();
 
         BeginDrawing();
-
-            DrawTextureRec(_worldCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920, 1080), raylib::Vector2(0.0f, 0.0f), WHITE);
-           // DrawTextureRec(_guiCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920, 1080), raylib::Vector2(0.0f, 0.0f), WHITE);
+            DrawTextureRec(_worldCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920.0f, -1080.0f), raylib::Vector2(0.0f, 0.0f), WHITE);
+            DrawTextureRec(_guiCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920, -1080), raylib::Vector2(0.0f, 0.0f), WHITE);
 
         EndDrawing();
     }
@@ -213,7 +211,13 @@ namespace GUI {
     void Warudo::updateUI(void)
     {
         BeginTextureMode(_guiCam.getTexture());
-        // sum shits
+        ClearBackground({0, 0, 0, 0});
+            for (auto pikmin : _pikmins) {
+                if (pikmin == _worldCam.getFocus()) {
+                    _guiCam.drawInventory(pikmin);
+                    _guiCam.drawHistory(pikmin);
+                }
+            }
         EndTextureMode();
     }
 };

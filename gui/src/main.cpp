@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** zappy
+** File description:
+** main
+*/
+
 #include "Pikmin.hpp"
 #include "raylib-cpp.hpp"
 #include "Communication/Client.hpp"
