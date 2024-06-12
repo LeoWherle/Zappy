@@ -10,8 +10,9 @@
 #include <chrono>
 
 namespace GUI {
-    Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
-        _size(0, 0), _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
+    Warudo::Warudo(int timeout, std::string &ip, std::size_t port) :
+        _pikmins(), _size(0, 0), _map(), _teams(),
+        _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
         _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
         _key (KeyHandler(_cam, _pikmins)),
         _client (connection::Client(timeout, ip, port)),
