@@ -36,7 +36,7 @@ namespace GUI {
         while (!connected) {
             _client.handleSelect(_in, _out, _stdInput, _StdOutput);
             std::string inBuff = _in.buffer();
-            if (inBuff.size() > 0) {
+            if (inBuff.size() >= 7) {
                 std::string delimiter = "\n";
                 auto end = inBuff.find(delimiter);
                 std::string tmp = inBuff.substr(0, end);
@@ -58,7 +58,7 @@ namespace GUI {
         while (!mapReady) {
             _client.handleSelect(_in, _out, _stdInput, _StdOutput);
             std::string inBuff = _in.buffer();
-            if (inBuff.size() > 0) {
+            if (inBuff.size() >= 3) {
                 std::string delimiter = "\n";
                 auto end = inBuff.find(delimiter);
                 std::string tmp = inBuff.substr(0, end);
@@ -110,19 +110,18 @@ namespace GUI {
             }
             consumed += 6;
         }
-        if (inBuff.size() > 0) {
-            std::size_t consume = 0;
-            std::string delimiter = "\n";
-            auto end = inBuff.find(delimiter);
-            while (end != std::string::npos) {
-                std::string tmp = inBuff.substr(0, end);
-                _handler(tmp);
-                inBuff.erase(0, end + 1);
-                consume += end + 1;
-                end = inBuff.find(delimiter);
-            }
-            _in.consume(consume + 1);
+
+        std::size_t consume = 0;
+        std::string delimiter = "\n";
+        auto end = inBuff.find(delimiter);
+        while (end != std::string::npos) {
+            std::string tmp = inBuff.substr(0, end);
+            _handler(tmp);
+            inBuff.erase(0, end + 1);
+            consume += end + 1;
+            end = inBuff.find(delimiter);
         }
+        _in.consume(consume);
 
        _out.write_to_buffer("mct\n");
        for (auto &player: _pikmins) {
