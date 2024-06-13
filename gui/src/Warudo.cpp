@@ -36,16 +36,18 @@ namespace GUI {
         while (!connected) {
             _client.handleSelect(_in, _out, _stdInput, _StdOutput);
             std::string inBuff = _in.buffer();
-            if (inBuff.size() >= 7) {
-                std::string delimiter = "\n";
-                auto end = inBuff.find(delimiter);
-                std::string tmp = inBuff.substr(0, end);
+            std::size_t consume = 0;
+            std::string delimiter = "\n";
+            auto end = inBuff.find(delimiter);
+            std::string tmp = inBuff.substr(0, end);
+            if (end != std::string::npos) {
+                consume = end + 1;
                 if (tmp == "WELCOME") {
                     connected = true;
                     _out.write_to_buffer("GRAPHIC\n");
                 }
-                _in.consume(end + 1);
             }
+            _in.consume(consume);
         }
         std::cout << "Connected to the server..." << std::endl;
     }
@@ -58,16 +60,19 @@ namespace GUI {
         while (!mapReady) {
             _client.handleSelect(_in, _out, _stdInput, _StdOutput);
             std::string inBuff = _in.buffer();
-            if (inBuff.size() >= 3) {
-                std::string delimiter = "\n";
-                auto end = inBuff.find(delimiter);
-                std::string tmp = inBuff.substr(0, end);
+            std::size_t consume = 0;
+            std::string delimiter = "\n";
+            auto end = inBuff.find(delimiter);
+            std::string tmp = inBuff.substr(0, end);
+            if (end != std::string::npos) {
+                consume = end + 1;
                 if (tmp.substr(0, 3) == "msz") {
-                    _handler(tmp);
-                    mapReady = true;
+                    if (_handler(tmp)) {
+                        mapReady = true;
+                    }
                 }
-                _in.consume(end + 1);
             }
+            _in.consume(consume);
         }
         _worldCam.setUpCam(_mapX, _mapY);
         std::cout << "Map ready" << std::endl;
