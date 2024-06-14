@@ -42,7 +42,7 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
     if not ai_instance.king and ai_instance.random and food_nbr < 25:
         ai_instance.go_to_obj("food")
         ai_instance.take_all_food()
-        if food_nbr > 10 and ai_instance.random and ai_instance.lvl == 1:
+        if food_nbr > 5 and ai_instance.random and ai_instance.lvl == 1:
             ai_instance.go_to_obj("linemate")
             ai_instance.incantation()
     else:
