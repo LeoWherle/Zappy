@@ -11,7 +11,7 @@
 #include "Client.hpp"
 
 namespace connection {
-    Client::Client(int timeout, std::string &ip, std::size_t port)
+    Client::Client(int timeout, std::string const &ip, std::size_t port)
     {
         _timeout.tv_sec = timeout / 1000000;
         _timeout.tv_usec = timeout % 1000000;
