@@ -55,7 +55,7 @@ def get_args():
     parser.add_argument("-n", type=str, help="Name of the team", required=True)
     parser._option_string_actions.pop("-h", None) #pylint: disable=protected-access
     parser.add_argument("-h", type=str, help="Host of the server", required=True)
-    parser.add_argument("-t", help="Enable Multi threading", action='store_true')
+    parser.add_argument("-t", help="Enable Multi process", action='store_true')
     parser.add_argument("-nolog", help="Disable logs", action='store_true')
     parser.add_argument("-nocolor", help="Disable colored logs", action='store_true')
     parser.add_argument("-ref", help="Reverse right and left", action='store_true')
