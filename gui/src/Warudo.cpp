@@ -223,13 +223,14 @@ namespace GUI {
     void Warudo::updateUI(void)
     {
         BeginTextureMode(_guiCam.getTexture());
-        ClearBackground({0, 0, 0, 0});
-            for (auto pikmin : _pikmins) {
-                if (pikmin == _worldCam.getFocus()) {
-                    _guiCam.drawInventory(pikmin);
-                    _guiCam.drawHistory(pikmin);
+            ClearBackground({0, 0, 0, 0});
+                for (auto pikmin : _pikmins) {
+                    if (pikmin == _worldCam.getFocus()) {
+                        _guiCam.drawInventory(pikmin);
+                        _guiCam.drawHistory(pikmin);
+                    }
                 }
-            }
+            _guiCam.handleGui(_out);
         EndTextureMode();
     }
 };

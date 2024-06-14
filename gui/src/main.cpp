@@ -133,7 +133,8 @@ void GuiWindowFloating(
                 (Rectangle
                 ) {position->x, position->y + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT, size->x,
                    size->y - RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT},
-                nullptr, (Rectangle) {position->x, position->y, content_size.x, content_size.y}, scroll, &scissor
+                nullptr, (Rectangle) {position->x, position->y, content_size.x, content_size.y}, scroll,
+                &scissor
             );
 
             bool require_scissor = size->x < content_size.x || size->y < content_size.y;
@@ -193,7 +194,6 @@ int raygui_main(void)
 
 int main(int ac, char **av)
 {
-    //return raygui_main();
     InputParser input(ac, av);
     try {
         input.parseMandatory();

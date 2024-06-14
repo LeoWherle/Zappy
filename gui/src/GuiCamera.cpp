@@ -6,10 +6,16 @@
 */
 
 #include "GuiCamera.hpp"
+#include "raygui.h"
 
+#include <iostream>
 namespace GUI {
     GuiCamera::GuiCamera()
     {
+        _sliderVal = 1;
+        _prevVal = _sliderVal;
+        _pause = false;
+        _buttonAction = "Pause";
     }
 
     void GuiCamera::setUpCam(void)
@@ -41,5 +47,28 @@ namespace GUI {
     void GuiCamera::drawHistory(Pikmin &pikmin)
     {
         return;
+    }
+
+    void GuiCamera::handleGui(Buffer::WriteBuffer &out)
+    {
+        GuiSlider((raylib::Rectangle) {GetScreenWidth() * 75 / 100, 100, 200, 50}, "Tick rate", nullptr, &_sliderVal, 1, 100);
+        if (_prevVal != _sliderVal) {
+            _prevVal = _sliderVal;
+            out.write_to_buffer("sst " + std::to_string(static_cast<int>(_sliderVal)) + "\n");
+        }
+        if (GuiButton((raylib::Rectangle) {GetScreenWidth() * 25 / 100, 100, 50, 50}, _buttonAction.c_str())) {
+            if (_pause) {
+                _buttonAction = "Pause";
+                _pause = !_pause;
+            } else {
+                _buttonAction = "Play";
+                _pause = !_pause;
+            }
+            out.write_to_buffer("psd\n");
+        }
+        if (GuiButton((raylib::Rectangle) {GetScreenWidth() * 50 / 100, 100, 50, 50}, "Next")) {
+            _next = true;
+            out.write_to_buffer("nxt\n");
+        }
     }
 }
