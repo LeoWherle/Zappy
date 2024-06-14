@@ -34,6 +34,14 @@ namespace GUI {
             {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
             {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
             {std::regex("^sgt (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
+            {std::regex("^pm (\\d+)$"), &ActionHandler::pikminMoving},
+            {std::regex("^ptr (\\d+)$"), &ActionHandler::pikminTurningRight},
+            {std::regex("^ptl (\\d+)$"), &ActionHandler::pikminTurningLeft},
+            {std::regex("^pla (\\d+)$"), &ActionHandler::pikminLookingAround},
+            {std::regex("^pf (\\d+)$"), &ActionHandler::pikminForking},
+            {std::regex("^pto (\\d+) i$"), &ActionHandler::pikminTakeObject},
+            {std::regex("^pdo (\\d+) i$"), &ActionHandler::pikminDropObject},
+            {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject}
         });
     }
 
@@ -282,5 +290,95 @@ namespace GUI {
         float newMult = std::stof(arg[1].str());
 
         _timeMult = newMult;
+    }
+
+    void ActionHandler::pikminMoving(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.move();
+            }
+        }
+    }
+
+    void ActionHandler::pikminTurningRight(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.turnRight();
+            }
+        }
+    }
+
+    void ActionHandler::pikminTurningLeft(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.turnLeft();
+            }
+        }
+    }
+
+    void ActionHandler::pikminLookingAround(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.look();
+            }
+        }
+    }
+
+    void ActionHandler::pikminForking(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.fork();
+            }
+        }
+    }
+
+    void ActionHandler::pikminTakeObject(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+        int rock = std::stoi(arg[2].str());
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.pickRock(static_cast<Kaillou>(rock));
+            }
+        }
+    }
+
+    void ActionHandler::pikminDropObject(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+        int rock = std::stoi(arg[2].str());
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.dropRock(static_cast<Kaillou>(rock));
+            }
+        }
+    }
+
+    void ActionHandler::pikminEject(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.ejecting();
+            }
+        }
     }
 }

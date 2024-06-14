@@ -6,7 +6,7 @@
 */
 
 #include "PikminModel.hpp"
-
+#include <iostream>
 
 namespace GUI {
     PikminModel::PikminModel(std::size_t x, std::size_t y)
@@ -25,8 +25,9 @@ namespace GUI {
         _pikminColor = raylib::Color::White();
         _bulbColor = raylib::Color::White();
         _cumulatedTime = 0.0f;
-        _animationTime = 0.0f;
-        _walkTime = 0.0f;
+        _animationTime = 1.0f;
+        _rotationSpeed = 0.0f;
+        _nbFrame = 1.0f;
     }
 
     void PikminModel::setAnimation(AnimType anim)
@@ -35,6 +36,7 @@ namespace GUI {
             _model->SetAnimation(anim);
         if (_bulb)
             _bulb->SetAnimation(anim);
+        _nbFrame = _model->getNbFrame();
     }
 
     void PikminModel::setPositionVector(raylib::Vector3 newPos)
@@ -50,7 +52,7 @@ namespace GUI {
             return true;
         }
         _cumulatedTime += delta;
-        if (_cumulatedTime >= _animationTime) {
+        if (_cumulatedTime >= _animationTime / _nbFrame) {
             _cumulatedTime = 0.0f;
             _frameCount++;
             _model->UpdateAnim(_frameCount);
@@ -61,14 +63,8 @@ namespace GUI {
 
     void PikminModel::drawModel(float delta)
     {
-        //if (_motionVector != raylib::Vector3::Zero()) {
-        //    _walkTime += delta;
-        //    _position += _motionVector * (delta / 7);
-        //    if (_walkTime > 7.0f) {
-        //        _walkTime = 0.0f;
-        //        _motionVector = raylib::Vector3::Zero();
-        //    }
-        //}
+        _rotation += _rotationSpeed * delta;
+        _position += _motionVector * delta;
         _entityBox.Draw();
         if (_model && _bulb) {
             _model->Draw(_position, _rotationAxis, _rotation, _scale, _pikminColor);
