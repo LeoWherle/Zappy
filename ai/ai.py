@@ -8,7 +8,7 @@ from ai_class import AI
 
 def connect_new_process(ai_instance: AI, args, logger: Logger):
     """
-    This function connects a new thread.
+    This function connects a new process.
 
     Parameters:
     args (argparse.Namespace): The command line arguments.
