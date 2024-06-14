@@ -193,4 +193,9 @@ namespace GUI {
         //_model.setAnimation(AnimType::FORK);
     }
 
+    void Pikmin::ejecting(void)
+    {
+        //_model.setAnimation(AnimType::EJECTED);
+    }
+
 }

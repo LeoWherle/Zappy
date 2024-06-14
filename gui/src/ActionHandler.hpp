@@ -49,6 +49,7 @@ namespace GUI {
         void pikminForking(std::smatch &arg);
         void pikminTakeObject(std::smatch &arg);
         void pikminDropObject(std::smatch &arg);
+        void pikminEject(std::smatch &arg);
 
         std::vector<Pikmin> &_pikmins;
         std::vector<Tile> &_map;

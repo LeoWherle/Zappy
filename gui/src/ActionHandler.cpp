@@ -40,7 +40,8 @@ namespace GUI {
             {std::regex("^pla (\\d+)$"), &ActionHandler::pikminLookingAround},
             {std::regex("^pf (\\d+)$"), &ActionHandler::pikminForking},
             {std::regex("^pto (\\d+) i$"), &ActionHandler::pikminTakeObject},
-            {std::regex("^pdo (\\d+) i$"), &ActionHandler::pikminDropObject}
+            {std::regex("^pdo (\\d+) i$"), &ActionHandler::pikminDropObject},
+            {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject}
         });
     }
 
@@ -368,5 +369,10 @@ namespace GUI {
                 pikmin.dropRock(static_cast<Kaillou>(rock));
             }
         }
+    }
+
+    void ActionHandler::pikminEject(std::smatch &arg)
+    {
+        std::string id = arg[1].str();
     }
 }
