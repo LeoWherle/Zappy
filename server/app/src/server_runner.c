@@ -115,7 +115,7 @@ static void server_run_step(
     server_t *server, struct timespec *now, serv_context_t *context)
 {
     struct timespec next;
-    double delta = 0.0;
+    float delta = 0.0;
 
     server_select(server, context);
     if (global_running_state(false, 0)) {
