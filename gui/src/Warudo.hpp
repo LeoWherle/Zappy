@@ -16,11 +16,12 @@
 #include "KeyHandler.hpp"
 #include "Pikmin.hpp"
 #include "Tile.hpp"
+#include "InputParser.hpp"
 
 namespace GUI {
     class Warudo {
         public:
-            Warudo(int timeout, std::string &ip, std::size_t port);
+            Warudo(int timeout, InputParser &in);
             ~Warudo();
 
             void setUp(void);
@@ -57,5 +58,7 @@ namespace GUI {
             Camera _cam;
 
             float _delta;
+
+            bool ref;
     };
 }

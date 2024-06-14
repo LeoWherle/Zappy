@@ -10,16 +10,17 @@
 #include <chrono>
 
 namespace GUI {
-    Warudo::Warudo(int timeout, std::string &ip, std::size_t port) : _pikmins(), _map(), _teams(),
+    Warudo::Warudo(int timeout, InputParser &in) : _pikmins(), _map(), _teams(),
         _size(0, 0), _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
         _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
         _key (KeyHandler(_cam, _pikmins)),
-        _client (connection::Client(timeout, ip, port)),
+        _client (connection::Client(timeout, in.getAdress(), in.getPort())),
         _cam(_pikmins)
     {
         _run = true;
         InitWindow(1920, 1080, "ZapPikmin");
         SetTargetFPS(60);
+        ref = in.getRef();
     }
 
     Warudo::~Warudo()
@@ -85,13 +86,14 @@ namespace GUI {
         auto prevTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         auto curTime = prevTime;
 
+        _out.write_to_buffer("sgt\n");
         while (_run && !WindowShouldClose()) {
             handleCommunication();
             handleKey();
             _cam.update();
             prevTime = curTime;
             curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-            _delta = (prevTime - curTime) / 1000 / _timeMult;
+            _delta = (float)(curTime - prevTime) / 1000.0f * _timeMult;
             updateGraphic();
         }
     }
@@ -122,18 +124,23 @@ namespace GUI {
             _in.consume(consume + 1);
         }
 
-       _out.write_to_buffer("mct\n");
-       for (auto &player: _pikmins) {
-           Pikmin::State status = player.getStatus();
-           if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-               _out.write_to_buffer("ppo ");
-               _out.write_to_buffer(player.getData().getId());
-               _out.write_to_buffer("\n");
-               _out.write_to_buffer("plv ");
-               _out.write_to_buffer(player.getData().getId());
-               _out.write_to_buffer("\n");
-           }
-       }
+        if (!ref) {
+            _out.write_to_buffer("mct\n");
+            for (auto &player: _pikmins) {
+                Pikmin::State status = player.getStatus();
+                if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+                    _out.write_to_buffer("ppo ");
+                    _out.write_to_buffer(player.getData().getId());
+                    _out.write_to_buffer("\n");
+                    _out.write_to_buffer("plv ");
+                    _out.write_to_buffer(player.getData().getId());
+                    _out.write_to_buffer("\n");
+                    _out.write_to_buffer("pin ");
+                    _out.write_to_buffer(player.getData().getId());
+                    _out.write_to_buffer("\n");
+                }
+            }
+        }
     }
 
     void Warudo::handleKey(void)

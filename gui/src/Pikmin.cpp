@@ -6,26 +6,31 @@
 */
 
 #include <vector>
+#include <iostream>
 #include "Pikmin.hpp"
 #include "Color.hpp"
 
 namespace GUI {
     Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
     {
+        _newX = -1.0f;
+        _newY = -1.0f;
     }
 
     Pikmin::~Pikmin()
     {
     }
 
-    void Pikmin::updatePosition(std::size_t x, std::size_t y, int orientation)
+    void Pikmin::updatePosition(std::size_t x, std::size_t y, std::size_t orientation)
     {
-        //if ((_data.getX() != x || _data.getY() != y) && _status != Pikmin::State::EJECT) {
-        //    _model.setPositionVector(raylib::Vector3(_data.getX(), 1, _data.getY()));
-        //    //_model.setAnimation(_animation.get("walk"));
-        //    _model.setMotionVector(raylib::Vector3(_data.getX() - x, 0, _data.getY() - y));
-        //}
-        _model.setPositionVector(raylib::Vector3(x, 0.5, y));
+        if (x == _data.getX() && y == _data.getY() && orientation == _data.getDirection())
+            return;
+        if (_newX < 0.0f && _newY < 0.0f) {
+            _model.setPositionVector(raylib::Vector3(x, 0.5, y));
+        } else {
+            _model.setPositionVector(raylib::Vector3(_newX, 0.5, _newY));
+            _model.setMotionVector(raylib::Vector3::Zero());
+        }
         _data.setX(x);
         _data.setY(y);
         _data.setDirection(orientation);
@@ -106,12 +111,12 @@ namespace GUI {
 
     void Pikmin::dropRock(Kaillou rock)
     {
-        //animation where pikmin drop given rock
+        //_model.setAnimation(AnimType::DROP);
     }
 
     void Pikmin::pickRock(Kaillou rock)
     {
-        //animation where pikmin pick given rock
+        //_model.setAnimation(AnimType::PICK);
     }
 
     void Pikmin::die(void)
@@ -124,18 +129,73 @@ namespace GUI {
     {
         _status = Pikmin::State::EGG;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
-        //_model.setAnimation(_animation.get("egg"));
+        //_model.setAnimation(AnimType::EGG);
     }
 
     void Pikmin::spawnAsPikmin(void)
     {
         _status = Pikmin::State::ALIVE;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
-        _model.setAnimation(AnimType::WALK);
+        //_model.setAnimation(AnimType::IDLE);
     }
 
     bool Pikmin::getColision(raylib::Ray &mousePos)
     {
         return _model.getColision(mousePos);
     }
+
+    void Pikmin::move(void)
+    {
+        float curX = (float)(_data.getX());
+        float curY = (float)(_data.getY());
+        _newX = 0.0f;
+        _newY = 0.0f;
+        std::size_t dir = _data.getDirection();
+
+        _model.setAnimation(AnimType::WALK);
+        if (dir % 2 == 0) {
+            _newX = curX - 0.45f + (float)(std::rand() % 900) / 1000.0f;
+            if (dir == 2) {
+                _newY = curY + 0.55f + (float)(std::rand() % 900) / 1000.0f;
+            } else {
+                _newY = curY - 1.45f + (float)(std::rand() % 900) / 1000.0f;
+            }
+        } else {
+            _newY = curY - 0.45f + (float)(std::rand() % 900) / 1000.0f;
+            if (dir == 3) {
+                _newX = curX + 0.55f + (float)(std::rand() % 900) / 1000.0f;
+            } else {
+                _newX = curX - 1.45f + (float)(std::rand() % 900) / 1000.0f;
+            }
+        }
+        _model.setMotionVector(raylib::Vector3(curX - _newX, 0.0f, curY - _newY) / 7.0f);
+    }
+
+    void Pikmin::turnLeft(void)
+    {
+        _model.setRotationSpeed(90.0f / 7.0f);
+        _model.setAnimation(AnimType::WALK);
+    }
+
+    void Pikmin::turnRight(void)
+    {
+        _model.setRotationSpeed(-90.0f / 7.0f);
+        _model.setAnimation(AnimType::WALK);
+    }
+
+    void Pikmin::look(void)
+    {
+        //_model.setAnimation(AnimType::LOOK);
+    }
+
+    void Pikmin::fork(void)
+    {
+        //_model.setAnimation(AnimType::FORK);
+    }
+
+    void Pikmin::ejecting(void)
+    {
+        //_model.setAnimation(AnimType::EJECTED);
+    }
+
 }
