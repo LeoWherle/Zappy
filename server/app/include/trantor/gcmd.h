@@ -11,8 +11,6 @@
 
 #define USES_N(cmd) (cmd == PPO_GCMD || cmd == PLV_GCMD || cmd == PIN_GCMD)
 
-#define GCMD_COUNT 10
-
 typedef enum gcommand_e {
     NONE_GCMD = 0,
     MSZ_GCMD = 1,
@@ -23,7 +21,10 @@ typedef enum gcommand_e {
     PLV_GCMD = 6,
     PIN_GCMD = 7,
     SGT_GCMD = 8,
-    SST_GCMD = 9
+    SST_GCMD = 9,
+    RST_GCMD = 10,
+    NXT_GCMD = 11,
+    PSD_GCMD = 12
 } gcommand_t;
 
 typedef union gcmd_args_u {
@@ -44,4 +45,7 @@ void gui_plv(trantor_t *trantor, gcmd_args_t *args);
 void gui_pin(trantor_t *trantor, gcmd_args_t *args);
 void gui_sgt(trantor_t *trantor, gcmd_args_t *args);
 void gui_sst(trantor_t *trantor, gcmd_args_t *args);
+void gui_rst(trantor_t *trantor, gcmd_args_t *args);
+void gui_nxt(trantor_t *trantor, gcmd_args_t *args);
+void gui_psd(trantor_t *trantor, gcmd_args_t *args);
 gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args);

@@ -28,7 +28,7 @@ typedef struct trantor_s {
     vector_t players;
     string_t log;
     int winning_team;
-    double since_spam;
+    float since_spam;
     bool paused;
 } trantor_t;
 
@@ -94,8 +94,9 @@ void gui_feed_trantor_line(trantor_t *trantor, const char *line);
  *
  * @param trantor a pointer to trantor
  * @param delta the time passed since last time
+ * @param real_time if true, the delta will be multiplied by the server speed
  */
-bool trantor_time_pass(trantor_t *trantor, double delta);
+bool trantor_time_pass(trantor_t *trantor, float delta, bool real_time);
 
 /**
  * @brief returns the list of lines to send to a player
@@ -109,7 +110,25 @@ string_t *get_player_buffer(player_t *player);
  */
 string_t *get_gui_buffer(trantor_t *trantor);
 
+/**
+ * @brief pauses or unpauses the server, saving the multiplicatore di tempo
+ */
+void trantor_pause(trantor_t *trantor);
+
+
+/**
+ * @brief resets Trantor to its initial state
+ */
+void reset_trantor(trantor_t *trantor);
+
+
+/**
+ * @brief returns the time required for the next action to be executed
+ */
+float trantor_min_time(trantor_t *trantor);
+
 
 // internal
 void execute_gcmd(trantor_t *trantor, const char *gcmd);
 unsigned int count_idxteam_egg(trantor_t *trantor, team_t t);
+void player_time_pass(trantor_t *trantor, float delta, unsigned int i);

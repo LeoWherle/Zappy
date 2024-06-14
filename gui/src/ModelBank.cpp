@@ -32,11 +32,12 @@ namespace GUI {
         _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
         _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
         _animations = nullptr;
+        _animType = AnimType::NONE;
     }
 
     GuiModel::GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type)
     {
-        _animType = WALK;
+        _animType = AnimType::NONE;
         _type = type;
         _model.Load(modelPath);
         _texture.Load(texturePath);
@@ -65,7 +66,7 @@ namespace GUI {
 
     void GuiModel::UpdateAnim(int &frameCount)
     {
-        if (_animations == nullptr)
+        if (_animations == nullptr || _animType == AnimType::NONE)
             return;
         _model.UpdateAnimation((*_animations)[_animType], frameCount);
         if (frameCount >= (*_animations)[_animType].frameCount)

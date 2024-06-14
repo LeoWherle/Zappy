@@ -12,7 +12,7 @@ ENDC = '\033[0m'
 BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
 
-color_dic = {"info": OKGREEN,
+color_dic: dict = {"info": OKGREEN,
             "error": FAIL,
             "warning": WARNING,
             "server": OKBLUE,

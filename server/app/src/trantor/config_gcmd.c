@@ -17,7 +17,10 @@ const gcmd_config_t GCOMMAND_CONFIG[GCMD_COUNT] = {
     {PLV_GCMD, "plv", gui_plv},
     {PIN_GCMD, "pin", gui_pin},
     {SGT_GCMD, "sgt", gui_sgt},
-    {SST_GCMD, "sst", gui_sst}
+    {SST_GCMD, "sst", gui_sst},
+    {RST_GCMD, "rst", gui_rst},
+    {NXT_GCMD, "nxt", gui_nxt},
+    {PSD_GCMD, "psd", gui_psd}
 };
 
 const char *get_gcmd_name(gcommand_t gcmd)

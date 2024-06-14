@@ -28,6 +28,7 @@ typedef enum pcommand_e {
 } pcommand_t;
 
 #define PCMD_NEEDS_OBJ(c) (c == 10 || c == 11)
+#define PCMD_ANIMATED(c) ((1 <= c && c <= 4) || (8 <= c && c <= 11))
 
 typedef struct broadcast_buffer_s {
     len_t pos[2];

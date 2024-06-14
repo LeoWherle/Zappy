@@ -13,7 +13,8 @@ platformpth = $(subst /,$(PATHSEP),$1)
 buildDirName := build
 executable := zappy_gui
 
-CFLAGS += -W -Wall -Wextra -Wno-narrowing
+CFLAGS += -W -Wall -Wextra -Wno-narrowing -Wno-sign-compare
+CFLAGS += -Wno-unused-function -Wno-missing-field-initializers
 
 RULE =
 # used with make DEBUG=n

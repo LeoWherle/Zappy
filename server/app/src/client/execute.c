@@ -35,18 +35,19 @@ static int get_next_packet(string_t *buf, size_t start)
  * <-- CLIENT - NUM \n
  * <-- X Y \n
  */
-static void cl_send_start(client_t *client, player_t *player, unsigned int cnb)
+static void cl_send_start(
+    client_t *client, player_t *player, unsigned int cnb, map_t *map)
 {
     if (player != NULL) {
-        talkf(&client->write_buf, "%d\n%d %d\n",
-            cnb, player->coord[0], player->coord[1]);
+        talkf(&client->write_buf,
+            "%d\n%d %d\n", cnb, map->width, map->height);
     }
     if (client->is_gui) {
-        talk(&client->write_buf, "1\n0 0\n");
+        talkf(&client->write_buf, "1\n%d %d\n", map->width, map->height);
         return;
     }
     if (player == NULL) {
-        talk(&client->write_buf, "0\n0 0\n");
+        talk(&client->write_buf, "ko\n");
     }
 }
 
@@ -65,9 +66,11 @@ static void player_get_connection(
     if (p == NULL) {
         LOG_DEBUG("Failed to find available team name %s for cl", tname);
         cl->delete = true;
+        return;
     }
     cl->player_id = p->n;
-    cl_send_start(cl, p, count_team_egg(&(srv->trantor), tname));
+    cl_send_start(cl, p,
+        count_team_egg(&(srv->trantor), tname), &srv->trantor.map);
 }
 
 /**
@@ -120,7 +123,6 @@ static size_t client_process_data(
     if (next_packet <= 0)
         return 0;
     data[next_packet - 1] = '\0';
-    LOG_DEBUG("rbuf1: -%s-", data);
     if (client->is_gui) {
         gui_feed_trantor_line(trantor, data);
     } else {
@@ -133,8 +135,7 @@ static size_t client_process_data(
 // simply takes whats in player->response buffer and puts its in the client one
 static void client_process_output(client_t *client, player_t *player)
 {
-    if (player->is_egg || player->is_dead
-        || player->response_buffer.nmemb == 0)
+    if (player->is_egg || player->response_buffer.nmemb == 0)
         return;
     if (str_push_str(&client->write_buf, &player->response_buffer) != BUF_OK)
         return;

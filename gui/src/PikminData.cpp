@@ -14,6 +14,6 @@ namespace GUI {
         _y = y;
         _id = id;
         _direction = 1;
-        _level = 1;
+        _level = 0;
     }
 }

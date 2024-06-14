@@ -15,8 +15,8 @@
 
 static loglevelmap_t level_map[] = {
     {RED, "ERROR"},
-    {MAGENTA, "WARN "},
-    {BLUE, "INFO "},
+    {MAGENTA, "WARN"},
+    {BLUE, "INFO"},
     {YELLOW, "DEBUG"},
     {GREEN, "TRACE"},
 };

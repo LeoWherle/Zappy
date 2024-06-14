@@ -42,7 +42,7 @@ namespace GUI {
 
             void setTeam(std::string &team);
 
-            void updatePosition(std::size_t x, std::size_t y, int orientation);
+            void updatePosition(std::size_t x, std::size_t y, std::size_t orientation);
             void updateLevel(std::size_t level);
             void updateInventory(std::map<Kaillou, std::size_t> &inventory);
             void eject(void);
@@ -55,6 +55,13 @@ namespace GUI {
             void spawnAsEgg(void);
             void spawnAsPikmin(void);
 
+            void move(void);
+            void turnLeft(void);
+            void turnRight(void);
+            void look(void);
+            void fork(void);
+            void ejecting(void);
+
             inline bool operator==(const Pikmin &other) { return (_data == other._data); }
             inline bool operator==(const std::string &id) { return (_data == id); }
 
@@ -62,11 +69,15 @@ namespace GUI {
             inline void setStatus(State newStatus) { _status = newStatus; }
 
             inline PikminData &getData(void) { return _data; }
+            inline PikminModel &getModel(void) { return _model; }
 
+            bool getColision(raylib::Ray &);
         private:
 
             PikminData _data;
             PikminModel _model;
             State _status;
+            float _newX;
+            float _newY;
     };
 }

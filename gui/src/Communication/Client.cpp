@@ -11,7 +11,7 @@
 #include "Client.hpp"
 
 namespace connection {
-    Client::Client(int timeout, std::string &ip, std::size_t port)
+    Client::Client(int timeout, std::string const &ip, std::size_t port)
     {
         _timeout.tv_sec = timeout / 1000000;
         _timeout.tv_usec = timeout % 1000000;
@@ -43,9 +43,7 @@ namespace connection {
                 return read(STDIN_FILENO, buffer, size);
             };
             try {
-                std::cout << "test" << std::endl;
                 in.fill_buffer(reader);
-                std::cout << "STD: " << in.buffer() << std::endl;
             } catch (Buffer::ReadBuffer::ReadError const &) {
                 std::cerr << "Couldn't read STDIN" << std::endl;
             }
@@ -74,6 +72,10 @@ namespace connection {
 
     void Client::handleSelect(Buffer::ReadBuffer &in, Buffer::WriteBuffer &out, Buffer::ReadBuffer &stdInput, Buffer::WriteBuffer &stdOutput)
     {
+        timeval timeout;
+
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 0;
         FD_ZERO(&_readFd);
         FD_ZERO(&_writeFd);
         FD_SET(STDIN_FILENO, &_readFd);
@@ -89,7 +91,7 @@ namespace connection {
             FD_SET(STDOUT_FILENO, &_writeFd);
         }
         /* Max fd is the socket, client must handle connection with the server only*/
-        int nbReady = select(_socket + 1, &_readFd, &_writeFd, NULL, NULL);
+        int nbReady = select(_socket + 1, &_readFd, &_writeFd, nullptr, &timeout);
         if (nbReady < 0) {
             throw Client::ConnectionExecption(strerror(errno));
         } else if (nbReady > 0) {

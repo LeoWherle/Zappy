@@ -17,4 +17,4 @@ typedef struct pcmd_executor_s {
 } pcmd_executor_t;
 
 
-void init_pcmd_executor(const char *pcmd, float f, pcmd_executor_t *res);
+void init_pcmd_executor(const char *pcmd, pcmd_executor_t *res);

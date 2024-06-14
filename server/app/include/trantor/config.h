@@ -12,7 +12,7 @@
 #include "trantor/gcmd.h"
 
 #define PCMD_COUNT 13
-#define GCMD_COUNT 10
+#define GCMD_COUNT 13
 #define ITEM_COUNT 8
 #define MAX_LEVEL 8
 
@@ -38,6 +38,7 @@ typedef struct pcmd_config_s {
     const char *name;
     unsigned int time;
     pcmd_func_t func;
+    const char *anim_ev_fmt;
 } pcmd_config_t;
 
 typedef struct elev_config_s {
@@ -60,6 +61,8 @@ const char *get_pcmd_name(pcommand_t pcmd);
 size_t get_pcmd_name_len(pcommand_t pcmd);
 unsigned int get_pcmd_time(pcommand_t pcmd);
 pcmd_func_t get_pcmd_func(pcommand_t pcmd);
+const char *get_pcmd_anim_ev_fmt(pcommand_t pcmd);
+
 pcommand_t get_pcmd_by_name(const char *name);
 
 const char *get_gcmd_name(gcommand_t gcmd);

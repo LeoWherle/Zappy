@@ -11,15 +11,15 @@ class Logger:
     """
     Logger class for handling different types of log messages with various log levels.
     """
-    def __init__(self, log_level, nocolor):
+    def __init__(self, log_level: dict, nocolor: bool):
         """
         Initialize the Logger with a specific log level.
 
         Parameters:
         log_level (dict): A dictionary specifying the log levels.
         """
-        self.log_level = log_level
-        self.colors = color_dic
+        self.log_level: dict = log_level
+        self.colors: dict = color_dic
 
         if nocolor:
             for key in self.colors:
@@ -46,7 +46,7 @@ class Logger:
                 print(self.colors["bold"] + self.colors["error"] + f"{key} is disabled" + self.colors["end"])
         print(self.colors["bold"] + "=============================================" + self.colors["end"])
 
-    def server_log(self, msg, ai_id):
+    def server_log(self, msg: str, ai_id: int):
         """
         Log a server message if the server log level is enabled.
 
@@ -58,7 +58,7 @@ class Logger:
             return
         print(self.colors["server"] + f"SERVER for AI {ai_id}:" + self.colors["end"], msg, end="")
 
-    def ai_log(self, msg, ai_id):
+    def ai_log(self, msg: str, ai_id: int):
         """
         Log an AI message if the AI log level is enabled.
 
@@ -70,7 +70,7 @@ class Logger:
             return
         print(self.colors["ai"] + f"AI {ai_id}:" + self.colors["end"], msg, end="")
 
-    def info(self, msg, ai_id):
+    def info(self, msg: str, ai_id: int):
         """
         Log an info message if the info log level is enabled.
 
@@ -82,7 +82,7 @@ class Logger:
             return
         print(self.colors["info"] + f"INFO AI {ai_id}:" + self.colors["end"], msg)
 
-    def error(self, msg, ai_id):
+    def error(self, msg: str, ai_id: int):
         """
         Log an error message if the error log level is enabled.
 
@@ -94,7 +94,7 @@ class Logger:
             return
         print(self.colors["error"] + f"ERROR AI {ai_id}:" + self.colors["end"], msg)
 
-    def warning(self, msg, ai_id):
+    def warning(self, msg: str, ai_id: int):
         """
         Log a warning message if the warning log level is enabled.
 

@@ -10,8 +10,6 @@
 
 #include <stdlib.h>
 
-
-// WRONG (2nd atoi for bct)
 gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
 {
     size_t slen = 0;
@@ -23,11 +21,23 @@ gcommand_t parse_gcmd(const char *gcmd, gcmd_args_t *args)
         slen = get_gcmd_name_len(gcmd_type) + 1;
     if (gcmd_type == BCT_GCMD) {
         args->pos[0] = atoi(gcmd + slen);
-        args->pos[1] = atoi(gcmd + slen);
+        args->pos[1] = atoi(gcmd + slen + strcspn(gcmd + slen, " "));
     }
     if (USES_N(gcmd_type))
         args->n = atoi(gcmd + slen);
     if (gcmd_type == SST_GCMD)
         args->t = atof(gcmd + slen);
     return gcmd_type;
+}
+
+void execute_gcmd(trantor_t *trantor, const char *gcmd)
+{
+    gcmd_args_t args = {0};
+    gcommand_t command = parse_gcmd(gcmd, &args);
+
+    if (command == NONE_GCMD) {
+        gui_error(trantor, &args);
+        return;
+    }
+    get_gcmd_func(command)(trantor, &args);
 }

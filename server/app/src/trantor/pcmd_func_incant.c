@@ -43,6 +43,19 @@ bool can_invocate(vector_t *players, player_t *invocator, map_t *map)
     return enough_players && stones_presents;
 }
 
+static void unfreeze_players(pcmd_args_t *args)
+{
+    player_t *p = NULL;
+
+    for (unsigned int i = 0; i < args->players->nmemb; i++) {
+        p = vec_at(args->players, i);
+        if (!COORD_EQ(p->coord, args->player->coord)
+            || p->elevation != args->player->elevation)
+            continue;
+        p->incantator = NULL;
+    }
+}
+
 static void elevate_players(pcmd_args_t *args)
 {
     char *msg = NULL;
@@ -51,18 +64,21 @@ static void elevate_players(pcmd_args_t *args)
     msg = aprintf(ELEV_MSG, args->player->elevation + 1);
     for (unsigned int i = 0; i < args->players->nmemb; i++) {
         p = vec_at(args->players, i);
-        if (!(COORD_EQ(p->coord, args->player->coord)
-            && p->elevation == args->player->elevation))
+        if (p->is_egg || p->is_dead || p == args->player
+            || !COORD_EQ(p->coord, args->player->coord)
+            || p->elevation != args->player->elevation)
             continue;
         p->elevation++;
         talk(&p->response_buffer, msg);
-        p->incantator = NULL;
     }
+    args->player->elevation++;
+    talk(&args->player->response_buffer, msg);
     free(msg);
 }
 
 void player_incantation(pcmd_args_t *args)
 {
+    unfreeze_players(args);
     if (!can_invocate(args->players, args->player, args->map)) {
         SAY_KO(&args->player->response_buffer);
         return;
