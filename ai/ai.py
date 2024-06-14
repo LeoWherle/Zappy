@@ -38,10 +38,11 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
 
     if ai_instance.net.multi_process and ai_instance.net.nb_subprocess < 9 and ai_instance.get_unused_slots() > 0:
         connect_new_process(ai_instance, args, logger)
-    if not ai_instance.king and ai_instance.random and ai_instance.get_food_nbr() < 25:
+    food_nbr = ai_instance.get_food_nbr()
+    if not ai_instance.king and ai_instance.random and food_nbr < 25:
         ai_instance.go_to_obj("food")
         ai_instance.take_all_food()
-        if ai_instance.random and ai_instance.lvl == 1:
+        if food_nbr > 10 and ai_instance.random and ai_instance.lvl == 1:
             ai_instance.go_to_obj("linemate")
             ai_instance.incantation()
     else:
