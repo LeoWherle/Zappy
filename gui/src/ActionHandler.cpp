@@ -374,5 +374,11 @@ namespace GUI {
     void ActionHandler::pikminEject(std::smatch &arg)
     {
         std::string id = arg[1].str();
+
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                pikmin.ejecting();
+            }
+        }
     }
 }
