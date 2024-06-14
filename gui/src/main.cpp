@@ -4,16 +4,19 @@
 #include "raylib.h"
 #include "Warudo.hpp"
 #include "raylib.h"
+#include "InputParser.hpp"
 
 int main(int ac, char **av)
 {
-    if (ac < 3) {
-        std::cerr << "Bad input (./zappy_gui ip port)" << std::endl;
+    InputParser input(ac, av);
+    try {
+        input.parseMandatory();
+    } catch (InputParser::ParseError const &e) {
+        std::cout << e.what() << std::endl;
         return 84;
     }
-    std::string adress = av[1];
-    std::size_t port = std::atoi(av[2]);
-    GUI::Warudo warudo(100, adress, port);
+    input.parseOption();
+    GUI::Warudo warudo(100, input);
     warudo.setUp();
     warudo.loop();
     return 0;

@@ -27,7 +27,7 @@ void init_egg(player_t *player, team_t team, coord_t c)
     last_n_given++;
 }
 
-void hatch_egg(player_t *player, double f)
+void hatch_egg(player_t *player)
 {
     player->is_egg = false;
     player->direction = rand() % 4;
@@ -41,7 +41,7 @@ void hatch_egg(player_t *player, double f)
     if (str_init(&player->response_buffer, NULL) != BUF_OK)
         LOG_ERROR("Failed to init player response buffer");
     player->incantator = NULL;
-    player->time_left = START_LIFE_UNITS / f;
+    player->time_left = START_LIFE_UNITS;
     player->busy = false;
     player->pcmd_exec.command = 0;
     player->pcmd_exec.exec_time_left = 0;
