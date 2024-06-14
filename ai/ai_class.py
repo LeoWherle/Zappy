@@ -1,5 +1,6 @@
 from random import randint
 from tools import is_a_number
+import sys
 #from connection import ServerConnection
 
 needs_for_lvl_6 = {"linemate": 6,
@@ -495,3 +496,6 @@ class AI:
                     self.incantation()
             else:
                 self.food_supply = True
+        if broadcast_received == "lvl8":
+            self.net.close_connection(self)
+            sys.exit(0)
