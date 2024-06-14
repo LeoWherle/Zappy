@@ -33,9 +33,8 @@ else
 endif
 
 target := $(buildDir)/$(executable)
-sources := $(call rwildcard,src/,*.cpp) $(call rwildcard,src/,*.c)
+sources := $(call rwildcard,src/,*.cpp)
 objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
-objects += $(patsubst src/%, $(buildDir)/%, $(patsubst %.c, %.o, $(sources)))
 depends := $(patsubst %.o, %.d, $(objects))
 compileFlags := -std=c++17 -I include -I src
 linkFlags = -L lib/$(platform) -l raylib -fsanitize=address
@@ -126,10 +125,6 @@ $(target): $(objects)
 $(buildDir)/%.o: src/%.cpp Makefile
 	$(MKDIR) $(call platformpth, $(@D))
 	$(CXX) -MMD -MP -c $(compileFlags) $< -o $@ $(CXXFLAGS) $(CFLAGS)
-
-$(buildDir)/%.o: src/%.c Makefile
-	$(MKDIR) $(call platformpth, $(@D))
-	$(CC) -MMD -MP -c $(compileFlags) $< -o $@ $(CFLAGS)
 
 # Clean up all relevant files
 clean:
