@@ -6,7 +6,6 @@
 
 #include "raygui.h"
 #include "raylib.h"
-#include "styles/style_terminal.h"
 
 static Vector2 window_position = {10, 10};
 static Vector2 window_size = {200, 400};
@@ -161,7 +160,7 @@ int raygui_main(void)
 {
     InitWindow(960, 560, "raygui - floating window example");
     SetTargetFPS(60);
-    GuiLoadStyleTerminal();
+    GuiLoadStyleDefault();
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -184,7 +183,7 @@ int raygui_main(void)
 
 int main(int ac, char **av)
 {
-    return raygui_main();
+    //return raygui_main();
     InputParser input(ac, av);
     try {
         input.parseMandatory();
