@@ -103,7 +103,7 @@ RAYGUI_FILE_PATH=raylib/src/raygui.c
 raygui_setup:
 	cd raylib/src $(THEN) \
 	RAYLIB_MODULE_RAYGUI=TRUE "$(MAKE)" PLATFORM=PLATFORM_DESKTOP raygui.c
-	echo "#include <stdlib.h>\n\
+	echo -e "#include <stdlib.h>\n\
 	#define TextToFloat(text) atof(text)\n\
 	$$(cat $(RAYGUI_FILE_PATH))" > $(RAYGUI_FILE_PATH)
 
