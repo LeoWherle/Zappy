@@ -29,8 +29,8 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         a string buffer for outgoing messages
     in_buffer : str
         a string buffer for incoming messages
-    multi_threading : bool
-        a boolean to indicate if multi-threading is enabled
+    multi_process : bool
+        a boolean to indicate if multi-process is enabled
     """
     def __init__(self, logger: Logger, host: str, port: int=4242):
         """Initializes ServerConnection with the given parameters."""
@@ -42,7 +42,9 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.logger: Logger = logger
         self.out_buffer: str = ""
         self.in_buffer: str = ""
-        self.multi_threading: bool = False
+        self.multi_process: bool = False
+        self.nb_subprocess: int = 0
+        self.subprocess_pids: list = []
 
     def connect(self):
         """Establishes a connection to the server."""
