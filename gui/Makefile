@@ -13,7 +13,8 @@ platformpth = $(subst /,$(PATHSEP),$1)
 buildDirName := build
 executable := zappy_gui
 
-CFLAGS += -W -Wall -Wextra
+CFLAGS += -W -Wall -Wextra -Wno-narrowing -Wno-sign-compare
+CFLAGS += -Wno-unused-function -Wno-missing-field-initializers
 
 RULE =
 # used with make DEBUG=n
@@ -44,6 +45,7 @@ ifeq ($(OS), Windows_NT)
 	# Set Windows macros
 	platform := Windows
 	CXX ?= g++
+	CC ?= gcc
 	linkFlags += -Wl,--allow-multiple-definition -pthread -lopengl32 -lgdi32 -lwinmm -mwindows -static -static-libgcc -static-libstdc++
 	THEN := &&
 	PATHSEP := \$(BLANK)
@@ -57,12 +59,14 @@ else
 		# Set Linux macros
 		platform := Linux
 		CXX ?= g++
+		CC ?= gcc
 		linkFlags += -l GL -l m -l pthread -l dl -l rt -l X11
 	endif
 	ifeq ($(UNAMEOS), Darwin)
 		# Set macOS macros
 		platform := macOS
 		CXX ?= clang++
+		CC ?= clang
 		linkFlags += -framework CoreVideo -framework IOKit -framework Cocoa -framework GLUT -framework OpenGL
 	endif
 
@@ -75,7 +79,7 @@ else
 endif
 
 # Lists phony targets for Makefile
-.PHONY: all setup submodules execute clean
+.PHONY: all setup submodules execute clean raygui_setup
 
 # Default target, compiles, executes and cleans
 all: $(target)
@@ -93,10 +97,20 @@ include: submodules
 	$(call COPY,raylib/src,./include,raylib.h)
 	$(call COPY,raylib/src,./include,raymath.h)
 	$(call COPY,raylib-cpp/include,./include,*.hpp)
+	$(call COPY,raygui/src,./include,raygui.h)
+
+RAYGUI_FILE_PATH=raylib/src/raygui.c
+raygui_setup:
+	cd raylib/src $(THEN) \
+	RAYLIB_MODULE_RAYGUI=TRUE "$(MAKE)" PLATFORM=PLATFORM_DESKTOP raygui.c
+	printf "#include <stdlib.h>\n\
+	#define TextToFloat(text) atof(text)\n\
+	$$(cat $(RAYGUI_FILE_PATH))" > $(RAYGUI_FILE_PATH)
 
 # Build the raylib static library file and copy it into lib
-lib: submodules
-	cd raylib/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
+lib: submodules raygui_setup
+	cd raylib/src $(THEN) \
+	RAYLIB_MODULE_RAYGUI=TRUE "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
 	$(MKDIR) $(call platformpth, lib/$(platform))
 	$(call COPY,raylib/src,lib/$(platform),libraylib.a)
 

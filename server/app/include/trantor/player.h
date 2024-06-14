@@ -9,7 +9,6 @@
 
 #include "trantor/common.h"
 #include "trantor/direction.h"
-#include "trantor/map.h"
 #include "trantor/tile.h"
 #include "trantor/pcmd_exec.h"
 
@@ -34,10 +33,10 @@ struct player_s {
     pcmd_executor_t pcmd_exec;
     player_t *incantator;
     unsigned int n;
-    double time_left;
+    float time_left;
     bool is_dead;
 };
 
 void init_egg(player_t *player, team_t team, coord_t c);
-void hatch_egg(player_t *player, double f);
+void hatch_egg(player_t *player);
 void destroy_player(void *player);

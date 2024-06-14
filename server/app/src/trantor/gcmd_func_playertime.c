@@ -5,6 +5,7 @@
 ** gui commands funcs source file
 */
 
+#include "trantor.h"
 #include "trantor/gcmd.h"
 #include "trantor/string_utils.h"
 
@@ -46,14 +47,13 @@ void gui_pin(trantor_t *trantor, gcmd_args_t *args)
         player->inventory.items[5], player->inventory.items[6]);
 }
 
-// replace by actual time or f ?
 void gui_sgt(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 {
     talkf(&trantor->log, "sgt %d\n", (int) trantor->params.f);
 }
 
-// same
 void gui_sst(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 {
+    trantor->params.f = args->t;
     talkf(&trantor->log, "sst %d\n", (int) trantor->params.f);
 }
