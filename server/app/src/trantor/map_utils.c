@@ -135,6 +135,7 @@ unsigned int get_receiving_square(
 {
     unsigned int world_square =
         get_world_receiving_square(map, emiter, receiver);
+
     if (world_square == 0)
         return 0;
     return (((world_square - 1) + rdir * 2) % 8) + 1;
