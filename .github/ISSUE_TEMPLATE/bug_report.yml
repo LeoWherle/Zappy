@@ -1,20 +1,20 @@
 name: 🐞 Bug Report
-title: '[BUG] '
+title: "[BUG] "
 description: Report a bug
-labels: ['🪲 bug']
+labels: ["🪲 bug"]
 
 body:
   - type: dropdown
-      id: binary
-      attributes:
-        label: Binary
-        description: What part of the project?
-        options:
-          - GUI
-          - Server
-          - AI
-      validations:
-        required: true
+    id: binary
+    attributes:
+      label: Binary
+      description: What part of the project?
+      options:
+        - GUI
+        - Server
+        - AI
+    validations:
+      required: true
 
   - type: textarea
     id: description
@@ -46,7 +46,7 @@ body:
     attributes:
       label: Additional context
       description: Add any other context about the problem here.
-  
+
   - type: textarea
     id: logs
     attributes:
