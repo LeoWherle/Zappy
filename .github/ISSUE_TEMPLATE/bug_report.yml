@@ -1,0 +1,54 @@
+name: 🐞 Bug Report
+title: '[BUG] '
+description: Report a bug
+labels: ['🪲 bug']
+
+body:
+- type: dropdown
+    id: version
+    attributes:
+      label: Binary
+      description: What part of the project?
+      options:
+        - GUI
+        - Server
+        - AI
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear description of what the bug is. Include screenshots if applicable.
+      placeholder: Bug description
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: A link to a reproduction repo or steps to reproduce the behaviour.
+      placeholder: |
+        Please provide a minimal reproduction or steps to reproduce, see this guide https://stackoverflow.com/help/minimal-reproducible-example
+        Why reproduction is required? see this article https://antfu.me/posts/why-reproductions-are-required
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear description of what you expected to happen.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+  
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      render: text
