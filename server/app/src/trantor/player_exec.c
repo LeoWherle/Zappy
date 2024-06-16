@@ -11,6 +11,7 @@
 #include "trantor.h"
 #include "trantor/config.h"
 #include "trantor/item.h"
+#include "trantor/map_fn.h"
 #include "trantor/pcmd_args.h"
 #include "trantor/pcmd.h"
 #include "trantor/player.h"
@@ -94,12 +95,20 @@ static void start_invocation(
 
 static void send_anim_signal(trantor_t *t, player_t *p)
 {
-    if (PCMD_NEEDS_OBJ(p->pcmd_exec.command)) {
-        talkf(&t->log, get_pcmd_anim_ev_fmt(p->pcmd_exec.command),
-            p->n, p->pcmd_exec.item);
-    } else {
-        talkf(&t->log, get_pcmd_anim_ev_fmt(p->pcmd_exec.command), p->n);
+    unbounded_coord_t ucoord = {p->coord[0], p->coord[1]};
+    coord_t coord = {0};
+    const char *fmt = get_pcmd_anim_ev_fmt(p->pcmd_exec.command);
+
+    if (p->pcmd_exec.command == FORWARD_PCMD) {
+        add_direction(&ucoord, p->direction);
+        bound_coord(&t->map, ucoord, &coord);
+        talkf(&t->log, fmt, p->n, coord[0], coord[1]);
+        return;
     }
+    if (PCMD_NEEDS_OBJ(p->pcmd_exec.command))
+        talkf(&t->log, fmt, p->n, p->pcmd_exec.item);
+    else
+        talkf(&t->log, fmt, p->n);
 }
 
 static bool handle_invoc_task(trantor_t *t, player_t *p)
