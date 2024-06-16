@@ -33,7 +33,7 @@ player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
         hatch_egg(temp);
         talkf(&trantor->log, "ebo %d\n", (int) temp->n);
         talkf(&trantor->log, "pnw %d %d %d %d %d %s\n",
-            temp->n, temp->coord[0], temp->coord[1], temp->direction,
+            temp->n, temp->coord[0], temp->coord[1], temp->direction + 1,
             temp->elevation, team_name);
         return temp;
     }
