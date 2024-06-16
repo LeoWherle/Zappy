@@ -16,28 +16,39 @@
 #include <stdlib.h>
 #include <time.h>
 
+static player_t *hatch_team_egg_step(
+    player_t *temp, int *n, team_t team)
+{
+    if (!temp->is_egg || temp->team != team)
+        return NULL;
+    if (*n == 0) {
+        hatch_egg(temp);
+        return temp;
+    }
+    (*n)--;
+    return NULL;
+}
 
 player_t *hatch_team_egg(trantor_t *trantor, const char *team_name)
 {
-    player_t *temp = NULL;
-    team_t team;
-    int idx = get_team_index(&trantor->params, team_name);
+    player_t *np = NULL;
+    team_t team = (team_t) get_team_index(&trantor->params, team_name);
+    int n;
 
-    if (idx == -1)
+    if (team == (team_t) -1)
         return NULL;
-    team = (team_t) idx;
+    n = rand() % count_idxteam_egg(trantor, team);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
-        temp = (player_t *) vec_at(&trantor->players, i);
-        if (!temp->is_egg || temp->team != team)
-            continue;
-        hatch_egg(temp);
-        talkf(&trantor->log, "ebo %d\n", (int) temp->n);
-        talkf(&trantor->log, "pnw %d %d %d %d %d %s\n",
-            temp->n, temp->coord[0], temp->coord[1], temp->direction + 1,
-            temp->elevation, team_name);
-        return temp;
+        np = hatch_team_egg_step(VEC_AT(&trantor->players, i), &n, team);
+        if (np)
+            break;
     }
-    return NULL;
+    if (!np)
+        return NULL;
+    talkf(&trantor->log, "ebo %d\n", (int) np->n);
+    talkf(&trantor->log, "pnw %d %d %d %d %d %s\n", np->n, np->coord[0],
+        np->coord[1], np->direction + 1, np->elevation, team_name);
+    return np;
 }
 
 unsigned int count_idxteam_egg(trantor_t *trantor, team_t t)
