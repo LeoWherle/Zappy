@@ -81,11 +81,13 @@ void player_incantation(pcmd_args_t *args)
     unfreeze_players(args);
     if (!can_invocate(args->players, args->player, args->map)) {
         SAY_KO(&args->player->response_buffer);
+        talkf(args->log, "pie %d %d 0\n", args->player->coord[0],
+            args->player->coord[1]);
         return;
     }
     tile_invocate(CGET_TILE(args->map, args->player->coord),
         args->player->elevation);
     elevate_players(args);
-    talkf(args->log, "pie %d %d %d\n", args->player->coord[0],
-        args->player->coord[1], args->player->elevation);
+    talkf(args->log, "pie %d %d 1\n", args->player->coord[0],
+        args->player->coord[1]);
 }

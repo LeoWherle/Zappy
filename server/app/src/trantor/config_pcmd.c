@@ -9,7 +9,7 @@
 
 const pcmd_config_t PCOMMAND_CONFIG[PCMD_COUNT] = {
     {NONE_PCMD, "", 0, player_error, ""},
-    {FORWARD_PCMD, "Forward", 7, player_forward, "pm %d\n"},
+    {FORWARD_PCMD, "Forward", 7, player_forward, "pm %d %d %d\n"},
     {RIGHT_PCMD, "Right", 7, player_right, "ptr %d\n"},
     {LEFT_PCMD, "Left", 7, player_left, "ptl %d\n"},
     {LOOK_PCMD, "Look", 7, player_look, "pla %d\n"},

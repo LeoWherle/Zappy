@@ -21,3 +21,4 @@ tile_t *unbounded_tile_get(map_t *map, int x, int y);
 void add_direction(unbounded_coord_t *coord, direction_t direction);
 unsigned int get_receiving_square(
     map_t *map, direction_t rdir, coord_t emiter, coord_t receiver);
+void bound_coord(map_t *map, unbounded_coord_t coord, coord_t *res);
