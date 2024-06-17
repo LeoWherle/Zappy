@@ -58,7 +58,7 @@ namespace GUI {
                 return true;
             }
         }
-        std::cout << "failed packet: " << action << std::endl;
+        std::cerr << "failed packet: " << action << std::endl;
         return false;
     }
 
