@@ -15,8 +15,6 @@ namespace GUI {
     {
         _newX = -1.0f;
         _newY = -1.0f;
-        _maxX = maxX;
-        _maxY = maxY;
     }
 
     Pikmin::~Pikmin()
@@ -156,8 +154,8 @@ namespace GUI {
         _newY = 0.0f;
 
         _model.setAnimation(AnimType::WALK);
-        _newX = (float)(x % _maxX);
-        _newY = (float)(y % _maxY);
+        _newX = (float)(x);
+        _newY = (float)(y);
         _model.setMotionVector(raylib::Vector3(_newX - curX, 0.0f, _newY - curY) / 7.0f);
     }
 

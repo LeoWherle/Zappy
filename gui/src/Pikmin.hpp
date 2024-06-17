@@ -79,7 +79,5 @@ namespace GUI {
             State _status;
             float _newX;
             float _newY;
-            int _maxX;
-            int _maxY;
     };
 }
