@@ -31,7 +31,7 @@ namespace GUI {
                 EGG,
                 DYING
             };
-            Pikmin(const std::string &id, std::size_t x, std::size_t y);
+            Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY);
             Pikmin() = delete;
             Pikmin(const Pikmin &) = default;
             ~Pikmin();
@@ -79,5 +79,7 @@ namespace GUI {
             State _status;
             float _newX;
             float _newY;
+            int _maxX;
+            int _maxY;
     };
 }

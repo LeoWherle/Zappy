@@ -11,10 +11,12 @@
 #include "Color.hpp"
 
 namespace GUI {
-    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
+    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY) : _data(id, x, y), _model(x, y, maxX, maxY)
     {
         _newX = -1.0f;
         _newY = -1.0f;
+        _maxX = maxX;
+        _maxY = maxY;
     }
 
     Pikmin::~Pikmin()
@@ -25,16 +27,20 @@ namespace GUI {
     {
         if (x == _data.getX() && y == _data.getY() && orientation == _data.getDirection())
             return;
-        if (_newX < 0.0f && _newY < 0.0f) {
+        //if (_newX < 0.0f && _newY < 0.0f) {
             _model.setPositionVector(raylib::Vector3(x, 0.5, y));
-        } else {
-            _model.setPositionVector(raylib::Vector3(_newX, 0.5, _newY));
-            _model.setMotionVector(raylib::Vector3::Zero());
-        }
+        //} else {
+        //    _model.setPositionVector(raylib::Vector3(_newX, 0.5, _newY));
+        //}
+
+        std::cout << "rdm pos x " << _newX << " y " << _newY << std::endl;
+        std::cout << "teo pos x " << x << " y " << y << std::endl;
+        _model.setMotionVector(raylib::Vector3::Zero());
+        _model.setRotationSpeed(0.0f);
         _data.setX(x);
         _data.setY(y);
         _data.setDirection(orientation);
-        _model.setRotation(90 * orientation - 90);
+        _model.setRotation(90 * orientation);
     }
 
     bool Pikmin::draw(float delta)
@@ -150,36 +156,38 @@ namespace GUI {
         float curY = (float)(_data.getY());
         _newX = 0.0f;
         _newY = 0.0f;
+        int fX = _data.getX();
+        int fY = _data.getY();
         std::size_t dir = _data.getDirection();
 
         _model.setAnimation(AnimType::WALK);
         if (dir % 2 == 0) {
-            _newX = curX - 0.45f + (float)(std::rand() % 900) / 1000.0f;
             if (dir == 2) {
-                _newY = curY + 0.55f + (float)(std::rand() % 900) / 1000.0f;
+                fY += 1;
             } else {
-                _newY = curY - 1.45f + (float)(std::rand() % 900) / 1000.0f;
+                fY -= 1;
             }
         } else {
-            _newY = curY - 0.45f + (float)(std::rand() % 900) / 1000.0f;
             if (dir == 3) {
-                _newX = curX + 0.55f + (float)(std::rand() % 900) / 1000.0f;
+                fX -= 1;
             } else {
-                _newX = curX - 1.45f + (float)(std::rand() % 900) / 1000.0f;
+                fX += 1;
             }
         }
-        _model.setMotionVector(raylib::Vector3(curX - _newX, 0.0f, curY - _newY) / 7.0f);
+        _newX = (float)(fX % _maxX);
+        _newY = (float)(fY % _maxY);
+        _model.setMotionVector(raylib::Vector3(_newX - curX, 0.0f, _newY - curY) / 7.0f);
     }
 
     void Pikmin::turnLeft(void)
     {
-        _model.setRotationSpeed(90.0f / 7.0f);
+        _model.setRotationSpeed(-90.0f / 7.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
     void Pikmin::turnRight(void)
     {
-        _model.setRotationSpeed(-90.0f / 7.0f);
+        _model.setRotationSpeed(90.0f / 7.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
