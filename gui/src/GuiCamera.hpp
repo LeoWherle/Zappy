@@ -11,6 +11,14 @@
 #include "Pikmin.hpp"
 #include "Communication/WriteBuffer.hpp"
 
+#if !defined(RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT)
+#define RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT 24
+#endif
+
+#if !defined(RAYGUI_WINDOW_CLOSEBUTTON_SIZE)
+#define RAYGUI_WINDOW_CLOSEBUTTON_SIZE 18
+#endif
+
 namespace GUI {
     class GuiCamera {
         public:
@@ -31,5 +39,9 @@ namespace GUI {
             float _prevVal;
             bool _pause;
             bool _next;
+            raylib::Vector2 _inventoryPosition;
+            raylib::Vector2 _inventorySize;
+            bool _moving;
+            bool _minimized;
     };
 }
