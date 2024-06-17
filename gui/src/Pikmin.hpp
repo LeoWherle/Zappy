@@ -55,7 +55,7 @@ namespace GUI {
             void spawnAsEgg(void);
             void spawnAsPikmin(void);
 
-            void move(void);
+            void move(std::size_t x, std::size_t y);
             void turnLeft(void);
             void turnRight(void);
             void look(void);

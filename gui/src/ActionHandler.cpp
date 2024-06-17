@@ -34,7 +34,7 @@ namespace GUI {
             {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
             {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
             {std::regex("^sgt (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
-            {std::regex("^pm (\\d+)$"), &ActionHandler::pikminMoving},
+            {std::regex("^pm (\\d+) (\\d+) (\\d+)$"), &ActionHandler::pikminMoving},
             {std::regex("^ptr (\\d+)$"), &ActionHandler::pikminTurningRight},
             {std::regex("^ptl (\\d+)$"), &ActionHandler::pikminTurningLeft},
             {std::regex("^pla (\\d+)$"), &ActionHandler::pikminLookingAround},
@@ -297,10 +297,12 @@ namespace GUI {
     void ActionHandler::pikminMoving(std::smatch &arg)
     {
         std::string id = arg[1].str();
+        std::size_t x = std::stoi(arg[2].str());
+        std::size_t y = std::stoi(arg[3].str());
 
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                pikmin.move();
+                pikmin.move(x, y);
             }
         }
     }

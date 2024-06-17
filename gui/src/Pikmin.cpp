@@ -33,14 +33,12 @@ namespace GUI {
         //    _model.setPositionVector(raylib::Vector3(_newX, 0.5, _newY));
         //}
 
-        std::cout << "rdm pos x " << _newX << " y " << _newY << std::endl;
-        std::cout << "teo pos x " << x << " y " << y << std::endl;
         _model.setMotionVector(raylib::Vector3::Zero());
         _model.setRotationSpeed(0.0f);
         _data.setX(x);
         _data.setY(y);
         _data.setDirection(orientation);
-        _model.setRotation(90 * orientation);
+        _model.setRotation((630 - (90 * orientation)) % 361);
     }
 
     bool Pikmin::draw(float delta)
@@ -150,32 +148,16 @@ namespace GUI {
         return _model.getColision(mousePos);
     }
 
-    void Pikmin::move(void)
+    void Pikmin::move(std::size_t x, std::size_t y)
     {
         float curX = (float)(_data.getX());
         float curY = (float)(_data.getY());
         _newX = 0.0f;
         _newY = 0.0f;
-        int fX = _data.getX();
-        int fY = _data.getY();
-        std::size_t dir = _data.getDirection();
 
         _model.setAnimation(AnimType::WALK);
-        if (dir % 2 == 0) {
-            if (dir == 2) {
-                fY += 1;
-            } else {
-                fY -= 1;
-            }
-        } else {
-            if (dir == 3) {
-                fX -= 1;
-            } else {
-                fX += 1;
-            }
-        }
-        _newX = (float)(fX % _maxX);
-        _newY = (float)(fY % _maxY);
+        _newX = (float)(x % _maxX);
+        _newY = (float)(y % _maxY);
         _model.setMotionVector(raylib::Vector3(_newX - curX, 0.0f, _newY - curY) / 7.0f);
     }
 
