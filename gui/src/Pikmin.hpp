@@ -31,7 +31,7 @@ namespace GUI {
                 EGG,
                 DYING
             };
-            Pikmin(const std::string &id, std::size_t x, std::size_t y);
+            Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY);
             Pikmin() = delete;
             Pikmin(const Pikmin &) = default;
             ~Pikmin();
@@ -55,7 +55,7 @@ namespace GUI {
             void spawnAsEgg(void);
             void spawnAsPikmin(void);
 
-            void move(void);
+            void move(std::size_t x, std::size_t y);
             void turnLeft(void);
             void turnRight(void);
             void look(void);

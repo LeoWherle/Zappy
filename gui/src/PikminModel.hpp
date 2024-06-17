@@ -14,7 +14,7 @@ namespace GUI {
     class PikminModel
     {
         public:
-            PikminModel(std::size_t x, std::size_t y);
+            PikminModel(std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY);
             ~PikminModel() = default;
 
             inline void setPikminModel(std::shared_ptr<GuiModel> model) { _model = model; }
@@ -64,5 +64,8 @@ namespace GUI {
             float _rotationSpeed;
 
             float _nbFrame;
+
+            float _maxX;
+            float _maxY;
     };
 }

@@ -27,20 +27,20 @@ namespace GUI {
             {std::regex("^pic (\\d+) (\\d+) (\\d+) ((?:\\d+ )*\\d+)$"), &ActionHandler::startIncantation},
             {std::regex("^pie (\\d+) (\\d+) (\\d+)$"), &ActionHandler::stopIncantation},
             {std::regex("^pfk (\\d+)$"), &ActionHandler::gonnaLayEgg},
-            {std::regex("^pdr (\\d+) i$"), &ActionHandler::pikminDropRessource},
-            {std::regex("^pgt (\\d+) i$"), &ActionHandler::pikminPickRessource},
+            {std::regex("^pdr (\\d+) (\\d+)$"), &ActionHandler::pikminDropRessource},
+            {std::regex("^pgt (\\d+) (\\d+)$"), &ActionHandler::pikminPickRessource},
             {std::regex("^pdi (\\d+)$"), &ActionHandler::pikminDie},
             {std::regex("^enw (\\d+) (\\d+) (\\d+) (\\d+)$"), &ActionHandler::layedEgg},
             {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
             {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
             {std::regex("^sgt (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
-            {std::regex("^pm (\\d+)$"), &ActionHandler::pikminMoving},
+            {std::regex("^pm (\\d+) (\\d+) (\\d+)$"), &ActionHandler::pikminMoving},
             {std::regex("^ptr (\\d+)$"), &ActionHandler::pikminTurningRight},
             {std::regex("^ptl (\\d+)$"), &ActionHandler::pikminTurningLeft},
             {std::regex("^pla (\\d+)$"), &ActionHandler::pikminLookingAround},
             {std::regex("^pf (\\d+)$"), &ActionHandler::pikminForking},
-            {std::regex("^pto (\\d+) i$"), &ActionHandler::pikminTakeObject},
-            {std::regex("^pdo (\\d+) i$"), &ActionHandler::pikminDropObject},
+            {std::regex("^pto (\\d+) (\\d+)$"), &ActionHandler::pikminTakeObject},
+            {std::regex("^pdo (\\d+) (\\d+)$"), &ActionHandler::pikminDropObject},
             {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject}
         });
     }
@@ -58,6 +58,7 @@ namespace GUI {
                 return true;
             }
         }
+        std::cerr << "failed packet: " << action << std::endl;
         return false;
     }
 
@@ -115,9 +116,10 @@ namespace GUI {
             }
         }
 
-        Pikmin newPikmin(id, x, y);
+        Pikmin newPikmin(id, x, y, _x, _y);
         newPikmin.setTeam(team);
         newPikmin.spawnAsPikmin();
+        newPikmin.updatePosition(x, y, orientation);
         newPikmin.updateLevel(level);
         _pikmins.emplace_back(newPikmin);
     }
@@ -268,7 +270,7 @@ namespace GUI {
         std::string pikminId = arg[2].str();
         std::size_t x = std::stoi(arg[3].str());
         std::size_t y = std::stoi(arg[4].str());
-        Pikmin newPikmin(eggId, x, y);
+        Pikmin newPikmin(eggId, x, y, _x, _y);
 
         newPikmin.spawnAsEgg();
         _pikmins.emplace_back(newPikmin);
@@ -295,10 +297,12 @@ namespace GUI {
     void ActionHandler::pikminMoving(std::smatch &arg)
     {
         std::string id = arg[1].str();
+        std::size_t x = std::stoi(arg[2].str());
+        std::size_t y = std::stoi(arg[3].str());
 
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                pikmin.move();
+                pikmin.move(x, y);
             }
         }
     }
