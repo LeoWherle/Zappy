@@ -1,5 +1,6 @@
 from random import randint
 from tools import is_a_number
+import sys
 #from connection import ServerConnection
 
 needs_for_lvl_6 = {"linemate": 6,
@@ -26,12 +27,16 @@ class AI:
         self.king: bool = False
         self.choosen_ones: bool = False
         self.ref: bool = ref
+        self.needed_food = 25
 
         team_slots_left: int = net.send_team(team)
         if (team_slots_left == -1):
             self.dead = True
             return
         self.net.logger.info(f"Team {team} has {team_slots_left} slots left", self.id)
+        self.needed_food = self.net.map_x + 15
+        if self.needed_food < 25:
+            self.needed_food = 25
 
     #---------------------------------#
     #           Send and read         #
@@ -441,6 +446,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
+        msg = f"{self.team}|{msg}"
         self.net.send(f"Broadcast {msg}", self)
         self.net.logger.info(f"Broadcasted: {msg}", self.id)
     
@@ -480,6 +486,10 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
+        broadcast_received = broadcast_received.split("|")
+        if broadcast_received[0] != self.team:
+            return
+        broadcast_received = broadcast_received[1]
         if self.random and broadcast_received == "lvl6":
             self.random = False
             self.king = False

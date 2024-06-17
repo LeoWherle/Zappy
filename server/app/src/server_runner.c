@@ -126,8 +126,6 @@ static void server_run_step(
     clock_gettime(CLOCK_MONOTONIC, &next);
     delta = (next.tv_sec - now->tv_sec)
         + (next.tv_nsec - now->tv_nsec) / 1e9;
-    if (delta < 0.1)
-        return;
     context->running = trantor_time_pass(&server->trantor, delta, true);
     *now = next;
 }

@@ -22,7 +22,10 @@ static void get_missing_items(map_t *map, tile_t *missing)
         }
     }
     for (unsigned int i = 0; i < ITEM_COUNT - 1; i++) {
-        missing->items[i] = item_tile.items[i] - missing->items[i];
+        if (missing->items[i] <= item_tile.items[i])
+            missing->items[i] = item_tile.items[i] - missing->items[i];
+        else
+            missing->items[i] = 0;
     }
 }
 

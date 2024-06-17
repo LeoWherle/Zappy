@@ -7,10 +7,8 @@
 
 #include "KeyHandler.hpp"
 
-#include <iostream>
-
 namespace GUI {
-    KeyHandler::KeyHandler(Camera &cam, std::vector<Pikmin> &pikmins) : _cam(cam), _pikmins(pikmins)
+    KeyHandler::KeyHandler(WorldCamera &cam, std::vector<Pikmin> &pikmins) : _cam(cam), _pikmins(pikmins)
     {
         /* raylib handle QWERTY configuration */
         _keyMap = {
@@ -79,9 +77,6 @@ namespace GUI {
             raylib::Ray mouseRay(mousePos, _cam.getCam());
             if (pikmin.getColision(mouseRay)) {
                 _cam.setFocus(pikmin);
-                std::cout << "hit" << std::endl;
-            } else {
-                std::cout << "not hit" << std::endl;
             }
         }
     }

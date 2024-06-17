@@ -94,7 +94,6 @@ void player_eject(pcmd_args_t *args)
 
 void player_set(pcmd_args_t *args)
 {
-    item_t i;
     tile_t *t;
 
     t = CGET_TILE(args->map, args->player->coord);
@@ -102,8 +101,8 @@ void player_set(pcmd_args_t *args)
         SAY_KO(&args->player->response_buffer);
         return;
     }
-    i = TAKE_ITEM(args->player->inventory, args->item);
-    ADD_ITEM(*t, i);
+    TAKE_ITEM(args->player->inventory, args->item);
+    ADD_ITEM(*t, args->item);
     SAY_OK(&args->player->response_buffer);
     talkf(args->log, "pdr %d %d\n", args->player->n, args->item - 1);
 }

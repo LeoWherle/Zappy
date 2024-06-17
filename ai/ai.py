@@ -13,7 +13,7 @@ def connect_new_process(ai_instance: AI, args, logger: Logger):
     Parameters:
     args (argparse.Namespace): The command line arguments.
     """
-    new_args = ["./zappy_ai", "-n", f"{ai_instance.team}", "-h", args.h, "-p", str(args.p)]
+    new_args = ["./zappy_ai", "-n", f"{ai_instance.team}", "-h", args.h, "-p", str(args.p), "-slave"]
     if args.nocolor:
         new_args.append("-nocolor")
     if args.nolog:
@@ -39,10 +39,10 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
     if ai_instance.net.multi_process and ai_instance.net.nb_subprocess < 9 and ai_instance.get_unused_slots() > 0:
         connect_new_process(ai_instance, args, logger)
     food_nbr = ai_instance.get_food_nbr()
-    if not ai_instance.king and ai_instance.random and food_nbr < 25:
+    if not ai_instance.king and ai_instance.random and food_nbr < ai_instance.needed_food:
         ai_instance.go_to_obj("food")
         ai_instance.take_all_food()
-        if food_nbr > 10 and ai_instance.random and ai_instance.lvl == 1:
+        if food_nbr > 5 and ai_instance.random and ai_instance.lvl == 1:
             ai_instance.go_to_obj("linemate")
             ai_instance.incantation()
     else:
@@ -50,7 +50,7 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
             if ai_instance.get_unused_slots() == 0 and ai_instance.net.nb_subprocess < 9:
                 ai_instance.fork()
 
-        if not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
+        if not args.slave and not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
             ai_instance.king = True
 
         if ai_instance.king:
@@ -63,7 +63,6 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
                 ai_instance.turn_right()
                 ai_instance.turn_right()
                 ai_instance.turn_right()  # To delay broadcast
-                ai_instance.turn_right()
                 ai_instance.turn_right()
         else:
             if ai_instance.random and ai_instance.lvl == 1:
@@ -95,7 +94,7 @@ def start_ai_logic(ai_instance: AI, args, logger: Logger):
 
         ai_instance.net.send_buffer(ai_instance)
     if ai_instance.lvl >= 8:
-        ai_instance.broadcast("lvl8")
+        ai_instance.net.logger.info("lvl 8 reached, GG !", ai_instance.id)
         for pid in ai_instance.net.subprocess_pids:
             subprocess.Popen(["kill", "-9", str(pid)])
 
