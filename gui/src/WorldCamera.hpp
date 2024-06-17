@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** Camera
+** WorldCamera
 */
 
 #pragma once
@@ -12,10 +12,10 @@
 #include "Pikmin.hpp"
 
 namespace GUI {
-    class Camera {
+    class WorldCamera {
         public:
-            Camera(std::vector<Pikmin> &);
-            ~Camera() = default;
+            WorldCamera(std::vector<Pikmin> &);
+            ~WorldCamera();
             void rotateCamX(int direction);
             void rotateCamY(int direction);
             void changeDistance(int direction);
@@ -23,12 +23,15 @@ namespace GUI {
             inline raylib::Camera3D &getCam(void) { return _cam; }
             void update();
             void setFocus(Pikmin &focus);
+            std::string getFocus(void) const;
             void unfocus(void);
             void reset();
+            inline raylib::RenderTexture &getTexture(void) { return _screen; }
         private:
             void setCamPos(float x, float y, float z, float radius);
 
             raylib::Camera3D _cam;
+            raylib::RenderTexture _screen;
             raylib::Vector3 _position;
             float _radius;
             float _minRadius;

@@ -7,6 +7,8 @@
 
 #include "WriteBuffer.hpp"
 
+#include <iostream>
+
 namespace Buffer {
     WriteBuffer::WriteBuffer(uint32_t size)
     {
@@ -30,6 +32,7 @@ namespace Buffer {
 
     auto WriteBuffer::_write(int fd) -> void
     {
+        std::cout << "Write: " << _buffer.data() << std::endl;
         auto ret = write(fd, _buffer.data(), _buffer.size());
         if (ret == -1) {
             throw WriteError("write() failed");

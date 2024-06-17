@@ -14,12 +14,14 @@ namespace GUI {
         _pikmins(), _size(0, 0), _map(), _teams(),
         _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
         _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
-        _key (KeyHandler(_cam, _pikmins)),
+        _key (KeyHandler(_worldCam, _pikmins)),
         _client (connection::Client(timeout, in.getAdress(), in.getPort())),
-        _cam(_pikmins)
+        _worldCam (WorldCamera(_pikmins)),
+        _guiCam (GuiCamera())
     {
-        _run = true;
         InitWindow(1920, 1080, "ZapPikmin");
+        _guiCam.setUpCam();
+        _run = true;
         SetTargetFPS(60);
         ref = in.getRef();
     }
@@ -36,16 +38,18 @@ namespace GUI {
         while (!connected) {
             _client.handleSelect(_in, _out, _stdInput, _StdOutput);
             std::string inBuff = _in.buffer();
-            if (inBuff.size() > 0) {
-                std::string delimiter = "\n";
-                auto end = inBuff.find(delimiter);
-                std::string tmp = inBuff.substr(0, end);
+            std::size_t consume = 0;
+            std::string delimiter = "\n";
+            auto end = inBuff.find(delimiter);
+            std::string tmp = inBuff.substr(0, end);
+            if (end != std::string::npos) {
+                consume = end + 1;
                 if (tmp == "WELCOME") {
                     connected = true;
                     _out.write_to_buffer("GRAPHIC\n");
                 }
-                _in.consume(end + 1);
             }
+            _in.consume(consume);
         }
         std::cout << "Connected to the server..." << std::endl;
     }
@@ -58,18 +62,21 @@ namespace GUI {
         while (!mapReady) {
             _client.handleSelect(_in, _out, _stdInput, _StdOutput);
             std::string inBuff = _in.buffer();
-            if (inBuff.size() > 0) {
-                std::string delimiter = "\n";
-                auto end = inBuff.find(delimiter);
-                std::string tmp = inBuff.substr(0, end);
+            std::size_t consume = 0;
+            std::string delimiter = "\n";
+            auto end = inBuff.find(delimiter);
+            std::string tmp = inBuff.substr(0, end);
+            if (end != std::string::npos) {
+                consume = end + 1;
                 if (tmp.substr(0, 3) == "msz") {
-                    _handler(tmp);
-                    mapReady = true;
+                    if (_handler(tmp)) {
+                        mapReady = true;
+                    }
                 }
-                _in.consume(end + 1);
             }
+            _in.consume(consume);
         }
-        _cam.setUpCam(_mapX, _mapY);
+        _worldCam.setUpCam(_mapX, _mapY);
         std::cout << "Map ready" << std::endl;
     }
 
@@ -91,7 +98,7 @@ namespace GUI {
         while (_run && !WindowShouldClose()) {
             handleCommunication();
             handleKey();
-            _cam.update();
+            _worldCam.update();
             prevTime = curTime;
             curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
             _delta = (float)(curTime - prevTime) / 1000.0f * _timeMult;
@@ -111,19 +118,18 @@ namespace GUI {
             }
             consumed += 6;
         }
-        if (inBuff.size() > 0) {
-            std::size_t consume = 0;
-            std::string delimiter = "\n";
-            auto end = inBuff.find(delimiter);
-            while (end != std::string::npos) {
-                std::string tmp = inBuff.substr(0, end);
-                _handler(tmp);
-                inBuff.erase(0, end + 1);
-                consume += end + 1;
-                end = inBuff.find(delimiter);
-            }
-            _in.consume(consume + 1);
+
+        std::size_t consume = 0;
+        std::string delimiter = "\n";
+        auto end = inBuff.find(delimiter);
+        while (end != std::string::npos) {
+            std::string tmp = inBuff.substr(0, end);
+            _handler(tmp);
+            inBuff.erase(0, end + 1);
+            consume += end + 1;
+            end = inBuff.find(delimiter);
         }
+        _in.consume(consume);
 
         if (!ref) {
             _out.write_to_buffer("mct\n");
@@ -146,47 +152,50 @@ namespace GUI {
 
     void Warudo::handleKey(void)
     {
-    //    PollInputEvents();
         _key.update();
     }
 
     void Warudo::updateGraphic(void)
     {
-        BeginDrawing();
-
+        BeginTextureMode(_worldCam.getTexture());
             ClearWindowState(0);
             ClearBackground(BLACK);
-                BeginMode3D(_cam.getCam());
+            BeginMode3D(_worldCam.getCam());
 
-                    std::size_t index = 0;
-                    bool line = true;
-                    bool white = line;
-                    for (auto tile : _map) {
-                        if (_mapX == 0 || _mapY == 0)
-                            break;
-                        raylib::Vector3 pos((index % _mapX), 0, static_cast<int>((index / _mapX)));
-                        if (index % _mapX == 0) {
-                            line = !line;
-                            white = line;
-                        }
-                        if (white) {
-                            DrawCube(pos, 1, 1, 1, WHITE);
-                            white = !white;
-                        } else {
-                            DrawCube(pos, 1, 1, 1, GRAY);
-                            white = !white;
-                        }
-                        index++;
+                std::size_t index = 0;
+                bool line = true;
+                bool white = line;
+                for (auto tile : _map) {
+                    if (_mapX == 0 || _mapY == 0)
+                        break;
+                    raylib::Vector3 pos((index % _mapX), 0, static_cast<int>((index / _mapX)));
+                    if (index % _mapX == 0) {
+                        line = !line;
+                        white = line;
                     }
+                    if (white) {
+                        DrawCube(pos, 1, 1, 1, WHITE);
+                        white = !white;
+                    } else {
+                        DrawCube(pos, 1, 1, 1, GRAY);
+                        white = !white;
+                    }
+                    index++;
+                }
 
-                    updateTile();
-                    updatePikmin();
-                    updateUI();
+                updateTile();
+                updatePikmin();
 
-                EndMode3D();
+            EndMode3D();
+        EndTextureMode();
+
+        updateUI();
+
+        BeginDrawing();
+            DrawTextureRec(_worldCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920.0f, -1080.0f), raylib::Vector2(0.0f, 0.0f), WHITE);
+            DrawTextureRec(_guiCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920, -1080), raylib::Vector2(0.0f, 0.0f), WHITE);
 
         EndDrawing();
-     //   SwapScreenBuffer();
     }
 
     void Warudo::updatePikmin(void)
@@ -213,6 +222,15 @@ namespace GUI {
 
     void Warudo::updateUI(void)
     {
-        // put some blazing bullshit latere
+        BeginTextureMode(_guiCam.getTexture());
+            ClearBackground({0, 0, 0, 0});
+                for (auto pikmin : _pikmins) {
+                    if (pikmin == _worldCam.getFocus()) {
+                        _guiCam.drawInventory(pikmin);
+                        _guiCam.drawHistory(pikmin);
+                    }
+                }
+            _guiCam.handleGui(_out);
+        EndTextureMode();
     }
 };

@@ -7,13 +7,13 @@
 
 #pragma once
 
-#include "Camera.hpp"
+#include "WorldCamera.hpp"
 #include "Pikmin.hpp"
 
 namespace GUI {
     class KeyHandler {
         public:
-            KeyHandler(Camera &cam, std::vector<Pikmin> &pikmins);
+            KeyHandler(WorldCamera &cam, std::vector<Pikmin> &pikmins);
             ~KeyHandler();
 
             void update(void);
@@ -28,7 +28,7 @@ namespace GUI {
             void unfocus(void);
 
             std::vector<std::pair<int, void (KeyHandler::*)(void)>> _keyMap;
-            Camera &_cam;
+            WorldCamera &_cam;
             std::vector<Pikmin> &_pikmins;
     };
 }
