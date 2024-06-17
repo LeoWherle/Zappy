@@ -14,14 +14,22 @@ class ProcessManager:
         def target():
             try:
                 self.process = subprocess.Popen(
-                    self.command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, text=True, bufsize=1, cwd=self.cwd
+                    self.command, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.PIPE, 
+                    stdin=subprocess.PIPE, 
+                    text=True, 
+                    bufsize=0,  # No buffering for more immediate output
+                    universal_newlines=True,  # Ensure text mode
+                    cwd=self.cwd
                 )
-                for line in self.process.stdout:
+
+                # Continuously read and queue stdout/stderr
+                for line in iter(self.process.stdout.readline, ''):
                     self.stdout_queue.put(line)
-                self.process.stdout.close()
-                for line in self.process.stderr:
+                for line in iter(self.process.stderr.readline, ''):
                     self.stderr_queue.put(line)
-                self.process.stderr.close()
+
             except FileNotFoundError:
                 self.stdout_queue.put("Error: Command not found\n")
             except Exception as e:
