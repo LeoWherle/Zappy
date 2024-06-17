@@ -64,7 +64,6 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
                 ai_instance.turn_right()
                 ai_instance.turn_right()  # To delay broadcast
                 ai_instance.turn_right()
-                ai_instance.turn_right()
         else:
             if ai_instance.random and ai_instance.lvl == 1:
                 ai_instance.go_to_obj("linemate")

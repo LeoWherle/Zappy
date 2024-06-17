@@ -446,6 +446,7 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
+        msg = f"{self.team}|{msg}"
         self.net.send(f"Broadcast {msg}", self)
         self.net.logger.info(f"Broadcasted: {msg}", self.id)
     
@@ -485,6 +486,10 @@ class AI:
         if (self.dead):
             self.net.logger.warning(DEATH_MESSAGE, self.id)
             return
+        broadcast_received = broadcast_received.split("|")
+        if broadcast_received[0] != self.team:
+            return
+        broadcast_received = broadcast_received[1]
         if self.random and broadcast_received == "lvl6":
             self.random = False
             self.king = False
