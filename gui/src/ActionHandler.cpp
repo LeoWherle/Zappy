@@ -194,10 +194,8 @@ namespace GUI {
         //int y = std::stoi(arg[2].str());
         std::string incanters = arg[4].str();
 
-        std::cout << arg[0] << std::endl;
         while (incanters.size() > 0) {
             std::string tmp = incanters.substr(0, incanters.find(' '));
-            std::cout << "to find " << tmp << std::endl;
             for (auto &player : _pikmins) {
                 if (player == tmp) {
                     player.startIncant();
