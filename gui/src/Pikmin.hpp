@@ -61,6 +61,7 @@ namespace GUI {
             void look(void);
             void fork(void);
             void ejecting(void);
+            void broadcast(void);
 
             inline bool operator==(const Pikmin &other) { return (_data == other._data); }
             inline bool operator==(const std::string &id) { return (_data == id); }
