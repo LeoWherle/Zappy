@@ -37,17 +37,12 @@ namespace GUI {
     void PikminModel::setBulbModel(std::shared_ptr<GuiModel> model)
     {
         _bulb = model;
-        _bulb->SetAnimation(_animType);
     }
 
     void PikminModel::setAnimation(AnimType anim)
     {
         _frameCount = 0;
         _animType = anim;
-        if (_model)
-            _model->SetAnimation(anim);
-        if (_bulb)
-            _bulb->SetAnimation(anim);
         _nbFrame = _model->getNbFrame();
     }
 
@@ -78,8 +73,6 @@ namespace GUI {
         if (_cumulatedTime >= _animationTime / _nbFrame) {
             _cumulatedTime = 0.0f;
             _frameCount++;
-            _model->UpdateAnim(_frameCount);
-            _bulb->UpdateAnim(_frameCount);
         }
         return (_frameCount == 0);
     }
@@ -90,8 +83,14 @@ namespace GUI {
         _position += _motionVector * delta;
         _position.x = loopVal(_position.x, 0.0f, _maxX);
         _position.y = loopVal(_position.y, 0.0f, _maxY);
+        _entityBox.SetMin(_position + _boxOffset);
+        _entityBox.SetMax(_position + _size + _boxOffset);
         _entityBox.Draw();
         if (_model && _bulb) {
+            _model->SetAnimation(_animType);
+            _bulb->SetAnimation(_animType);
+            _model->UpdateAnim(_frameCount);
+            _bulb->UpdateAnim(_frameCount);
             _model->Draw(_position, _rotationAxis, _rotation, _scale, _pikminColor);
             _bulb->Draw(_position, _rotationAxis, _rotation, _scale, _bulbColor);
         } else {
