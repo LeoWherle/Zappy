@@ -89,13 +89,11 @@ namespace GUI {
 
     void Pikmin::startIncant(void)
     {
-        std::cout << "Homba okya beiroshano" << std::endl;
         _model.setAnimation(AnimType::INCANTATION);
     }
 
     void Pikmin::stopIncant(bool result)
     {
-        std::cout << "Nakabora hani han doma" << std::endl;
         _model.setAnimation(AnimType::IDLE);
         if (result) {
             //_model.setAnimation(_animation.get("level up"));
