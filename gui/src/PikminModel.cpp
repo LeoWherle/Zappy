@@ -12,13 +12,15 @@ namespace GUI {
     PikminModel::PikminModel(std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY)
     {
         _model = nullptr;
+        _bulb = nullptr;
+        _animType = AnimType::IDLE;
         _animCount = 0;
         _frameCount = 0;
         _position = raylib::Vector3(x, 0.5f, y);
         _motionVector = raylib::Vector3(0.0f, 0.0f, 0.0f);
         _rotationAxis = raylib::Vector3(0.0f, 0.0f, 1.0f);
         _rotation = 0;
-        _scale = 0.05f;
+        _scale = 0.05;
         _size = (raylib::Vector3(1, 1, 1) * _scale);
         _boxOffset = raylib::Vector3(-0.5, -0.5, -0.5) * _scale;
         _entityBox = raylib::BoundingBox(_position + _boxOffset, _position + _size + _boxOffset);
@@ -32,8 +34,16 @@ namespace GUI {
         _maxY = maxY;
     }
 
+    void PikminModel::setBulbModel(std::shared_ptr<GuiModel> model)
+    {
+        _bulb = model;
+        _bulb->SetAnimation(_animType);
+    }
+
     void PikminModel::setAnimation(AnimType anim)
     {
+        _frameCount = 0;
+        _animType = anim;
         if (_model)
             _model->SetAnimation(anim);
         if (_bulb)
