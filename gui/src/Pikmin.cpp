@@ -25,18 +25,14 @@ namespace GUI {
     {
         if (x == _data.getX() && y == _data.getY() && orientation == _data.getDirection())
             return;
-        //if (_newX < 0.0f && _newY < 0.0f) {
-            _model.setPositionVector(raylib::Vector3(x, 0.5, y));
-        //} else {
-        //    _model.setPositionVector(raylib::Vector3(_newX, 0.5, _newY));
-        //}
-
+        _model.setPositionVector(raylib::Vector3(x, 0.5, y));
         _model.setMotionVector(raylib::Vector3::Zero());
         _model.setRotationSpeed(0.0f);
+        _model.setRotation((630 - (90 * orientation)) % 361);
+        _model.setAnimation(AnimType::IDLE);
         _data.setX(x);
         _data.setY(y);
         _data.setDirection(orientation);
-        _model.setRotation((630 - (90 * orientation)) % 361);
     }
 
     bool Pikmin::draw(float delta)
@@ -87,17 +83,18 @@ namespace GUI {
 
     void Pikmin::eject(void)
     {
-        //_model.setAnimation(_animation.get("eject"));
+        _model.setAnimation(AnimType::FALL);
         _status = Pikmin::State::EJECT;
     }
 
     void Pikmin::startIncant(void)
     {
-        //_model.setAnimation(_animation.get("incant"));
+        _model.setAnimation(AnimType::INCANTATION);
     }
 
     void Pikmin::stopIncant(bool result)
     {
+        _model.setAnimation(AnimType::IDLE);
         if (result) {
             //_model.setAnimation(_animation.get("level up"));
         } else {
@@ -123,7 +120,7 @@ namespace GUI {
 
     void Pikmin::die(void)
     {
-        //_model.setAnimation(_animation.get("death"));
+        _model.setAnimation(AnimType::DEATH);
         _status = Pikmin::State::DYING;
     }
 
@@ -131,14 +128,14 @@ namespace GUI {
     {
         _status = Pikmin::State::EGG;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
-        //_model.setAnimation(AnimType::EGG);
+        _model.setAnimation(AnimType::PLANT);
     }
 
     void Pikmin::spawnAsPikmin(void)
     {
         _status = Pikmin::State::ALIVE;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
-        //_model.setAnimation(AnimType::IDLE);
+        _model.setAnimation(AnimType::IDLE);
     }
 
     bool Pikmin::getColision(raylib::Ray &mousePos)
@@ -161,13 +158,13 @@ namespace GUI {
 
     void Pikmin::turnLeft(void)
     {
-        _model.setRotationSpeed(-90.0f / 7.0f);
+        _model.setRotationSpeed(90.0f / 7.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
     void Pikmin::turnRight(void)
     {
-        _model.setRotationSpeed(90.0f / 7.0f);
+        _model.setRotationSpeed(-90.0f / 7.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
@@ -183,7 +180,12 @@ namespace GUI {
 
     void Pikmin::ejecting(void)
     {
-        //_model.setAnimation(AnimType::EJECTED);
+        _model.setAnimation(AnimType::PUSH);
+    }
+
+    void Pikmin::broadcast(void)
+    {
+        _model.setAnimation(AnimType::BROADCAST);
     }
 
 }

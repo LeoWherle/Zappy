@@ -180,7 +180,12 @@ namespace GUI {
     {
         std::string id = arg[1].str();
         std::string message = arg[2].str();
-        return;
+
+        for (auto &player : _pikmins) {
+            if (player == id) {
+                player.broadcast();
+            }
+        }
     }
 
     void ActionHandler::startIncantation(std::smatch &arg)
