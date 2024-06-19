@@ -48,9 +48,11 @@ namespace GUI {
         return (_data.getX() == x && _data.getY() == y);
     }
 
-    void Pikmin::setTeam(std::string &team)
+    void Pikmin::setTeam(Team &team)
     {
-        _data.setTeam(team);
+        _data.setTeam(team.getName());
+        _model.setPikminModel(team.getModel());
+        _model.setPikminColor(team.getColor());
     }
 
     static const std::vector<std::pair<raylib::Color, ModelType>> bulbMap({
@@ -134,7 +136,6 @@ namespace GUI {
     void Pikmin::spawnAsPikmin(void)
     {
         _status = Pikmin::State::ALIVE;
-        _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
         _model.setAnimation(AnimType::IDLE);
     }
 

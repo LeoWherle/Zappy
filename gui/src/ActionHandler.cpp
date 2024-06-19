@@ -9,7 +9,7 @@
 #include <iostream>
 
 namespace GUI {
-    ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<std::string> &teams, std::pair<std::size_t, std::size_t> &size, float &timeMult):
+    ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size, float &timeMult):
         _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult)
     {
         _x = 0;
@@ -43,6 +43,7 @@ namespace GUI {
             {std::regex("^pdo (\\d+) (\\d+)$"), &ActionHandler::pikminDropObject},
             {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject}
         });
+        _nbTeam = 0;
     }
 
     ActionHandler::~ActionHandler()
@@ -90,11 +91,44 @@ namespace GUI {
         _map[index].setRocks(tileRocks);
     }
 
+    static const std::vector<ModelType> pikminModels({
+        RED_PIKMIN,
+        YELLOW_PIKMIN,
+        BLUE_PIKMIN
+    });
+
+    static const std::vector<raylib::Color> colors({
+        raylib::Color::White(),
+        raylib::Color::DarkPurple(),
+        raylib::Color::Green(),
+        raylib::Color::DarkBlue(),
+        raylib::Color::DarkGray(),
+        raylib::Color::Purple(),
+        raylib::Color::Magenta(),
+        raylib::Color::Maroon(),
+        raylib::Color::Beige(),
+        raylib::Color::Brown(),
+        raylib::Color::Black(),
+    });
+
     void ActionHandler::addTeamName(std::smatch &arg)
     {
-        std::string name = arg[1];
+        std::string name;
+        std::shared_ptr<GuiModel> model;
+        raylib::Color color;
+        std::size_t modelIndex = 0;
+        std::size_t colorIndex = 0;
 
-        _teams.push_back(name);
+        name = arg[1];
+        modelIndex = _nbTeam % pikminModels.size();
+        colorIndex = (_nbTeam - modelIndex) % colors.size();
+        model = ModelBank::get(pikminModels[modelIndex]);
+        color = colors[colorIndex];
+        _nbTeam++;
+
+        Team team(name, model, color);
+
+        _teams.emplace_back(team);
     }
 
     void ActionHandler::addPlayer(std::smatch &arg)
@@ -104,24 +138,32 @@ namespace GUI {
         int y = std::stoi(arg[3].str());
         int orientation = std::stoi(arg[4].str());
         int level = std::stoi(arg[5].str());
-        std::string team = arg[6].str();
+        std::string teamName = arg[6].str();
 
         for (auto &player : _pikmins) {
             if (player == id) {
-                player.setTeam(team);
-                player.spawnAsPikmin();
-                player.updatePosition(x, y, orientation);
-                player.updateLevel(level);
+                for (auto &team : _teams) {
+                    if (team == teamName) {
+                        player.setTeam(team);
+                        player.spawnAsPikmin();
+                        player.updatePosition(x, y, orientation);
+                        player.updateLevel(level);
+                    }
+                }
                 return;
             }
         }
 
         Pikmin newPikmin(id, x, y, _x, _y);
-        newPikmin.setTeam(team);
-        newPikmin.spawnAsPikmin();
-        newPikmin.updatePosition(x, y, orientation);
-        newPikmin.updateLevel(level);
-        _pikmins.emplace_back(newPikmin);
+        for (auto &team : _teams) {
+            if (team == teamName) {
+                newPikmin.setTeam(team);
+                newPikmin.spawnAsPikmin();
+                newPikmin.updatePosition(x, y, orientation);
+                newPikmin.updateLevel(level);
+                _pikmins.emplace_back(newPikmin);
+            }
+        }
     }
 
     void ActionHandler::setPikminPosition(std::smatch &arg)

@@ -64,7 +64,7 @@ namespace GUI {
 
             float _rotationSpeed;
 
-            float _nbFrame;
+            int _nbFrame;
 
             float _maxX;
             float _maxY;
