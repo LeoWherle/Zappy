@@ -42,7 +42,7 @@ namespace GUI {
             std::vector<Pikmin> _pikmins;
             std::pair<std::size_t, std::size_t> _size;
             std::vector<Tile> _map;
-            std::vector<std::string> _teams;
+            std::vector<Team> _teams;
             std::size_t &_mapX;
             std::size_t &_mapY;
             float _timeMult;

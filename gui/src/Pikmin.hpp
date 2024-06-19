@@ -14,6 +14,7 @@
 #include "Kaillou.hpp"
 #include "PikminData.hpp"
 #include "PikminModel.hpp"
+#include "Team.hpp"
 
 namespace GUI {
     class Pikmin {
@@ -31,7 +32,7 @@ namespace GUI {
                 EGG,
                 DYING
             };
-            Pikmin(const std::string &id, std::size_t x, std::size_t y);
+            Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY);
             Pikmin() = delete;
             Pikmin(const Pikmin &) = default;
             ~Pikmin();
@@ -40,7 +41,7 @@ namespace GUI {
 
             bool isOnTile(std::size_t x, std::size_t y);
 
-            void setTeam(std::string &team);
+            void setTeam(Team &team);
 
             void updatePosition(std::size_t x, std::size_t y, std::size_t orientation);
             void updateLevel(std::size_t level);
@@ -55,12 +56,13 @@ namespace GUI {
             void spawnAsEgg(void);
             void spawnAsPikmin(void);
 
-            void move(void);
+            void move(std::size_t x, std::size_t y);
             void turnLeft(void);
             void turnRight(void);
             void look(void);
             void fork(void);
             void ejecting(void);
+            void broadcast(void);
 
             inline bool operator==(const Pikmin &other) { return (_data == other._data); }
             inline bool operator==(const std::string &id) { return (_data == id); }

@@ -37,14 +37,14 @@ class Logger:
             if self.log_level[elem] is None:
                 self.log_level[elem] = True
 
-        print(self.colors["bold"] + "=============================================")
-        print(self.colors["underline"] + "Log level:" + self.colors["end"])
+        print(self.colors["bold"] + "=============================================", flush=True)
+        print(self.colors["underline"] + "Log level:" + self.colors["end"], flush=True)
         for key in self.log_level:
             if self.log_level[key]:
-                print(self.colors["bold"] + self.colors["info"] + f"{key} is enabled" + self.colors["end"])
+                print(self.colors["bold"] + self.colors["info"] + f"{key} is enabled" + self.colors["end"], flush=True)
             else:
-                print(self.colors["bold"] + self.colors["error"] + f"{key} is disabled" + self.colors["end"])
-        print(self.colors["bold"] + "=============================================" + self.colors["end"])
+                print(self.colors["bold"] + self.colors["error"] + f"{key} is disabled" + self.colors["end"], flush=True)
+        print(self.colors["bold"] + "=============================================" + self.colors["end"], flush=True)
 
     def server_log(self, msg: str, ai_id: int):
         """
@@ -56,7 +56,7 @@ class Logger:
         """
         if not self.log_level["server"] or msg == "":
             return
-        print(self.colors["server"] + f"SERVER for AI {ai_id}:" + self.colors["end"], msg, end="")
+        print(self.colors["server"] + f"SERVER for AI {ai_id}:" + self.colors["end"], msg, end="", flush=True)
 
     def ai_log(self, msg: str, ai_id: int):
         """
@@ -68,7 +68,7 @@ class Logger:
         """
         if not self.log_level["ai"] or msg == "":
             return
-        print(self.colors["ai"] + f"AI {ai_id}:" + self.colors["end"], msg, end="")
+        print(self.colors["ai"] + f"AI {ai_id}:" + self.colors["end"], msg, end="", flush=True)
 
     def info(self, msg: str, ai_id: int):
         """
@@ -80,7 +80,7 @@ class Logger:
         """
         if not self.log_level["info"] or msg == "":
             return
-        print(self.colors["info"] + f"INFO AI {ai_id}:" + self.colors["end"], msg)
+        print(self.colors["info"] + f"INFO AI {ai_id}:" + self.colors["end"], msg, flush=True)
 
     def error(self, msg: str, ai_id: int):
         """
@@ -92,7 +92,7 @@ class Logger:
         """
         if not self.log_level["error"] or msg == "":
             return
-        print(self.colors["error"] + f"ERROR AI {ai_id}:" + self.colors["end"], msg)
+        print(self.colors["error"] + f"ERROR AI {ai_id}:" + self.colors["end"], msg, flush=True)
 
     def warning(self, msg: str, ai_id: int):
         """
@@ -104,4 +104,4 @@ class Logger:
         """
         if not self.log_level["warning"] or msg == "":
             return
-        print(self.colors["warning"] + f"WARNING AI {ai_id}:" + self.colors["end"], msg)
+        print(self.colors["warning"] + f"WARNING AI {ai_id}:" + self.colors["end"], msg, flush=True)

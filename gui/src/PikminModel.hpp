@@ -14,11 +14,11 @@ namespace GUI {
     class PikminModel
     {
         public:
-            PikminModel(std::size_t x, std::size_t y);
+            PikminModel(std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY);
             ~PikminModel() = default;
 
             inline void setPikminModel(std::shared_ptr<GuiModel> model) { _model = model; }
-            inline void setBulbModel(std::shared_ptr<GuiModel> model) { _bulb = model; }
+            void setBulbModel(std::shared_ptr<GuiModel> model);
             void drawModel(float delta);
             void setAnimation(AnimType anim);
             inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
@@ -35,14 +35,15 @@ namespace GUI {
 
             bool getColision(raylib::Ray &) const;
 
-            inline std::size_t getX(void) { return _position.x; }
-            inline std::size_t getY(void) { return _position.z; }
+            inline int getX(void) { return _position.x; }
+            inline int getY(void) { return _position.z; }
 
             inline void setRotationSpeed(const float speed) { _rotationSpeed = speed; }
 
         private:
             std::shared_ptr<GuiModel> _model;
             std::shared_ptr<GuiModel> _bulb;
+            AnimType _animType;
             int _animCount;
             int _frameCount;
 
@@ -63,6 +64,9 @@ namespace GUI {
 
             float _rotationSpeed;
 
-            float _nbFrame;
+            int _nbFrame;
+
+            float _maxX;
+            float _maxY;
     };
 }

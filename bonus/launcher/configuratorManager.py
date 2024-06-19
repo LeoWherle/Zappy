@@ -18,6 +18,7 @@ class Config:
 
 
 class ConfiguratorManager:
+
     def __init__(self, config):
         self.config = config
 
@@ -26,6 +27,6 @@ class ConfiguratorManager:
                       + f" -x {self.config.width} -y {self.config.height} -n team -c {self.config.starting_egg} -f {self.config.f_scale}"
                       + f" {'' if not self.config.use_refGui else '--spam-gui' if not self.config.use_refServer else ''}")
         ai_cmd = f". ./zappy_ai -h 0.0.0.0 -p 4242 -n team -t -nocolor {'-ref' if self.config.use_refServer else ''}"
-        gui_cmd = f"{'.' if not self.config.use_refGui else './tests/ref'} ./zappy_gui -h 0.0.0.0 -p 4242 {'--ref-serv' if self.config.use_refServer else ''}"
+        gui_cmd = f"{'.' if not self.config.use_refGui else './tests/ref'} ./zappy_gui -h 0.0.0.0 -p 4242 {'--ref-serv' if self.config.use_refServer and not self.config.use_refGui else ''}"
 
         return [server_cmd, gui_cmd, ai_cmd]

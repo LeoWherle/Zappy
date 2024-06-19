@@ -11,7 +11,7 @@
 #include "Color.hpp"
 
 namespace GUI {
-    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y) : _data(id, x, y), _model(x, y)
+    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY) : _data(id, x, y), _model(x, y, maxX, maxY)
     {
         _newX = -1.0f;
         _newY = -1.0f;
@@ -25,16 +25,14 @@ namespace GUI {
     {
         if (x == _data.getX() && y == _data.getY() && orientation == _data.getDirection())
             return;
-        if (_newX < 0.0f && _newY < 0.0f) {
-            _model.setPositionVector(raylib::Vector3(x, 0.5, y));
-        } else {
-            _model.setPositionVector(raylib::Vector3(_newX, 0.5, _newY));
-            _model.setMotionVector(raylib::Vector3::Zero());
-        }
+        _model.setPositionVector(raylib::Vector3(x, 0.5, y));
+        _model.setMotionVector(raylib::Vector3::Zero());
+        _model.setRotationSpeed(0.0f);
+        _model.setRotation((630 - (90 * orientation)) % 361);
+        _model.setAnimation(AnimType::IDLE);
         _data.setX(x);
         _data.setY(y);
         _data.setDirection(orientation);
-        _model.setRotation(90 * orientation - 90);
     }
 
     bool Pikmin::draw(float delta)
@@ -50,9 +48,11 @@ namespace GUI {
         return (_data.getX() == x && _data.getY() == y);
     }
 
-    void Pikmin::setTeam(std::string &team)
+    void Pikmin::setTeam(Team &team)
     {
-        _data.setTeam(team);
+        _data.setTeam(team.getName());
+        _model.setPikminModel(team.getModel());
+        _model.setPikminColor(team.getColor());
     }
 
     static const std::vector<std::pair<raylib::Color, ModelType>> bulbMap({
@@ -85,17 +85,18 @@ namespace GUI {
 
     void Pikmin::eject(void)
     {
-        //_model.setAnimation(_animation.get("eject"));
+        _model.setAnimation(AnimType::FALL);
         _status = Pikmin::State::EJECT;
     }
 
     void Pikmin::startIncant(void)
     {
-        //_model.setAnimation(_animation.get("incant"));
+        _model.setAnimation(AnimType::INCANTATION);
     }
 
     void Pikmin::stopIncant(bool result)
     {
+        _model.setAnimation(AnimType::IDLE);
         if (result) {
             //_model.setAnimation(_animation.get("level up"));
         } else {
@@ -121,7 +122,7 @@ namespace GUI {
 
     void Pikmin::die(void)
     {
-        //_model.setAnimation(_animation.get("death"));
+        _model.setAnimation(AnimType::DEATH);
         _status = Pikmin::State::DYING;
     }
 
@@ -129,14 +130,13 @@ namespace GUI {
     {
         _status = Pikmin::State::EGG;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
-        //_model.setAnimation(AnimType::EGG);
+        _model.setAnimation(AnimType::PLANT);
     }
 
     void Pikmin::spawnAsPikmin(void)
     {
         _status = Pikmin::State::ALIVE;
-        _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
-        //_model.setAnimation(AnimType::IDLE);
+        _model.setAnimation(AnimType::IDLE);
     }
 
     bool Pikmin::getColision(raylib::Ray &mousePos)
@@ -144,31 +144,17 @@ namespace GUI {
         return _model.getColision(mousePos);
     }
 
-    void Pikmin::move(void)
+    void Pikmin::move(std::size_t x, std::size_t y)
     {
         float curX = (float)(_data.getX());
         float curY = (float)(_data.getY());
         _newX = 0.0f;
         _newY = 0.0f;
-        std::size_t dir = _data.getDirection();
 
         _model.setAnimation(AnimType::WALK);
-        if (dir % 2 == 0) {
-            _newX = curX - 0.45f + (float)(std::rand() % 900) / 1000.0f;
-            if (dir == 2) {
-                _newY = curY + 0.55f + (float)(std::rand() % 900) / 1000.0f;
-            } else {
-                _newY = curY - 1.45f + (float)(std::rand() % 900) / 1000.0f;
-            }
-        } else {
-            _newY = curY - 0.45f + (float)(std::rand() % 900) / 1000.0f;
-            if (dir == 3) {
-                _newX = curX + 0.55f + (float)(std::rand() % 900) / 1000.0f;
-            } else {
-                _newX = curX - 1.45f + (float)(std::rand() % 900) / 1000.0f;
-            }
-        }
-        _model.setMotionVector(raylib::Vector3(curX - _newX, 0.0f, curY - _newY) / 7.0f);
+        _newX = (float)(x);
+        _newY = (float)(y);
+        _model.setMotionVector(raylib::Vector3(_newX - curX, 0.0f, _newY - curY) / 7.0f);
     }
 
     void Pikmin::turnLeft(void)
@@ -195,7 +181,12 @@ namespace GUI {
 
     void Pikmin::ejecting(void)
     {
-        //_model.setAnimation(AnimType::EJECTED);
+        _model.setAnimation(AnimType::PUSH);
+    }
+
+    void Pikmin::broadcast(void)
+    {
+        _model.setAnimation(AnimType::BROADCAST);
     }
 
 }

@@ -95,6 +95,7 @@ namespace GUI {
         auto curTime = prevTime;
 
         _out.write_to_buffer("sgt\n");
+        _out.write_to_buffer("tna\n");
         while (_run && !WindowShouldClose()) {
             handleCommunication();
             handleKey();

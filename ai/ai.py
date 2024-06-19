@@ -31,7 +31,6 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
 
     Parameters:
     ai_instance (AI): The AI instance.
-    threads (list): The list of threads.
     args (argparse.Namespace): The command line arguments.
     logger (Logger): The logger.
     """
@@ -65,6 +64,7 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
                 ai_instance.turn_right()  # To delay broadcast
                 ai_instance.turn_right()
                 ai_instance.turn_right()
+                ai_instance.turn_right()
         else:
             if ai_instance.random and ai_instance.lvl == 1:
                 ai_instance.go_to_obj("linemate")
@@ -72,6 +72,37 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
 
             if ai_instance.random and ai_instance.lvl == 2:
                 ai_instance.go_to_needs()
+
+def test_eject(ai_instance: AI, args, logger: Logger):
+    """
+    This function defines the actions of the AI.
+
+    Parameters:
+    ai_instance (AI): The AI instance.
+    args (argparse.Namespace): The command line arguments.
+    logger (Logger): The logger.
+    """
+    if ai_instance.net.multi_process and ai_instance.net.nb_subprocess < 9 and ai_instance.get_unused_slots() > 0:
+        connect_new_process(ai_instance, args, logger)
+    food_nbr = ai_instance.get_food_nbr()
+    if not ai_instance.king and ai_instance.random and food_nbr < ai_instance.needed_food:
+        ai_instance.go_to_obj("food")
+        ai_instance.take_all_food()
+        if food_nbr > 5 and ai_instance.random and ai_instance.lvl == 1:
+            ai_instance.go_to_obj("linemate")
+            ai_instance.incantation()
+    else:
+        if ai_instance.net.multi_process:
+            ai_instance.king = True
+            ai_instance.broadcast("lvl6")
+            ai_instance.turn_right()
+            ai_instance.turn_right()
+            ai_instance.turn_right()  # To delay broadcast
+            ai_instance.turn_right()
+            ai_instance.turn_right()
+            ai_instance.turn_right()
+            if ai_instance.get_nb_player_on_tile() >= 2:
+                ai_instance.eject()
 
 
 def start_ai_logic(ai_instance: AI, args, logger: Logger):
@@ -92,6 +123,7 @@ def start_ai_logic(ai_instance: AI, args, logger: Logger):
             continue
 
         make_ai_actions(ai_instance, args, logger)
+        #test_eject(ai_instance, args, logger)
 
         ai_instance.net.send_buffer(ai_instance)
     if ai_instance.lvl >= 8:
