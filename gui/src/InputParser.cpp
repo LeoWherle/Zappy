@@ -10,7 +10,7 @@
 
 InputParser::InputParser(int ac, char **av)
 {
-    for (std::size_t i = 1; i < ac; i++) {
+    for (std::size_t i = 0; i < ac; i++) {
         _inputs.push_back(std::string(av[i]));
     }
 }
