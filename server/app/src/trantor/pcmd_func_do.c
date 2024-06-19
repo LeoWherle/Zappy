@@ -69,9 +69,10 @@ static bool player_eject_step(pcmd_args_t *args, unsigned int *i)
     if (vec_at(args->players, *i) == args->player)
         return false;
     tmp = vec_at(args->players, *i);
-    if (COORD_EQ(tmp->coord, args->player->coord))
+    if (!COORD_EQ(tmp->coord, args->player->coord))
         return false;
     warn_player_eject(tmp, (args->player->direction + 2) % 4, args->log);
+    talkf(args->log, "pex %d\n", tmp->n);
     if (!tmp->is_egg) {
         player_move(tmp, args->map, args->player->direction);
     } else if (vec_delete_at(args->players, *i) == BUF_OK)
@@ -85,10 +86,9 @@ void player_eject(pcmd_args_t *args)
 
     for (unsigned int i = 0; i < args->players->nmemb; i++)
         has_ejected = (has_ejected || player_eject_step(args, &i));
-    if (has_ejected) {
+    if (has_ejected)
         SAY_OK(&args->player->response_buffer);
-        talkf(args->log, "pex %d\n", args->player->n);
-    } else
+    else
         SAY_KO(&args->player->response_buffer);
 }
 
