@@ -29,7 +29,7 @@ namespace GUI {
         _cumulatedTime = 0.0f;
         _animationTime = 1.0f;
         _rotationSpeed = 0.0f;
-        _nbFrame = 1.0f;
+        _nbFrame = 1;
         _maxX = maxX;
         _maxY = maxY;
     }
@@ -43,6 +43,7 @@ namespace GUI {
     {
         _frameCount = 0;
         _animType = anim;
+        _model->SetAnimation(_animType);
         _nbFrame = _model->getNbFrame();
     }
 
@@ -74,9 +75,7 @@ namespace GUI {
             _cumulatedTime = 0.0f;
             _frameCount++;
         }
-        if (_frameCount >= _nbFrame) {
-            _frameCount = 0;
-        }
+        _frameCount = _frameCount % _nbFrame;
         return (_frameCount == 0);
     }
 
