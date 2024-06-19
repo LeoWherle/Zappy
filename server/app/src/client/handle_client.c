@@ -77,7 +77,10 @@ static void client_handle_event(
         client_read(client, server);
     }
     consumed = client_execute(client, server);
-    client_consume_read_buffer(client, consumed);
+    while (consumed > 0) {
+        client_consume_read_buffer(client, consumed);
+        consumed = client_execute(client, server);
+    }
     if (FD_ISSET(client->sd, &context->writefds)) {
         context->nready--;
         client_write(client);
