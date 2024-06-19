@@ -74,6 +74,9 @@ namespace GUI {
             _cumulatedTime = 0.0f;
             _frameCount++;
         }
+        if (_frameCount >= _nbFrame) {
+            _frameCount = 0;
+        }
         return (_frameCount == 0);
     }
 
