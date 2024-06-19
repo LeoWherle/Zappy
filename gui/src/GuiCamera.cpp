@@ -22,16 +22,12 @@ namespace GUI {
 
     void GuiCamera::setUpCam(void)
     {
-        _screen = LoadRenderTexture(1920, 1080);
         _inventorySize = raylib::Vector2(200.0f, 800.0f);
         _inventoryPosition = raylib::Vector2(GetScreenWidth() - _inventorySize.x - 10.0f, 10);
-        std::cout << _inventorySize.x << " " << _inventorySize.y << std::endl;
-        std::cout << _inventoryPosition.x << " " << _inventoryPosition.y << std::endl;
     }
 
     GuiCamera::~GuiCamera()
     {
-        UnloadRenderTexture(_screen);
     }
 
     void GuiCamera::drawInventory(Pikmin &pikmin)

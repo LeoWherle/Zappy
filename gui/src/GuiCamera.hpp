@@ -26,14 +26,11 @@ namespace GUI {
             ~GuiCamera();
 
             void setUpCam(void);
-            inline raylib::RenderTexture &getTexture(void) { return _screen; }
             void drawInventory(Pikmin &pikmin);
             void drawHistory(Pikmin &pikmin);
             void handleGui(Buffer::WriteBuffer &out);
 
         private:
-            raylib::Camera2D _cam;
-            raylib::RenderTexture _screen;
             std::string _buttonAction;
             float _sliderVal;
             float _prevVal;

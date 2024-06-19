@@ -26,7 +26,6 @@ namespace GUI {
 
     WorldCamera::~WorldCamera()
     {
-       UnloadRenderTexture(_screen);
     }
 
     void WorldCamera::setCamPos(float x, float y, float z, float radius)
@@ -75,7 +74,6 @@ namespace GUI {
 
     void WorldCamera::setUpCam(float x, float y)
     {
-        _screen = LoadRenderTexture(1920, 1080);
         /*
             The map center is (approximated):
             x / 2
