@@ -143,7 +143,7 @@ namespace GUI {
         for (auto &player : _pikmins) {
             if (player == id) {
                 for (auto &team : _teams) {
-                    if (team.getName() == teamName) {
+                    if (team == teamName) {
                         player.setTeam(team);
                         player.spawnAsPikmin();
                         player.updatePosition(x, y, orientation);
@@ -156,7 +156,7 @@ namespace GUI {
 
         Pikmin newPikmin(id, x, y, _x, _y);
         for (auto &team : _teams) {
-            if (team.getName() == teamName) {
+            if (team == teamName) {
                 newPikmin.setTeam(team);
                 newPikmin.spawnAsPikmin();
                 newPikmin.updatePosition(x, y, orientation);
