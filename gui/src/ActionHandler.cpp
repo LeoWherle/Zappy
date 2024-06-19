@@ -34,6 +34,7 @@ namespace GUI {
             {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
             {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
             {std::regex("^sgt (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
+            {std::regex("^sst (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
             {std::regex("^pm (\\d+) (\\d+) (\\d+)$"), &ActionHandler::pikminMoving},
             {std::regex("^ptr (\\d+)$"), &ActionHandler::pikminTurningRight},
             {std::regex("^ptl (\\d+)$"), &ActionHandler::pikminTurningLeft},
