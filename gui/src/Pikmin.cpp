@@ -154,7 +154,7 @@ namespace GUI {
         _model.setAnimation(AnimType::WALK);
         _newX = (float)(x);
         _newY = (float)(y);
-        _model.setMotionVector(raylib::Vector3(_newX - curX, 0.0f, _newY - curY) / 7.0f);
+        _model.setMotionVector(raylib::Vector3(_newX - curX, 0.0f, _newY - curY));
     }
 
     void Pikmin::turnLeft(void)
