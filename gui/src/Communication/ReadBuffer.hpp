@@ -21,7 +21,7 @@ namespace Buffer {
         uint32_t _pos;
         uint32_t _filled;
 
-        constexpr static uint32_t _DEFAULT_SIZE = 4096;
+        constexpr static uint32_t _DEFAULT_SIZE = 16384;
 
     public:
         // clang-format off

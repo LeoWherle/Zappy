@@ -12,10 +12,10 @@ namespace GUI {
     {
         /* raylib handle QWERTY configuration */
         _keyMap = {
-            {KEY_W, &KeyHandler::moveCamUp},
-            {KEY_S, &KeyHandler::moveCamDown},
-            {KEY_A, &KeyHandler::moveCamLeft},
-            {KEY_D, &KeyHandler::moveCamRight},
+            {KEY_UP, &KeyHandler::moveCamUp},
+            {KEY_DOWN, &KeyHandler::moveCamDown},
+            {KEY_LEFT, &KeyHandler::moveCamLeft},
+            {KEY_RIGHT, &KeyHandler::moveCamRight},
             {KEY_I, &KeyHandler::moveCamForward},
             {KEY_J, &KeyHandler::moveCamBackward},
             {MOUSE_BUTTON_LEFT, &KeyHandler::setFocus},

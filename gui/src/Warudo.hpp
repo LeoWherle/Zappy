@@ -62,5 +62,7 @@ namespace GUI {
             float _delta;
 
             bool ref;
+
+            float _frameClock;
     };
 }

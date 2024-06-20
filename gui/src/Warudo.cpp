@@ -24,6 +24,7 @@ namespace GUI {
         _run = true;
         SetTargetFPS(60);
         ref = in.getRef();
+        _frameClock = 0;
     }
 
     Warudo::~Warudo()
@@ -102,7 +103,7 @@ namespace GUI {
             _worldCam.update();
             prevTime = curTime;
             curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-            _delta = (float)(curTime - prevTime) / 1000.0f * _timeMult;
+            _delta = (float)(curTime - prevTime) / 1000.0f;
             updateGraphic();
         }
     }
@@ -132,7 +133,9 @@ namespace GUI {
         }
         _in.consume(consume);
 
-        if (!ref) {
+        _frameClock += _delta;
+        if (!ref && _frameClock > (1.0f / _timeMult)) {
+            _frameClock = 0;
             _out.write_to_buffer("mct\n");
             for (auto &player: _pikmins) {
                 Pikmin::State status = player.getStatus();
@@ -199,7 +202,7 @@ namespace GUI {
         bool animState = false;
         std::vector<std::size_t> toDel;
         for (std::size_t i = 0; i < _pikmins.size(); i++) {
-            animState = _pikmins[i].draw(_delta);
+            animState = _pikmins[i].draw(_delta * _timeMult);
             if (_pikmins[i].getStatus() == Pikmin::State::DYING && animState) {
                 toDel.push_back(i - toDel.size());
             }
