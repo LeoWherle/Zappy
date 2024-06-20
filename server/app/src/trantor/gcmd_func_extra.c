@@ -11,6 +11,8 @@
 void gui_psd(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)
 {
     trantor_pause(trantor);
+    if (trantor->paused)
+        trantor_time_pass(trantor, 0.0f, true);
 }
 
 void gui_rst(trantor_t *trantor, __attribute__((unused)) gcmd_args_t *args)

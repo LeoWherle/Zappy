@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 const arg_parser_t ARGS_PARSERS[PARSER_FUNC_COUNT] = {
     {"-p", parse_port_arg, false},
@@ -34,7 +35,7 @@ static void set_args_to_default(trantor_params_t *params)
     params->players = DEFAULT_PLAYERS;
     params->f = DEFAULT_F;
     params->spam_gui = false;
-    params->seed = 0;
+    params->seed = (unsigned int) time(NULL);
     params->paused_start = false;
     if (vec_init(&params->team_names, sizeof(char *), NULL, NULL) != BUF_OK)
         LOG_ERROR("Failed to init team_names vector");
