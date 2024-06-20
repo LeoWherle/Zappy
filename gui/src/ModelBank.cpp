@@ -87,8 +87,6 @@ namespace GUI {
         if (_animations == nullptr || _animType == AnimType::NONE)
             return;
         _model.UpdateAnimation((*_animations)[_animType], frameCount);
-        if (frameCount >= (*_animations)[_animType].frameCount - 2)
-            frameCount = 0;
     }
 
     void GuiModel::Draw(raylib::Vector3 pos, raylib::Vector3 axis, float rotation, float scale, raylib::Color color)

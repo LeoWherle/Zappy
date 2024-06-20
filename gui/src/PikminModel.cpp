@@ -75,8 +75,11 @@ namespace GUI {
             _cumulatedTime = 0.0f;
             _frameCount++;
         }
-        _frameCount = _frameCount % _nbFrame;
-        return (_frameCount == 0);
+        if (_frameCount >= _nbFrame) {
+            _frameCount = 0;
+            return true;
+        }
+        return false;
     }
 
     void PikminModel::drawModel(float delta)
