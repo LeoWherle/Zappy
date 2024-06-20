@@ -21,8 +21,8 @@ namespace GUI {
         _rotationAxis = raylib::Vector3(0.0f, 0.0f, 1.0f);
         _rotation = 0;
         _scale = 0.05;
-        _size = (raylib::Vector3(1, 1, 1) * _scale);
-        _boxOffset = raylib::Vector3(-0.5, -0.5, -0.5) * _scale;
+        _size = (raylib::Vector3(0.8, 1.2, 1) * _scale * 10);
+        _boxOffset = raylib::Vector3(-0.5, 0.0f, -0.5) * _scale * 10;
         _entityBox = raylib::BoundingBox(_position + _boxOffset, _position + _size + _boxOffset);
         _pikminColor = raylib::Color::White();
         _bulbColor = raylib::Color::White();
