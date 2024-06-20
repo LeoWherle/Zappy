@@ -159,13 +159,13 @@ namespace GUI {
 
     void Pikmin::turnLeft(void)
     {
-        _model.setRotationSpeed(90.0f / 7.0f);
+        _model.setRotationSpeed(90.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
     void Pikmin::turnRight(void)
     {
-        _model.setRotationSpeed(-90.0f / 7.0f);
+        _model.setRotationSpeed(-90.0f);
         _model.setAnimation(AnimType::WALK);
     }
 

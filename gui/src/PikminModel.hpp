@@ -35,10 +35,10 @@ namespace GUI {
 
             bool getColision(raylib::Ray &) const;
 
-            inline float getX(void) { return _position.x + _curMove.x; }
-            inline float getY(void) { return _position.z + _curMove.z; }
+            inline float getX(void) { return _position.x; }
+            inline float getY(void) { return _position.z; }
 
-            inline void setRotationSpeed(const float speed) { _rotationSpeed = speed; }
+            void setRotationSpeed(const float speed);
 
         private:
             std::shared_ptr<GuiModel> _model;
@@ -49,8 +49,6 @@ namespace GUI {
 
             raylib::Vector3 _position;
             raylib::Vector3 _motionVector;
-            raylib::Vector3 _wholeMovement;
-            raylib::Vector3 _curMove;
             raylib::Vector3 _rotationAxis;
             float _rotation;
             float _scale;

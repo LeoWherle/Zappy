@@ -18,8 +18,6 @@ namespace GUI {
         _frameCount = 0;
         _position = raylib::Vector3(x, 0.5f, y);
         _motionVector = raylib::Vector3::Zero();
-        _wholeMovement = raylib::Vector3::Zero();
-        _curMove = raylib::Vector3::Zero();
         _rotationAxis = raylib::Vector3(0.0f, 0.0f, 1.0f);
         _rotation = 0;
         _scale = 0.05;
@@ -54,9 +52,6 @@ namespace GUI {
         _position = newPos;
         _entityBox.SetMin(_position + _boxOffset);
         _entityBox.SetMax(_position + _size + _boxOffset);
-        _wholeMovement = raylib::Vector3::Zero();
-        _curMove = raylib::Vector3::Zero();
-        _motionVector = raylib::Vector3::Zero();
     }
 
     bool PikminModel::animationUpdate(float delta)
@@ -79,23 +74,19 @@ namespace GUI {
     void PikminModel::drawModel(float delta)
     {
         _rotation += _rotationSpeed * delta;
-        _curMove += _motionVector * delta;
-        _entityBox.SetMin(_position + _curMove + _boxOffset);
-        _entityBox.SetMax(_position + _curMove + _size + _boxOffset);
+        _position += _motionVector * delta;
+        _entityBox.SetMin(_position + _boxOffset);
+        _entityBox.SetMax(_position + _size + _boxOffset);
         _entityBox.Draw();
         if (_model && _bulb) {
             _model->SetAnimation(_animType);
             _bulb->SetAnimation(_animType);
             _model->UpdateAnim(_frameCount);
             _bulb->UpdateAnim(_frameCount);
-            _model->Draw(_position + _curMove, _rotationAxis, _rotation, _scale, _pikminColor);
-            _bulb->Draw(_position + _curMove, _rotationAxis, _rotation, _scale, _bulbColor);
+            _model->Draw(_position, _rotationAxis, _rotation, _scale, _pikminColor);
+            _bulb->Draw(_position, _rotationAxis, _rotation, _scale, _bulbColor);
         } else {
             DrawCubeV(_position, raylib::Vector3(_scale, _scale, _scale), _pikminColor);
-        }
-        if (_curMove.Length() >= _wholeMovement.Length()) {
-            _curMove = _wholeMovement;
-            _motionVector = raylib::Vector3::Zero();
         }
     }
 
@@ -108,7 +99,13 @@ namespace GUI {
     void PikminModel::setMotionVector(const raylib::Vector3 newVect)
     {
         _motionVector = newVect / 7.0f;
-        _wholeMovement = newVect;
-        _curMove = raylib::Vector3::Zero();
+        //_wholeMovement = newVect;
+        //_curMove = raylib::Vector3::Zero();
+    }
+
+    void PikminModel::setRotationSpeed(const float speed)
+    {
+        _rotationSpeed = speed / 7.0f;
+        //_rotationGoal = speed;
     }
 }
