@@ -161,7 +161,7 @@ namespace GUI {
 
     void Warudo::updateGraphic(void)
     {
-        BeginTextureMode(_worldCam.getTexture());
+        BeginDrawing();
             ClearWindowState(0);
             ClearBackground(BLACK);
             BeginMode3D(_worldCam.getCam());
@@ -191,13 +191,8 @@ namespace GUI {
                 updatePikmin();
 
             EndMode3D();
-        EndTextureMode();
 
-        updateUI();
-
-        BeginDrawing();
-            DrawTextureRec(_worldCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920.0f, -1080.0f), raylib::Vector2(0.0f, 0.0f), WHITE);
-            DrawTextureRec(_guiCam.getTexture().texture, raylib::Rectangle(0.0f, 0.0f, 1920, -1080), raylib::Vector2(0.0f, 0.0f), WHITE);
+            updateUI();
 
         EndDrawing();
     }
@@ -226,15 +221,11 @@ namespace GUI {
 
     void Warudo::updateUI(void)
     {
-        BeginTextureMode(_guiCam.getTexture());
-            ClearBackground({0, 0, 0, 0});
-                for (auto pikmin : _pikmins) {
-                    if (pikmin == _worldCam.getFocus()) {
-                        _guiCam.drawInventory(pikmin);
-                        _guiCam.drawHistory(pikmin);
-                    }
-                }
-            _guiCam.handleGui(_out);
-        EndTextureMode();
+        for (auto pikmin : _pikmins) {
+            if (pikmin == _worldCam.getFocus()) {
+                _guiCam.drawInventory(pikmin);
+            }
+        }
+        _guiCam.handleGui(_out);
     }
 };

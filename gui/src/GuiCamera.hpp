@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <raylib-cpp.hpp>
+#include "FloatingWindow.hpp"
 #include "Pikmin.hpp"
 #include "Communication/WriteBuffer.hpp"
 
@@ -18,18 +18,19 @@ namespace GUI {
             ~GuiCamera();
 
             void setUpCam(void);
-            inline raylib::RenderTexture &getTexture(void) { return _screen; }
             void drawInventory(Pikmin &pikmin);
-            void drawHistory(Pikmin &pikmin);
             void handleGui(Buffer::WriteBuffer &out);
 
+            inline FloatingWindow getInventory(void) { return _inventory; };
+            inline FloatingWindow getOptions(void) { return _options; };
+
         private:
-            raylib::Camera2D _cam;
-            raylib::RenderTexture _screen;
             std::string _buttonAction;
             float _sliderVal;
             float _prevVal;
             bool _pause;
             bool _next;
+            FloatingWindow _inventory;
+            FloatingWindow _options;
     };
 }

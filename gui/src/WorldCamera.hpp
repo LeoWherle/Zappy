@@ -26,12 +26,10 @@ namespace GUI {
             std::string getFocus(void) const;
             void unfocus(void);
             void reset();
-            inline raylib::RenderTexture &getTexture(void) { return _screen; }
         private:
             void setCamPos(float x, float y, float z, float radius);
 
             raylib::Camera3D _cam;
-            raylib::RenderTexture _screen;
             raylib::Vector3 _position;
             float _radius;
             float _minRadius;
