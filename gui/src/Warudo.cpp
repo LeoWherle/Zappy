@@ -221,7 +221,6 @@ namespace GUI {
         for (auto pikmin : _pikmins) {
             if (pikmin == _worldCam.getFocus()) {
                 _guiCam.drawInventory(pikmin);
-                _guiCam.drawHistory(pikmin);
             }
         }
         _guiCam.handleGui(_out);
