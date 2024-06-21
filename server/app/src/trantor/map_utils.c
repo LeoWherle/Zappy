@@ -64,15 +64,17 @@ static unsigned int get_world_receiving_square(
     if (emiter[0] == receiver[0] && emiter[1] == receiver[1])
         return 0;
     get_true_closest_coord(map, receiver, emiter, &u_emiter);
+    if (u_emiter[0] == (int) receiver[0])
+        return u_emiter[1] > (int) receiver[1] ? 1 : 5;
     slope = (float) (u_emiter[1] - (int) receiver[1]) /
         (float) (u_emiter[0] - (int) receiver[0]);
     if (slope < -3 || slope > 3)
-        return emiter[1] > receiver[1] ? 1 : 5;
+        return u_emiter[1] > (int) receiver[1] ? 1 : 5;
     if (slope < -0.33)
-        return emiter[0] > receiver[0] ? 6 : 2;
+        return u_emiter[0] > (int) receiver[0] ? 6 : 2;
     if (slope < 0.33)
-        return emiter[0] > receiver[0] ? 7 : 3;
-    return emiter[1] > receiver[1] ? 8 : 4;
+        return u_emiter[0] > (int) receiver[0] ? 7 : 3;
+    return u_emiter[1] > (int) receiver[1] ? 8 : 4;
 }
 
 unsigned int get_receiving_square(

@@ -13,8 +13,6 @@
 namespace GUI {
     Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY) : _data(id, x, y), _model(x, y, maxX, maxY)
     {
-        _newX = -1.0f;
-        _newY = -1.0f;
     }
 
     Pikmin::~Pikmin()
@@ -23,16 +21,36 @@ namespace GUI {
 
     void Pikmin::updatePosition(std::size_t x, std::size_t y, std::size_t orientation)
     {
-        if (x == _data.getX() && y == _data.getY() && orientation == _data.getDirection())
-            return;
-        _model.setPositionVector(raylib::Vector3(x, 0.5, y));
-        _model.setMotionVector(raylib::Vector3::Zero());
-        _model.setRotationSpeed(0.0f);
-        _model.setRotation((630 - (90 * orientation)) % 361);
-        _model.setAnimation(AnimType::IDLE);
-        _data.setX(x);
-        _data.setY(y);
-        _data.setDirection(orientation);
+        bool isMoving = (x != _data.getX() || y != _data.getY());
+        bool isTurning = (orientation != _data.getDirection());
+        if (isMoving) {
+            if (!_movStack.empty()) {
+                _movStack.erase(_movStack.begin());
+            }
+            _model.setPositionVector(raylib::Vector3(x, 0.5, y));
+            if (_movStack.empty()) {
+                _model.setMotionVector(raylib::Vector3::Zero());
+            } else {
+                _model.setMotionVector(_movStack[0]);
+            }
+            _data.setX(x);
+            _data.setY(y);
+        }
+        if (isTurning) {
+            if (!_rotStack.empty()) {
+                _rotStack.erase(_rotStack.begin());
+            }
+            _model.setRotation((630 - (90 * orientation)) % 361);
+            if (_rotStack.empty()) {
+                _model.setRotationSpeed(0.0f);
+            } else {
+                _model.setRotationSpeed(_rotStack[0]);
+            }
+            _data.setDirection(orientation);
+        }
+        //if ((isMoving || isTurning) && _rotStack.empty() && _movStack.empty()) {
+        //    _model.setAnimation(AnimType::IDLE);
+        //}
     }
 
     bool Pikmin::draw(float delta)
@@ -148,24 +166,37 @@ namespace GUI {
     {
         float curX = (float)(_data.getX());
         float curY = (float)(_data.getY());
-        _newX = 0.0f;
-        _newY = 0.0f;
+        float newX = (float)(x);
+        float newY = (float)(y);
 
+        if (!_movStack.empty()) {
+            curX += _movStack[0].x;
+            curY += _movStack[0].z;
+        }
+
+        raylib::Vector3 motionVect(newX - curX, 0.0f, newY - curY);
+        if (_movStack.empty()) {
+            _model.setMotionVector(motionVect);
+        }
+        _movStack.push_back(motionVect);
         _model.setAnimation(AnimType::WALK);
-        _newX = (float)(x);
-        _newY = (float)(y);
-        _model.setMotionVector(raylib::Vector3(_newX - curX, 0.0f, _newY - curY) / 7.0f);
     }
 
     void Pikmin::turnLeft(void)
     {
-        _model.setRotationSpeed(90.0f / 7.0f);
+        if (_rotStack.empty()) {
+            _model.setRotationSpeed(90.0f);
+        }
+        _rotStack.push_back(90.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
     void Pikmin::turnRight(void)
     {
-        _model.setRotationSpeed(-90.0f / 7.0f);
+        if (_rotStack.empty()) {
+            _model.setRotationSpeed(-90.0f);
+        }
+        _rotStack.push_back(-90.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
