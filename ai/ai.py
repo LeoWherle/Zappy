@@ -46,10 +46,10 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
             ai_instance.incantation()
     else:
         if not ai_instance.king and not ai_instance.choosen_ones:
-            if ai_instance.get_unused_slots() == 0 and ai_instance.net.nb_subprocess < 9:
+            if ai_instance.get_unused_slots() == 0:
                 ai_instance.fork()
 
-        if not args.slave and not ai_instance.king and ai_instance.random and ai_instance.is_enought_for_lvl():
+        if not args.slave and not ai_instance.king and ai_instance.net.nb_subprocess >= 9 and ai_instance.random and ai_instance.is_enought_for_lvl():
             ai_instance.king = True
 
         if ai_instance.king:
@@ -58,13 +58,19 @@ def make_ai_actions(ai_instance: AI, args, logger: Logger):
                 ai_instance.drop_all()
                 ai_instance.incantation()
             else:
-                ai_instance.broadcast("lvl6")
-                ai_instance.turn_right()
-                ai_instance.turn_right()
-                ai_instance.turn_right()  # To delay broadcast
-                ai_instance.turn_right()
-                ai_instance.turn_right()
-                ai_instance.turn_right()
+                if food_nbr > ai_instance.needed_food * 2:
+                    ai_instance.start_broadcast = True
+                if ai_instance.start_broadcast:
+                    ai_instance.broadcast("lvl6")
+                    ai_instance.turn_right()
+                    ai_instance.turn_right()
+                    ai_instance.turn_right()  # To delay broadcast
+                    ai_instance.turn_right()
+                    ai_instance.turn_right()
+                    ai_instance.turn_right()
+                else:
+                    ai_instance.go_to_obj("food")
+                    ai_instance.take_all_food()
         else:
             if ai_instance.random and ai_instance.lvl == 1:
                 ai_instance.go_to_obj("linemate")
