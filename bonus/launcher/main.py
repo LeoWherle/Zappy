@@ -74,15 +74,15 @@ class App:
     def setup_config_widgets(self, frame):
         ttk.Checkbutton(frame, text="Use Ref Server", variable=self.use_refServer_var).grid(row=1, column=0, sticky="w")
         ttk.Checkbutton(frame, text="Use Ref GUI", variable=self.use_refGui_var).grid(row=2, column=0, sticky="w")
-        self.create_slider(frame, "Width", self.width_var, 3, 1, 100)
-        self.create_slider(frame, "Height", self.height_var, 6, 1, 100)
+        self.create_slider(frame, "Width", self.width_var, 3, 10, 100)
+        self.create_slider(frame, "Height", self.height_var, 6, 10, 100)
         self.create_slider(frame, "Starting Egg", self.starting_egg_var, 9, 1, 10)
-        self.create_slider(frame, "F Scale", self.f_scale_var, 12, 2, 300)
+        self.create_slider(frame, "F Scale", self.f_scale_var, 12, 2, 100)
 
-        self.start_button = ttk.Button(frame, text="Start All", command=self.start_all_processes)
-        self.start_button.grid(row=15, column=0, sticky="ew", pady=(10, 0))
-        self.stop_button = ttk.Button(frame, text="Stop All", command=self.stop_all_processes, state=tk.DISABLED)
-        self.stop_button.grid(row=16, column=0, sticky="ew")
+        # self.start_button = ttk.Button(frame, text="Start All", command=self.start_all_processes)
+        # self.start_button.grid(row=15, column=0, sticky="ew", pady=(10, 0))
+        # self.stop_button = ttk.Button(frame, text="Stop All", command=self.stop_all_processes, state=tk.DISABLED)
+        # self.stop_button.grid(row=16, column=0, sticky="ew")
         ttk.Button(frame, text="Clear Output", command=self.clear_output).grid(row=17, column=0, sticky="ew")
         ttk.Button(frame, text="Save Output", command=self.save_output).grid(row=18, column=0, sticky="ew")
 

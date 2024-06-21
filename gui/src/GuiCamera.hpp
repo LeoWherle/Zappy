@@ -10,6 +10,7 @@
 #include "FloatingWindow.hpp"
 #include "Pikmin.hpp"
 #include "Communication/WriteBuffer.hpp"
+#include "TextureBank.hpp"
 
 namespace GUI {
     class GuiCamera {
@@ -20,6 +21,8 @@ namespace GUI {
             void setUpCam(void);
             void drawInventory(Pikmin &pikmin);
             void handleGui(Buffer::WriteBuffer &out);
+
+            inline void setTime(float val) { _sliderVal = val; _prevVal = val; };
 
             inline FloatingWindow getInventory(void) { return _inventory; };
             inline FloatingWindow getOptions(void) { return _options; };

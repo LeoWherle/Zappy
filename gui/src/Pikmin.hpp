@@ -79,7 +79,8 @@ namespace GUI {
             PikminData _data;
             PikminModel _model;
             State _status;
-            float _newX;
-            float _newY;
+
+            std::vector<raylib::Vector3> _movStack;
+            std::vector<float> _rotStack;
     };
 }

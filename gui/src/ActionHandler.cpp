@@ -9,8 +9,10 @@
 #include <iostream>
 
 namespace GUI {
-    ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size, float &timeMult):
-        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult)
+    ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map,
+        std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size,
+        float &timeMult, GuiCamera &cam):
+        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult), _guiCam(cam)
     {
         _x = 0;
         _y = 0;
@@ -339,6 +341,9 @@ namespace GUI {
     {
         float newMult = std::stof(arg[1].str());
 
+        if (arg[0].str().find("sgt") != std::string::npos) {
+            _guiCam.setTime(newMult);
+        }
         _timeMult = newMult;
     }
 
