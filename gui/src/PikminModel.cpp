@@ -32,6 +32,7 @@ namespace GUI {
         _nbFrame = 1;
         _maxX = maxX;
         _maxY = maxY;
+        _displayHitBox = false;
     }
 
     void PikminModel::setBulbModel(std::shared_ptr<GuiModel> model)
@@ -79,7 +80,8 @@ namespace GUI {
         _position += _motionVector * delta;
         _entityBox.SetMin(_position + _boxOffset);
         _entityBox.SetMax(_position + _size + _boxOffset);
-        _entityBox.Draw();
+        if (_displayHitBox)
+            _entityBox.Draw();
         if (_model && _bulb) {
             _model->SetAnimation(_animType);
             _bulb->SetAnimation(_animType);

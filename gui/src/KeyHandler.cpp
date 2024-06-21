@@ -6,6 +6,7 @@
 */
 
 #include "KeyHandler.hpp"
+#include "raylib.h"
 
 namespace GUI {
     KeyHandler::KeyHandler(WorldCamera &cam, std::vector<Pikmin> &pikmins) : _cam(cam), _pikmins(pikmins)
@@ -19,7 +20,8 @@ namespace GUI {
             {KEY_I, &KeyHandler::moveCamForward},
             {KEY_J, &KeyHandler::moveCamBackward},
             {MOUSE_BUTTON_LEFT, &KeyHandler::setFocus},
-            {MOUSE_BUTTON_RIGHT, &KeyHandler::unfocus}
+            {MOUSE_BUTTON_RIGHT, &KeyHandler::unfocus},
+            {KEY_H, &KeyHandler::changeHitboxDisplay}
         };
     }
 
@@ -84,5 +86,14 @@ namespace GUI {
     void KeyHandler::unfocus(void)
     {
         _cam.unfocus();
+    }
+
+    void KeyHandler::changeHitboxDisplay(void)
+    {
+        if (IsKeyPressed(KEY_H)) {
+            for (auto &pikmin : _pikmins) {
+                pikmin.getModel().changeHitboxDisplay();
+            }
+        }
     }
 }
