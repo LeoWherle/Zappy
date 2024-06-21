@@ -6,7 +6,6 @@
 */
 #include "ModelBank.hpp"
 #include "Functions.hpp"
-#include "Kaillou.hpp"
 #include <memory>
 #include <raylib-cpp.hpp>
 #include <map>
@@ -41,14 +40,6 @@ namespace GUI {
 
     GuiModel::GuiModel()
     {
-        _type = DEFAULT;
-        _color = raylib::Color::White();
-        raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
-        _texture.Load(image);
-        _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
-        _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
-        _animations = nullptr;
-        _animType = AnimType::NONE;
         DefaultSetup();
     }
 
@@ -65,7 +56,6 @@ namespace GUI {
             _texture.Load(texturePath);
             _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
         }
-        _color = raylib::Color::White();
         if (raylib::FileExists(animPath)) {
             if (ModelBank::loadedAnims.find(animPath) == ModelBank::loadedAnims.end())
                 ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
@@ -87,12 +77,12 @@ namespace GUI {
     void GuiModel::DefaultSetup()
     {
         _type = DEFAULT;
-        _color = raylib::Color::White();
         raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
         _texture.Load(image);
         _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
         _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
         _animations = nullptr;
+        _animType = AnimType::NONE;
     }
 
     void GuiModel::SetAnimation(AnimType anim)

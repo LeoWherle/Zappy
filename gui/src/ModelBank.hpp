@@ -66,13 +66,11 @@ namespace GUI {
             inline int getNbFrame(void) const { return (*_animations)[_animType].frameCount; }
         protected:
         private:
-            float _scale = 1.0f;
             AnimType _animType;
             ModelType _type;
             raylib::Model _model;
             raylib::Texture _texture;
             raylib::Material _material;
-            raylib::Color _color;
             float _defaultRotation;
             std::shared_ptr<std::vector<raylib::ModelAnimation>> _animations;
     };
