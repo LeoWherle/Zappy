@@ -17,7 +17,7 @@ namespace GUI {
         _animCount = 0;
         _frameCount = 0;
         _position = raylib::Vector3(x, 0.5f, y);
-        _motionVector = raylib::Vector3(0.0f, 0.0f, 0.0f);
+        _motionVector = raylib::Vector3::Zero();
         _rotationAxis = raylib::Vector3(0.0f, 0.0f, 1.0f);
         _rotation = 0;
         _scale = 0.05;
@@ -41,26 +41,17 @@ namespace GUI {
 
     void PikminModel::setAnimation(AnimType anim)
     {
-        _frameCount = 0;
-        _animType = anim;
-        _model->SetAnimation(_animType);
-        _nbFrame = _model->getNbFrame();
-    }
-
-    float loopVal(float val, float min, float max)
-    {
-        if (val > max)
-            return min;
-        if (val < min)
-            return max;
-        return val;
+        if (anim != _animType) {
+            _frameCount = 0;
+            _animType = anim;
+            _model->SetAnimation(_animType);
+            _nbFrame = _model->getNbFrame();
+        }
     }
 
     void PikminModel::setPositionVector(raylib::Vector3 newPos)
     {
         _position = newPos;
-        _position.x = loopVal(_position.x, 0.0f, _maxX);
-        _position.y = loopVal(_position.y, 0.0f, _maxY);
         _entityBox.SetMin(_position + _boxOffset);
         _entityBox.SetMax(_position + _size + _boxOffset);
     }
@@ -75,16 +66,17 @@ namespace GUI {
             _cumulatedTime = 0.0f;
             _frameCount++;
         }
-        _frameCount = _frameCount % _nbFrame;
-        return (_frameCount == 0);
+        if (_frameCount >= _nbFrame) {
+            _frameCount = 0;
+            return true;
+        }
+        return false;
     }
 
     void PikminModel::drawModel(float delta)
     {
         _rotation += _rotationSpeed * delta;
         _position += _motionVector * delta;
-        _position.x = loopVal(_position.x, 0.0f, _maxX);
-        _position.y = loopVal(_position.y, 0.0f, _maxY);
         _entityBox.SetMin(_position + _boxOffset);
         _entityBox.SetMax(_position + _size + _boxOffset);
         _entityBox.Draw();
@@ -104,5 +96,15 @@ namespace GUI {
     {
         raylib::RayCollision colision = GetRayCollisionBox(mousePos, _entityBox);
         return colision.hit;
+    }
+
+    void PikminModel::setMotionVector(const raylib::Vector3 newVect)
+    {
+        _motionVector = newVect / 7.0f;
+    }
+
+    void PikminModel::setRotationSpeed(const float speed)
+    {
+        _rotationSpeed = speed / 7.0f;
     }
 }

@@ -25,7 +25,7 @@ namespace GUI {
 
             bool animationUpdate(float delta);
 
-            inline void setMotionVector(const raylib::Vector3 newVect) { _motionVector = newVect; }
+            void setMotionVector(const raylib::Vector3 newVect);
             void setPositionVector(raylib::Vector3 newPos);
 
             inline void setRotation(const float rotation) { _rotation = rotation; }
@@ -35,10 +35,10 @@ namespace GUI {
 
             bool getColision(raylib::Ray &) const;
 
-            inline int getX(void) { return _position.x; }
-            inline int getY(void) { return _position.z; }
+            inline float getX(void) { return _position.x; }
+            inline float getY(void) { return _position.z; }
 
-            inline void setRotationSpeed(const float speed) { _rotationSpeed = speed; }
+            void setRotationSpeed(const float speed);
 
         private:
             std::shared_ptr<GuiModel> _model;
