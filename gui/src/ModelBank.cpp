@@ -16,9 +16,22 @@ namespace GUI {
         {RED_PIKMIN, {"gui/res/models/RedPikmin.iqm", "gui/res/textures/RedPikmin.png", "gui/res/animations/PikminAnim.iqm"}},
         {YELLOW_PIKMIN, {"gui/res/models/YellowPikmin.iqm", "gui/res/textures/YellowPikmin.png", "gui/res/animations/PikminAnim.iqm"}},
         {BLUE_PIKMIN, {"gui/res/models/BluePikmin.iqm", "gui/res/textures/BluePikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {PURPLE_PIKMIN, {"gui/res/models/PurplePikmin.iqm", "gui/res/textures/PurplePikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {WHITE_PIKMIN, {"gui/res/models/WhitePikmin.iqm", "gui/res/textures/WhitePikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {ROCK_PIKMIN, {"gui/res/models/RockPikmin.iqm", "gui/res/textures/RockPikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {WING_PIKMIN, {"gui/res/models/WingPikmin.iqm", "gui/res/textures/WingPikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {ICE_PIKMIN, {"gui/res/models/IcePikmin.iqm", "gui/res/textures/IcePikmin.png", "gui/res/animations/PikminAnim.iqm"}},
+        {SPECTRAL_PIKMIN, {"gui/res/models/SpectralPikmin.iqm", "gui/res/textures/SpectralPikmin.png", "gui/res/animations/PikminAnim.iqm"}},
         {FLOWER_TOP, {"gui/res/models/FlowerTop.iqm", "gui/res/textures/FlowerTop.png", "gui/res/animations/PikminAnim.iqm"}},
         {BUD_TOP, {"gui/res/models/BudTop.iqm", "gui/res/textures/BudTop.png", "gui/res/animations/PikminAnim.iqm"}},
         {LEAF_TOP, {"gui/res/models/LeafTop.iqm", "gui/res/textures/LeafTop.png", "gui/res/animations/PikminAnim.iqm"}},
+        {FOOD_MOD, {"gui/res/models/Food.glb", "", ""}},
+        {LINEMATE_MOD, {"gui/res/models/Linemate.glb", "", ""}},
+        {PHIRAS_MOD, {"gui/res/models/Phiras.glb", "", ""}},
+        {DERAUMERE_MOD, {"gui/res/models/Deraumere.glb", "", ""}},
+        {SIBUR_MOD, {"gui/res/models/Sibur.glb", "", ""}},
+        {MENDIANE_MOD, {"gui/res/models/Mendiane.glb", "", ""}},
+        {THYSTAME_MOD, {"gui/res/models/Thystame.glb", "", ""}}
     };
 
     std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> ModelBank::loadedAnims;
@@ -27,33 +40,28 @@ namespace GUI {
 
     GuiModel::GuiModel()
     {
-        _type = DEFAULT;
-        _color = raylib::Color::White();
-        raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
-        _texture.Load(image);
-        _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
-        _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
-        _animations = nullptr;
-        _animType = AnimType::NONE;
         DefaultSetup();
     }
 
     GuiModel::GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type)
     {
         _animType = AnimType::NONE;
-        if (!raylib::FileExists(modelPath) || !raylib::FileExists(texturePath)
-            || !raylib::FileExists(animPath)) {
+        if (!raylib::FileExists(modelPath)) {
             DefaultSetup();
             return;
         }
         _type = type;
         _model.Load(modelPath);
-        _texture.Load(texturePath);
-        _color = raylib::Color::White();
-        _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
-        if (ModelBank::loadedAnims.find(animPath) == ModelBank::loadedAnims.end())
-            ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
-        _animations = ModelBank::loadedAnims[animPath];
+        if (raylib::FileExists(texturePath)) {
+            _texture.Load(texturePath);
+            _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
+        }
+        if (raylib::FileExists(animPath)) {
+            if (ModelBank::loadedAnims.find(animPath) == ModelBank::loadedAnims.end())
+                ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
+            _animations = ModelBank::loadedAnims[animPath];
+        } else
+            _animations = nullptr;
         _defaultRotation = -90;
     }
 
@@ -69,12 +77,12 @@ namespace GUI {
     void GuiModel::DefaultSetup()
     {
         _type = DEFAULT;
-        _color = raylib::Color::White();
         raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
         _texture.Load(image);
         _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
         _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
         _animations = nullptr;
+        _animType = AnimType::NONE;
     }
 
     void GuiModel::SetAnimation(AnimType anim)

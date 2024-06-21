@@ -6,7 +6,6 @@
 */
 
 #include "PikminModel.hpp"
-#include <iostream>
 
 namespace GUI {
     PikminModel::PikminModel(std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY)
