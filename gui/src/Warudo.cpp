@@ -13,11 +13,11 @@ namespace GUI {
     Warudo::Warudo(int timeout, InputParser &in) :
         _pikmins(), _size(0, 0), _map(), _teams(),
         _mapX(_size.first), _mapY(_size.second), _timeMult(0.0f),
-        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult)),
         _key (KeyHandler(_worldCam, _pikmins)),
         _client (connection::Client(timeout, in.getAdress(), in.getPort())),
         _worldCam (WorldCamera(_pikmins)),
-        _guiCam (GuiCamera())
+        _guiCam (GuiCamera()),
+        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam))
     {
         InitWindow(1920, 1080, "ZapPikmin");
         _guiCam.setUpCam();
@@ -25,6 +25,7 @@ namespace GUI {
         SetTargetFPS(60);
         ref = in.getRef();
         _frameClock = 0;
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     }
 
     Warudo::~Warudo()
