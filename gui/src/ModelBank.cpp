@@ -28,6 +28,7 @@ namespace GUI {
     GuiModel::GuiModel()
     {
         _type = DEFAULT;
+        _color = raylib::Color::White();
         raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
         _texture.Load(image);
         _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
@@ -48,6 +49,7 @@ namespace GUI {
         _type = type;
         _model.Load(modelPath);
         _texture.Load(texturePath);
+        _color = raylib::Color::White();
         _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
         if (ModelBank::loadedAnims.find(animPath) == ModelBank::loadedAnims.end())
             ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
@@ -67,6 +69,7 @@ namespace GUI {
     void GuiModel::DefaultSetup()
     {
         _type = DEFAULT;
+        _color = raylib::Color::White();
         raylib::Image image = raylib::Image::Checked(2, 2, 1, 1, raylib::Color::Purple(), raylib::Color::Black());
         _texture.Load(image);
         _model.Load(raylib::Mesh::Cylinder(3, 8, 15));
