@@ -6,6 +6,7 @@
 */
 #include "ModelBank.hpp"
 #include "Functions.hpp"
+#include "Kaillou.hpp"
 #include <memory>
 #include <raylib-cpp.hpp>
 #include <map>
@@ -25,6 +26,13 @@ namespace GUI {
         {FLOWER_TOP, {"gui/res/models/FlowerTop.iqm", "gui/res/textures/FlowerTop.png", "gui/res/animations/PikminAnim.iqm"}},
         {BUD_TOP, {"gui/res/models/BudTop.iqm", "gui/res/textures/BudTop.png", "gui/res/animations/PikminAnim.iqm"}},
         {LEAF_TOP, {"gui/res/models/LeafTop.iqm", "gui/res/textures/LeafTop.png", "gui/res/animations/PikminAnim.iqm"}},
+        {FOOD_MOD, {"gui/res/models/Food.glb", "", ""}},
+        {LINEMATE_MOD, {"gui/res/models/Linemate.glb", "", ""}},
+        {PHIRAS_MOD, {"gui/res/models/Phiras.glb", "", ""}},
+        {DERAUMERE_MOD, {"gui/res/models/Deraumere.glb", "", ""}},
+        {SIBUR_MOD, {"gui/res/models/Sibur.glb", "", ""}},
+        {MENDIANE_MOD, {"gui/res/models/Mendiane.glb", "", ""}},
+        {THYSTAME_MOD, {"gui/res/models/Thystame.glb", "", ""}}
     };
 
     std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> ModelBank::loadedAnims;
@@ -47,19 +55,23 @@ namespace GUI {
     GuiModel::GuiModel(std::string modelPath, std::string texturePath, std::string animPath, ModelType type)
     {
         _animType = AnimType::NONE;
-        if (!raylib::FileExists(modelPath) || !raylib::FileExists(texturePath)
-            || !raylib::FileExists(animPath)) {
+        if (!raylib::FileExists(modelPath)) {
             DefaultSetup();
             return;
         }
         _type = type;
         _model.Load(modelPath);
-        _texture.Load(texturePath);
+        if (raylib::FileExists(texturePath)) {
+            _texture.Load(texturePath);
+            _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
+        }
         _color = raylib::Color::White();
-        _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
-        if (ModelBank::loadedAnims.find(animPath) == ModelBank::loadedAnims.end())
-            ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
-        _animations = ModelBank::loadedAnims[animPath];
+        if (raylib::FileExists(animPath)) {
+            if (ModelBank::loadedAnims.find(animPath) == ModelBank::loadedAnims.end())
+                ModelBank::loadedAnims[animPath] = std::make_shared<std::vector<raylib::ModelAnimation>>(raylib::ModelAnimation::Load(animPath));
+            _animations = ModelBank::loadedAnims[animPath];
+        } else
+            _animations = nullptr;
         _defaultRotation = -90;
     }
 
