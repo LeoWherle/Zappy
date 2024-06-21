@@ -26,6 +26,7 @@ namespace GUI {
             void moveCamBackward(void);
             void setFocus(void);
             void unfocus(void);
+            void changeHitboxDisplay(void);
 
             std::vector<std::pair<int, void (KeyHandler::*)(void)>> _keyMap;
             WorldCamera &_cam;

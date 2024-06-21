@@ -40,6 +40,8 @@ namespace GUI {
 
             void setRotationSpeed(const float speed);
 
+            void changeHitboxDisplay(void) {_displayHitBox = !_displayHitBox;}
+
         private:
             std::shared_ptr<GuiModel> _model;
             std::shared_ptr<GuiModel> _bulb;
@@ -68,5 +70,6 @@ namespace GUI {
 
             float _maxX;
             float _maxY;
+            bool _displayHitBox;
     };
 }
