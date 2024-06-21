@@ -41,10 +41,12 @@ namespace GUI {
 
     void PikminModel::setAnimation(AnimType anim)
     {
-        _frameCount = 0;
-        _animType = anim;
-        _model->SetAnimation(_animType);
-        _nbFrame = _model->getNbFrame();
+        if (anim != _animType) {
+            _frameCount = 0;
+            _animType = anim;
+            _model->SetAnimation(_animType);
+            _nbFrame = _model->getNbFrame();
+        }
     }
 
     void PikminModel::setPositionVector(raylib::Vector3 newPos)
@@ -99,13 +101,10 @@ namespace GUI {
     void PikminModel::setMotionVector(const raylib::Vector3 newVect)
     {
         _motionVector = newVect / 7.0f;
-        //_wholeMovement = newVect;
-        //_curMove = raylib::Vector3::Zero();
     }
 
     void PikminModel::setRotationSpeed(const float speed)
     {
         _rotationSpeed = speed / 7.0f;
-        //_rotationGoal = speed;
     }
 }
