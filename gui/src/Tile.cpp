@@ -71,12 +71,11 @@ namespace GUI {
     void Tile::drawTile(void)
     {
         for (auto &i : _materials) {
-            //if (_models[i.caillou] != nullptr) {
-            //    _models[i.caillou]->SetPosition(i.pos);
-            //    _models[i.caillou]->Draw();
-            //} else {
+            if (_models[i.caillou] != nullptr) {
+                _models[i.caillou]->Draw(i.pos, raylib::Vector3(1, 0, 0), 0, 0.5f, raylib::Color::White());
+            } else {
                 DrawCube(i.pos, 0.1f, 0.1f, 0.1f, colorMap.at(i.caillou));
-            //}
+            }
         }
     }
 }
