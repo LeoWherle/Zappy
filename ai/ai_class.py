@@ -27,7 +27,8 @@ class AI:
         self.king: bool = False
         self.choosen_ones: bool = False
         self.ref: bool = ref
-        self.needed_food = 25
+        self.needed_food: int = 30
+        self.start_broadcast: bool = False
 
         team_slots_left: int = net.send_team(team)
         if (team_slots_left == -1):
