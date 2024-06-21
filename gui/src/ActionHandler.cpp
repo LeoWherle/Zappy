@@ -348,10 +348,8 @@ namespace GUI {
         std::size_t x = std::stoi(arg[2].str());
         std::size_t y = std::stoi(arg[3].str());
 
-        std::cout << arg[0] << std::endl;
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                //std::cout << id << std::endl;
                 pikmin.move(x, y);
             }
         }
@@ -361,10 +359,8 @@ namespace GUI {
     {
         std::string id = arg[1].str();
 
-        std::cout << arg[0] << std::endl;
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                //std::cout << id << std::endl;
                 pikmin.turnRight();
             }
         }
@@ -374,10 +370,8 @@ namespace GUI {
     {
         std::string id = arg[1].str();
 
-        std::cout << arg[0] << std::endl;
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                //std::cout << id << std::endl;
                 pikmin.turnLeft();
             }
         }
