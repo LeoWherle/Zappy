@@ -48,9 +48,9 @@ namespace GUI {
             }
             _data.setDirection(orientation);
         }
-        if ((isMoving || isTurning) && _rotStack.empty() && _movStack.empty()) {
-            _model.setAnimation(AnimType::IDLE);
-        }
+        //if ((isMoving || isTurning) && _rotStack.empty() && _movStack.empty()) {
+        //    _model.setAnimation(AnimType::IDLE);
+        //}
     }
 
     bool Pikmin::draw(float delta)
