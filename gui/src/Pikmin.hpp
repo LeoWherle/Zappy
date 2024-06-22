@@ -42,6 +42,7 @@ namespace GUI {
             bool isOnTile(std::size_t x, std::size_t y);
 
             void setTeam(Team &team);
+            void setTeamName(std::string &team) { _data.setTeam(team); };
 
             void updatePosition(std::size_t x, std::size_t y, std::size_t orientation);
             void updateLevel(std::size_t level);
