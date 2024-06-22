@@ -31,7 +31,10 @@ namespace GUI {
         {DERAUMERE_MOD, {"gui/res/models/Deraumere.glb", "", ""}},
         {SIBUR_MOD, {"gui/res/models/Sibur.glb", "", ""}},
         {MENDIANE_MOD, {"gui/res/models/Mendiane.glb", "", ""}},
-        {THYSTAME_MOD, {"gui/res/models/Thystame.glb", "", ""}}
+        {THYSTAME_MOD, {"gui/res/models/Thystame.glb", "", ""}},
+        {MAP, {"gui/res/models/Map.glb", "", ""}},
+        {WALLS, {"gui/res/models/Walls.glb", "", ""}},
+        {RUG, {"gui/res/models/Rug.obj", "gui/res/textures/rug_color.png", ""}}
     };
 
     std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> ModelBank::loadedAnims;

@@ -33,7 +33,10 @@ namespace GUI {
         SIBUR_MOD,
         MENDIANE_MOD,
         PHIRAS_MOD,
-        THYSTAME_MOD
+        THYSTAME_MOD,
+        MAP,
+        WALLS,
+        RUG
     };
 
     enum AnimType {

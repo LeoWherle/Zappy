@@ -91,9 +91,11 @@ int main_grahic()
     pikmin9.setPikminModel(GUI::ModelBank::get(GUI::SPECTRAL_PIKMIN));
     pikmin9.setBulbModel(GUI::ModelBank::get(GUI::BUD_TOP));
 
-    // Model Map = LoadModel("gui/res/models/Map.obj");                 // Load OBJ model
-    // Texture2D textureMap = LoadTexture("gui/res/textures/Map_color.png");      // Load model texture
-    // SetMaterialTexture(&Map.materials[0], MATERIAL_MAP_DIFFUSE, textureMap);   // Set model diffuse texture
+    Model Map = LoadModel("gui/res/models/Map.glb");                 // Load OBJ model
+    Model Walls = LoadModel("gui/res/models/Walls.glb");                 // Load OBJ model
+    Model Rug = LoadModel("gui/res/models/Rug.obj");                 // Load OBJ model
+    Texture2D textureMap = LoadTexture("gui/res/textures/rug_color.png");      // Load model texture
+    SetMaterialTexture(&Rug.materials[0], MATERIAL_MAP_DIFFUSE, textureMap);   // Set model diffuse texture
     int animIndex = 0;
 
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
@@ -162,6 +164,9 @@ int main_grahic()
                 pikmin7.drawModel(0);
                 pikmin8.drawModel(0);
                 pikmin9.drawModel(0);
+                DrawModel(Map, (Vector3){0, 0, 0}, 0.05f, WHITE);
+                DrawModel(Walls, (Vector3){0, 0, 0}, 0.05f, WHITE);
+                DrawModel(Rug, (Vector3){0, 0, 0}, 0.05f, WHITE);
 
             EndMode3D();
 

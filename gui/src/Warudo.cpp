@@ -61,6 +61,7 @@ namespace GUI {
         std::cout << "Initializing the world ..." << std::endl;
         std::srand(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
         setUpServer();
+        _mapModel.setupModels();
         std::cout << "World initialized" << std::endl;
     }
 
@@ -148,26 +149,17 @@ namespace GUI {
             ClearBackground(BLACK);
             BeginMode3D(_worldCam.getCam());
 
-                std::size_t index = 0;
-                bool line = true;
-                bool white = line;
-                for (auto tile : _map) {
-                    if (_mapX == 0 || _mapY == 0)
-                        break;
-                    raylib::Vector3 pos((index % _mapX), 0, static_cast<int>((index / _mapX)));
-                    if (index % _mapX == 0) {
-                        line = !line;
-                        white = line;
-                    }
-                    if (white) {
-                        DrawCube(pos, 1, 1, 1, WHITE);
-                        white = !white;
-                    } else {
-                        DrawCube(pos, 1, 1, 1, GRAY);
-                        white = !white;
-                    }
-                    index++;
-                }
+                // Code for model position troubleshooting
+                // float moveSpeed = 0.1f; // Adjust this value to control the speed of movement
+                // if (IsKeyDown(KEY_A)) _mapModel._position.x += moveSpeed;
+                // if (IsKeyDown(KEY_D)) _mapModel._position.x -= moveSpeed;
+                // if (IsKeyDown(KEY_S)) _mapModel._position.z -= moveSpeed; // Assuming UP/DOWN moves the model forward/backward in 3D space
+                // if (IsKeyDown(KEY_W)) _mapModel._position.z += moveSpeed;
+                // if (IsKeyDown(KEY_Q)) _mapModel._position.y += moveSpeed; // Move the model up
+                // if (IsKeyDown(KEY_E)) _mapModel._position.y -= moveSpeed; // Move the model down
+                // std::string positionText = "X: " + std::to_string(_mapModel._position.x) + ", Y: " + std::to_string(_mapModel._position.y) + ", Z: " + std::to_string(_mapModel._position.z);
+
+                _mapModel.draw(); // Assuming _modelModel is your model variable
 
                 updateTile();
                 updatePikmin();
@@ -175,6 +167,7 @@ namespace GUI {
             EndMode3D();
 
             updateUI();
+            // raylib::DrawText(positionText.c_str(), 200, 200, 50, RED);
 
         EndDrawing();
     }
