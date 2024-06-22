@@ -185,7 +185,6 @@ int main_grahic()
 
 int main(int ac, char **av)
 {
-    // return main_grahic();
     InputParser input(ac, av);
     try {
         input.parseMandatory();

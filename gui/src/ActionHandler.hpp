@@ -11,6 +11,7 @@
 #include <vector>
 #include "Pikmin.hpp"
 #include "Tile.hpp"
+#include "GuiCamera.hpp"
 #include "ModelBank.hpp"
 #include "Team.hpp"
 
@@ -19,7 +20,8 @@ namespace GUI {
     class ActionHandler
     {
     public:
-        ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size, float &timeMult);
+        ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<Team> &teams,
+                      std::pair<std::size_t, std::size_t> &size, float &timeMult, GuiCamera &cam);
         ~ActionHandler();
 
         bool operator()(std::string &action);
@@ -58,6 +60,7 @@ namespace GUI {
         std::vector<Team> &_teams;
         std::size_t &_x;
         std::size_t &_y;
+        GuiCamera &_guiCam;
         std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>> _regexMap;
         ModelBank _model;
         float &_timeMult;

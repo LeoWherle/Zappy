@@ -47,7 +47,6 @@ namespace GUI {
             std::size_t &_mapX;
             std::size_t &_mapY;
             float _timeMult;
-            ActionHandler _handler;
             KeyHandler _key;
 
             Map _mapModel;
@@ -67,5 +66,7 @@ namespace GUI {
             bool ref;
 
             float _frameClock;
+
+            ActionHandler _handler;
     };
 }
