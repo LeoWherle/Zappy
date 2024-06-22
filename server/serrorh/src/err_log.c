@@ -55,7 +55,9 @@ int vflog_msg(FILE *file, enum LogLevel level, const char *__restrict format,
             ret += fprintf(file, RESET);
         ret += fprintf(file, "] ");
         ret += vfprintf(file, format, args);
-        ret += fprintf(file, "\n");
+        if (format[strlen(format) - 1] != '\n')
+            ret += fprintf(file, "\n");
+        fflush(file);
     }
     return ret;
 }
