@@ -29,6 +29,7 @@ namespace GUI {
             struct groundedMaterial {
                 Kaillou caillou = Kaillou::FOOD;
                 raylib::Vector3 pos;
+                float rotation;
             };
 
             Inventory _inv;

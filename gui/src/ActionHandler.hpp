@@ -65,5 +65,6 @@ namespace GUI {
         ModelBank _model;
         float &_timeMult;
         std::size_t _nbTeam;
+        std::vector<ModelType> _pikminModels;
     };
 }

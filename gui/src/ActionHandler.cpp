@@ -12,8 +12,9 @@ namespace GUI {
     ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map,
         std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size,
         float &timeMult, GuiCamera &cam):
-        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult), _guiCam(cam)
+        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _guiCam(cam), _timeMult(timeMult)
     {
+        std::srand(std::time(nullptr));
         _x = 0;
         _y = 0;
         _regexMap = std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>>({
@@ -47,6 +48,26 @@ namespace GUI {
             {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject}
         });
         _nbTeam = 0;
+
+        std::vector<ModelType> possibleModel({
+            RED_PIKMIN,
+            YELLOW_PIKMIN,
+            BLUE_PIKMIN,
+            PURPLE_PIKMIN,
+            WHITE_PIKMIN,
+            ROCK_PIKMIN,
+            WING_PIKMIN,
+            ICE_PIKMIN,
+            SPECTRAL_PIKMIN
+        });
+
+        while (!possibleModel.empty()) {
+            std::size_t idx = std::rand() % possibleModel.size();
+
+            _pikminModels.push_back(possibleModel[idx]);
+            possibleModel.erase(possibleModel.begin() + idx);
+        }
+
     }
 
     ActionHandler::~ActionHandler()
@@ -94,12 +115,6 @@ namespace GUI {
         _map[index].setRocks(tileRocks);
     }
 
-    static const std::vector<ModelType> pikminModels({
-        RED_PIKMIN,
-        YELLOW_PIKMIN,
-        BLUE_PIKMIN
-    });
-
     static const std::vector<raylib::Color> colors({
         raylib::Color::White(),
         raylib::Color::DarkPurple(),
@@ -123,9 +138,9 @@ namespace GUI {
         std::size_t colorIndex = 0;
 
         name = arg[1];
-        modelIndex = _nbTeam % pikminModels.size();
+        modelIndex = _nbTeam % _pikminModels.size();
         colorIndex = (_nbTeam - modelIndex) % colors.size();
-        model = ModelBank::get(pikminModels[modelIndex]);
+        model = ModelBank::get(_pikminModels[modelIndex]);
         color = colors[colorIndex];
         _nbTeam++;
 
