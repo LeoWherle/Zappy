@@ -12,6 +12,23 @@
 #include "vector.h"
 #include "trantor/string_utils.h"
 
+#include <stdlib.h>
+
+static void spam_gui(trantor_t *trantor)
+{
+    char *temp = NULL;
+
+    execute_gcmd(trantor, "mct");
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        temp = aprintf("plv %d", i);
+        execute_gcmd(trantor, temp);
+        temp[1] = 'i';
+        temp[2] = 'n';
+        execute_gcmd(trantor, temp);
+        free(temp);
+    }
+}
+
 static void try_refill_map(trantor_t *trantor, float delta)
 {
     trantor->map.since_refill += delta;
@@ -35,7 +52,7 @@ bool trantor_time_pass(trantor_t *trantor, float delta, bool real_time)
     if (trantor->params.spam_gui) {
         trantor->since_spam += _delta;
         if (trantor->since_spam >= SPAM_INTERVAL) {
-            execute_gcmd(trantor, "mct");
+            spam_gui(trantor);
             trantor->since_spam -= SPAM_INTERVAL;
         }
     }
