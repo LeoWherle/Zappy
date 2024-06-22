@@ -21,7 +21,7 @@ namespace GUI {
             void setBulbModel(std::shared_ptr<GuiModel> model);
             void drawModel(float delta);
             void setAnimation(AnimType anim);
-            inline void setAnimationFps(float fps) { _animationTime = 1.0F / fps; }
+            inline void setAnimationLength(float length) { _animationTime = length; }
 
             bool animationUpdate(float delta);
 

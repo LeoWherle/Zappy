@@ -103,17 +103,20 @@ namespace GUI {
 
     void Pikmin::eject(void)
     {
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::FALL);
         _status = Pikmin::State::EJECT;
     }
 
     void Pikmin::startIncant(void)
     {
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::INCANTATION);
     }
 
     void Pikmin::stopIncant(bool result)
     {
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::IDLE);
         if (result) {
             //_model.setAnimation(_animation.get("level up"));
@@ -130,16 +133,19 @@ namespace GUI {
 
     void Pikmin::dropRock(void)
     {
+        _model.setAnimationLength(7.0f);
         _model.setAnimation(AnimType::DROP);
     }
 
     void Pikmin::pickRock(void)
     {
+        _model.setAnimationLength(7.0f);
         _model.setAnimation(AnimType::PICK);
     }
 
     void Pikmin::die(void)
     {
+        _model.setAnimationLength(7.0f);
         _model.setAnimation(AnimType::DEATH);
         _status = Pikmin::State::DYING;
     }
@@ -148,6 +154,7 @@ namespace GUI {
     {
         _status = Pikmin::State::EGG;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::PLANT);
     }
 
@@ -155,6 +162,7 @@ namespace GUI {
     {
         _status = Pikmin::State::ALIVE;
         _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::IDLE);
     }
 
@@ -180,6 +188,7 @@ namespace GUI {
             _model.setMotionVector(motionVect);
         }
         _movStack.push_back(motionVect);
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
@@ -189,6 +198,7 @@ namespace GUI {
             _model.setRotationSpeed(90.0f);
         }
         _rotStack.push_back(90.0f);
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
@@ -198,11 +208,13 @@ namespace GUI {
             _model.setRotationSpeed(-90.0f);
         }
         _rotStack.push_back(-90.0f);
+        _model.setAnimationLength(1.0f);
         _model.setAnimation(AnimType::WALK);
     }
 
     void Pikmin::look(void)
     {
+        _model.setAnimationLength(7.0f);
         _model.setAnimation(AnimType::LOOK);
     }
 
@@ -213,11 +225,13 @@ namespace GUI {
 
     void Pikmin::ejecting(void)
     {
+        _model.setAnimationLength(7.0f);
         _model.setAnimation(AnimType::PUSH);
     }
 
     void Pikmin::broadcast(void)
     {
+        _model.setAnimationLength(7.0f);
         _model.setAnimation(AnimType::BROADCAST);
     }
 
