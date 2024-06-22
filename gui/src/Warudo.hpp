@@ -18,6 +18,7 @@
 #include "Pikmin.hpp"
 #include "Tile.hpp"
 #include "InputParser.hpp"
+#include "Map.hpp"
 
 namespace GUI {
     class Warudo {
@@ -48,6 +49,8 @@ namespace GUI {
             float _timeMult;
             ActionHandler _handler;
             KeyHandler _key;
+
+            Map _mapModel;
 
             connection::Client _client;
             Buffer::ReadBuffer _stdInput;

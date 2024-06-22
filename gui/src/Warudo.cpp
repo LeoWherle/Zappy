@@ -78,6 +78,7 @@ namespace GUI {
             _in.consume(consume);
         }
         _worldCam.setUpCam(_mapX, _mapY);
+        _mapModel.setupModels();
         std::cout << "Map ready" << std::endl;
     }
 
@@ -187,12 +188,27 @@ namespace GUI {
                     index++;
                 }
 
+                // Code for model position troubleshooting
+                // float moveSpeed = 0.1f; // Adjust this value to control the speed of movement
+                // // Check for input to adjust the model's position
+                // if (IsKeyDown(KEY_A)) _mapModel._position.x += moveSpeed;
+                // if (IsKeyDown(KEY_D)) _mapModel._position.x -= moveSpeed;
+                // if (IsKeyDown(KEY_S)) _mapModel._position.z -= moveSpeed; // Assuming UP/DOWN moves the model forward/backward in 3D space
+                // if (IsKeyDown(KEY_W)) _mapModel._position.z += moveSpeed;
+                // if (IsKeyDown(KEY_Q)) _mapModel._position.y += moveSpeed; // Move the model up
+                // if (IsKeyDown(KEY_E)) _mapModel._position.y -= moveSpeed; // Move the model down
+                // Display the current position
+                // std::string positionText = "X: " + std::to_string(_mapModel._position.x) + ", Y: " + std::to_string(_mapModel._position.y) + ", Z: " + std::to_string(_mapModel._position.z);
+
+                _mapModel.draw(); // Assuming _modelModel is your model variable
+
                 updateTile();
                 updatePikmin();
 
             EndMode3D();
 
             updateUI();
+            // raylib::DrawText(positionText.c_str(), 200, 200, 50, RED);
 
         EndDrawing();
     }
