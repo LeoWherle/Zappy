@@ -33,7 +33,7 @@ namespace GUI {
             {std::regex("^pdr (\\d+) (\\d+)$"), &ActionHandler::pikminDropRessource},
             {std::regex("^pgt (\\d+) (\\d+)$"), &ActionHandler::pikminPickRessource},
             {std::regex("^pdi (\\d+)$"), &ActionHandler::pikminDie},
-            {std::regex("^enw (\\d+) (\\d+) (\\d+) (\\d+)$"), &ActionHandler::layedEgg},
+            {std::regex("^enw (\\d+) (-?\\d+) (\\d+) (\\d+)$"), &ActionHandler::layedEgg},
             {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
             {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
             {std::regex("^sgt (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
@@ -332,12 +332,13 @@ namespace GUI {
     void ActionHandler::layedEgg(std::smatch &arg)
     {
         std::string eggId = arg[1].str();
-        std::string pikminId = arg[2].str();
         std::size_t x = std::stoi(arg[3].str());
         std::size_t y = std::stoi(arg[4].str());
         Pikmin newPikmin(eggId, x, y, _x, _y);
 
         newPikmin.spawnAsEgg();
+        newPikmin.updatePosition(x, y, 1);
+        newPikmin.updateLevel(1);
         _pikmins.emplace_back(newPikmin);
     }
 
