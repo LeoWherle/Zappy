@@ -99,6 +99,9 @@ namespace GUI {
             }
         }
         _worldCam.setUpCam(_x, _y);
+        for (auto &pikmin : _pikmins) {
+            pikmin.setMapSize(_x, _y);
+        }
     }
 
     void ActionHandler::setTileContent(std::smatch &arg)
@@ -165,6 +168,11 @@ namespace GUI {
         int level = std::stoi(arg[5].str());
         std::string teamName = arg[6].str();
 
+        for (auto &pikmin : _pikmins) {
+            if (pikmin == id) {
+                return;
+            }
+        }
         Pikmin newPikmin(id, x, y, _x, _y);
         newPikmin.spawnAsPikmin();
         newPikmin.updatePosition(x, y, orientation);

@@ -75,6 +75,8 @@ namespace GUI {
             inline PikminModel &getModel(void) { return _model; }
 
             bool getColision(raylib::Ray &);
+
+            void setMapSize(std::size_t x, std::size_t y);
         private:
 
             PikminData _data;
@@ -83,5 +85,8 @@ namespace GUI {
 
             std::vector<raylib::Vector3> _movStack;
             std::vector<float> _rotStack;
+
+            std::size_t _maxX;
+            std::size_t _maxY;
     };
 }

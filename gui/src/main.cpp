@@ -55,39 +55,39 @@ int main_grahic()
     // SetMaterialTexture(&pikminTop.materials[0], MATERIAL_MAP_DIFFUSE, textureTop);   // Set model diffuse texture
     // pikminTop.transform = MatrixRotateXYZ((Vector3){ 5.0f, 0.0f, 0.0f });
 
-    GUI::PikminModel pikmin(20, 0, 50, 50);
+    GUI::PikminModel pikmin(20, 0);
     pikmin.setPikminModel(GUI::ModelBank::get(GUI::RED_PIKMIN));
     pikmin.setBulbModel(GUI::ModelBank::get(GUI::LEAF_TOP));
 
-    GUI::PikminModel pikmin2(10, 0, 50, 50);
+    GUI::PikminModel pikmin2(10, 0);
     pikmin2.setPikminModel(GUI::ModelBank::get(GUI::YELLOW_PIKMIN));
     pikmin2.setBulbModel(GUI::ModelBank::get(GUI::FLOWER_TOP));
 
-    GUI::PikminModel pikmin3(0, 0, 50, 50);
+    GUI::PikminModel pikmin3(0, 0);
     pikmin3.setPikminModel(GUI::ModelBank::get(GUI::BLUE_PIKMIN));
     pikmin3.setBulbModel(GUI::ModelBank::get(GUI::BUD_TOP));
 
-    GUI::PikminModel pikmin4(0, 10, 50, 50);
+    GUI::PikminModel pikmin4(0, 10);
     pikmin4.setPikminModel(GUI::ModelBank::get(GUI::PURPLE_PIKMIN));
     pikmin4.setBulbModel(GUI::ModelBank::get(GUI::FLOWER_TOP));
 
-    GUI::PikminModel pikmin5(10, 10, 50, 50);
+    GUI::PikminModel pikmin5(10, 10);
     pikmin5.setPikminModel(GUI::ModelBank::get(GUI::WHITE_PIKMIN));
     pikmin5.setBulbModel(GUI::ModelBank::get(GUI::LEAF_TOP));
 
-    GUI::PikminModel pikmin6(20, 10, 50, 50);
+    GUI::PikminModel pikmin6(20, 10);
     pikmin6.setPikminModel(GUI::ModelBank::get(GUI::ROCK_PIKMIN));
     pikmin6.setBulbModel(GUI::ModelBank::get(GUI::BUD_TOP));
 
-    GUI::PikminModel pikmin7(10, 20, 50, 50);
+    GUI::PikminModel pikmin7(10, 20);
     pikmin7.setPikminModel(GUI::ModelBank::get(GUI::WING_PIKMIN));
     pikmin7.setBulbModel(GUI::ModelBank::get(GUI::FLOWER_TOP));
 
-    GUI::PikminModel pikmin8(0, 20, 50, 50);
+    GUI::PikminModel pikmin8(0, 20);
     pikmin8.setPikminModel(GUI::ModelBank::get(GUI::ICE_PIKMIN));
     pikmin8.setBulbModel(GUI::ModelBank::get(GUI::LEAF_TOP));
 
-    GUI::PikminModel pikmin9(20, 20, 50, 50);
+    GUI::PikminModel pikmin9(20, 20);
     pikmin9.setPikminModel(GUI::ModelBank::get(GUI::SPECTRAL_PIKMIN));
     pikmin9.setBulbModel(GUI::ModelBank::get(GUI::BUD_TOP));
 

@@ -8,7 +8,7 @@
 #include "PikminModel.hpp"
 
 namespace GUI {
-    PikminModel::PikminModel(std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY)
+    PikminModel::PikminModel(std::size_t x, std::size_t y)
     {
         _model = nullptr;
         _bulb = nullptr;
@@ -31,8 +31,6 @@ namespace GUI {
         _rotationSpeed = 0.0f;
         _curRot = 0.0f;
         _nbFrame = 1;
-        _maxX = maxX;
-        _maxY = maxY;
         _displayHitBox = false;
     }
 
