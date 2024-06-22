@@ -11,8 +11,8 @@
 namespace GUI {
     ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map,
         std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size,
-        float &timeMult, GuiCamera &cam):
-        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _guiCam(cam), _timeMult(timeMult)
+        float &timeMult, GuiCamera &cam, WorldCamera &worldCam):
+        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _guiCam(cam), _timeMult(timeMult), _worldCam(worldCam)
     {
         std::srand(std::time(nullptr));
         _x = 0;
@@ -98,6 +98,7 @@ namespace GUI {
                 _map[_map.size() - 1].getRockModel();
             }
         }
+        _worldCam.setUpCam(_x, _y);
     }
 
     void ActionHandler::setTileContent(std::smatch &arg)
