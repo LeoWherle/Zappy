@@ -148,6 +148,12 @@ namespace GUI {
         Team team(name, model, color);
 
         _teams.emplace_back(team);
+
+        for (auto &pikmin : _pikmins) {
+            if (team == pikmin.getData().getTeam()) {
+                pikmin.setTeam(team);
+            }
+        }
     }
 
     void ActionHandler::addPlayer(std::smatch &arg)
@@ -159,30 +165,17 @@ namespace GUI {
         int level = std::stoi(arg[5].str());
         std::string teamName = arg[6].str();
 
-        for (auto &player : _pikmins) {
-            if (player == id) {
-                for (auto &team : _teams) {
-                    if (team == teamName) {
-                        player.setTeam(team);
-                        player.spawnAsPikmin();
-                        player.updatePosition(x, y, orientation);
-                        player.updateLevel(level);
-                    }
-                }
-                return;
-            }
-        }
-
         Pikmin newPikmin(id, x, y, _x, _y);
+        newPikmin.spawnAsPikmin();
+        newPikmin.updatePosition(x, y, orientation);
+        newPikmin.updateLevel(level);
+        newPikmin.setTeamName(teamName);
         for (auto &team : _teams) {
             if (team == teamName) {
                 newPikmin.setTeam(team);
-                newPikmin.spawnAsPikmin();
-                newPikmin.updatePosition(x, y, orientation);
-                newPikmin.updateLevel(level);
-                _pikmins.emplace_back(newPikmin);
             }
         }
+        _pikmins.emplace_back(newPikmin);
     }
 
     void ActionHandler::setPikminPosition(std::smatch &arg)

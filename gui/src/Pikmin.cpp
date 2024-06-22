@@ -154,6 +154,7 @@ namespace GUI {
     void Pikmin::spawnAsPikmin(void)
     {
         _status = Pikmin::State::ALIVE;
+        _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
         _model.setAnimation(AnimType::IDLE);
     }
 
