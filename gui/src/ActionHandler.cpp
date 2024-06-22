@@ -11,9 +11,10 @@
 namespace GUI {
     ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map,
         std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size,
-        float &timeMult, GuiCamera &cam):
-        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _timeMult(timeMult), _guiCam(cam)
+        float &timeMult, GuiCamera &cam, WorldCamera &worldCam):
+        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _guiCam(cam), _timeMult(timeMult), _worldCam(worldCam)
     {
+        std::srand(std::time(nullptr));
         _x = 0;
         _y = 0;
         _regexMap = std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>>({
@@ -32,7 +33,7 @@ namespace GUI {
             {std::regex("^pdr (\\d+) (\\d+)$"), &ActionHandler::pikminDropRessource},
             {std::regex("^pgt (\\d+) (\\d+)$"), &ActionHandler::pikminPickRessource},
             {std::regex("^pdi (\\d+)$"), &ActionHandler::pikminDie},
-            {std::regex("^enw (\\d+) (\\d+) (\\d+) (\\d+)$"), &ActionHandler::layedEgg},
+            {std::regex("^enw (\\d+) (-?\\d+) (\\d+) (\\d+)$"), &ActionHandler::layedEgg},
             {std::regex("^ebo (\\d+)$"), &ActionHandler::eggHatche},
             {std::regex("^edi (\\d+)$"), &ActionHandler::pikminDie},
             {std::regex("^sgt (\\d+(?:.\\d+)?)$"), &ActionHandler::setTimeMult},
@@ -47,6 +48,26 @@ namespace GUI {
             {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject}
         });
         _nbTeam = 0;
+
+        std::vector<ModelType> possibleModel({
+            RED_PIKMIN,
+            YELLOW_PIKMIN,
+            BLUE_PIKMIN,
+            PURPLE_PIKMIN,
+            WHITE_PIKMIN,
+            ROCK_PIKMIN,
+            WING_PIKMIN,
+            ICE_PIKMIN,
+            SPECTRAL_PIKMIN
+        });
+
+        while (!possibleModel.empty()) {
+            std::size_t idx = std::rand() % possibleModel.size();
+
+            _pikminModels.push_back(possibleModel[idx]);
+            possibleModel.erase(possibleModel.begin() + idx);
+        }
+
     }
 
     ActionHandler::~ActionHandler()
@@ -74,9 +95,10 @@ namespace GUI {
         for (std::size_t i = 0; i < _x; i++) {
             for (std::size_t j = 0; j < _y; j++) {
                 _map.push_back(Tile(i, j));
-                _map[_map.size() - 1].getRockModel(_model);
+                _map[_map.size() - 1].getRockModel();
             }
         }
+        _worldCam.setUpCam(_x, _y);
     }
 
     void ActionHandler::setTileContent(std::smatch &arg)
@@ -93,12 +115,6 @@ namespace GUI {
         }
         _map[index].setRocks(tileRocks);
     }
-
-    static const std::vector<ModelType> pikminModels({
-        RED_PIKMIN,
-        YELLOW_PIKMIN,
-        BLUE_PIKMIN
-    });
 
     static const std::vector<raylib::Color> colors({
         raylib::Color::White(),
@@ -123,15 +139,21 @@ namespace GUI {
         std::size_t colorIndex = 0;
 
         name = arg[1];
-        modelIndex = _nbTeam % pikminModels.size();
+        modelIndex = _nbTeam % _pikminModels.size();
         colorIndex = (_nbTeam - modelIndex) % colors.size();
-        model = ModelBank::get(pikminModels[modelIndex]);
+        model = ModelBank::get(_pikminModels[modelIndex]);
         color = colors[colorIndex];
         _nbTeam++;
 
         Team team(name, model, color);
 
         _teams.emplace_back(team);
+
+        for (auto &pikmin : _pikmins) {
+            if (team == pikmin.getData().getTeam()) {
+                pikmin.setTeam(team);
+            }
+        }
     }
 
     void ActionHandler::addPlayer(std::smatch &arg)
@@ -143,30 +165,17 @@ namespace GUI {
         int level = std::stoi(arg[5].str());
         std::string teamName = arg[6].str();
 
-        for (auto &player : _pikmins) {
-            if (player == id) {
-                for (auto &team : _teams) {
-                    if (team == teamName) {
-                        player.setTeam(team);
-                        player.spawnAsPikmin();
-                        player.updatePosition(x, y, orientation);
-                        player.updateLevel(level);
-                    }
-                }
-                return;
-            }
-        }
-
         Pikmin newPikmin(id, x, y, _x, _y);
+        newPikmin.spawnAsPikmin();
+        newPikmin.updatePosition(x, y, orientation);
+        newPikmin.updateLevel(level);
+        newPikmin.setTeamName(teamName);
         for (auto &team : _teams) {
             if (team == teamName) {
                 newPikmin.setTeam(team);
-                newPikmin.spawnAsPikmin();
-                newPikmin.updatePosition(x, y, orientation);
-                newPikmin.updateLevel(level);
-                _pikmins.emplace_back(newPikmin);
             }
         }
+        _pikmins.emplace_back(newPikmin);
     }
 
     void ActionHandler::setPikminPosition(std::smatch &arg)
@@ -229,6 +238,7 @@ namespace GUI {
         for (auto &player : _pikmins) {
             if (player == id) {
                 player.broadcast();
+                _guiCam.addMessage(message, player);
             }
         }
     }
@@ -282,11 +292,10 @@ namespace GUI {
     void ActionHandler::pikminDropRessource(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &player : _pikmins) {
             if (player == id) {
-                player.dropRock(static_cast<Kaillou>(rock));
+                player.dropRock();
             }
         }
     }
@@ -294,11 +303,10 @@ namespace GUI {
     void ActionHandler::pikminPickRessource(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &player : _pikmins) {
             if (player == id) {
-                player.pickRock(static_cast<Kaillou>(rock));
+                player.pickRock();
             }
         }
     }
@@ -317,12 +325,13 @@ namespace GUI {
     void ActionHandler::layedEgg(std::smatch &arg)
     {
         std::string eggId = arg[1].str();
-        std::string pikminId = arg[2].str();
         std::size_t x = std::stoi(arg[3].str());
         std::size_t y = std::stoi(arg[4].str());
         Pikmin newPikmin(eggId, x, y, _x, _y);
 
         newPikmin.spawnAsEgg();
+        newPikmin.updatePosition(x, y, 1);
+        newPikmin.updateLevel(1);
         _pikmins.emplace_back(newPikmin);
     }
 
@@ -407,11 +416,10 @@ namespace GUI {
     void ActionHandler::pikminTakeObject(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                pikmin.pickRock(static_cast<Kaillou>(rock));
+                pikmin.pickRock();
             }
         }
     }
@@ -419,11 +427,10 @@ namespace GUI {
     void ActionHandler::pikminDropObject(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                pikmin.dropRock(static_cast<Kaillou>(rock));
+                pikmin.dropRock();
             }
         }
     }

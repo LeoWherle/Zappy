@@ -29,15 +29,17 @@ static int winning_team(vector_t *players, unsigned int teams)
     if (vec_init(&tcounts, sizeof(unsigned int), NULL, NULL) != BUF_OK
         || vec_reserve(&tcounts, teams) != BUF_OK)
         return -1;
+    tcounts.nmemb = teams;
+    memset(tcounts.items, 0, tcounts.capacity * tcounts.item_size);
     for (; i < players->nmemb; i++) {
-        p = vec_at(players, i);
-        if (p->team >= teams)
-            continue;
-        ((unsigned int *)tcounts.items)[p->team]++;
+        p = VEC_AT(players, i);
+        if (!p->is_egg && !p->is_dead && p->elevation >= 8)
+            ((unsigned int *) tcounts.items)[p->team]++;
     }
-    for (i = 0; i < tcounts.nmemb; i++)
+    for (i = 0; i < tcounts.nmemb; i++) {
         if (((unsigned int *) tcounts.items)[i] >= 6)
             return i;
+    }
     vec_reset(&tcounts);
     return -1;
 }

@@ -19,7 +19,7 @@ namespace GUI {
         std::string &getName(void) { return _name; }
         std::shared_ptr<GuiModel> &getModel(void) { return _model; }
         raylib::Color &getColor(void) { return _color; }
-        bool operator==(std::string &name) { return (_name == name); }
+        bool operator==(const std::string &name) { return (_name == name); }
 
     private:
         std::string _name;

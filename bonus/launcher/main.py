@@ -59,7 +59,7 @@ class App:
         self.use_refGui_var = IntVar(value=0)
         self.width_var = IntVar(value=10)
         self.height_var = IntVar(value=10)
-        self.starting_egg_var = IntVar(value=6)
+        self.starting_egg_var = IntVar(value=1)
         self.f_scale_var = IntVar(value=100)
 
         self.setup_config_widgets(config_frame)

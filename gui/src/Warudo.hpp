@@ -33,7 +33,6 @@ namespace GUI {
 
         private:
             void setUpServer(void);
-            void setUpMap(void);
             void handleKey(void);
 
             void updatePikmin(void);

@@ -7,10 +7,28 @@
 
 #include "trantor.h"
 #include "trantor/config.h"
+#include "trantor/params.h"
 #include "trantor/player.h"
 #include "trantor/map_fn.h"
 #include "vector.h"
 #include "trantor/string_utils.h"
+
+#include <stdlib.h>
+
+static void spam_gui(trantor_t *trantor)
+{
+    char *temp = NULL;
+
+    execute_gcmd(trantor, "mct");
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        temp = aprintf("plv %d", i);
+        execute_gcmd(trantor, temp);
+        temp[1] = 'i';
+        temp[2] = 'n';
+        execute_gcmd(trantor, temp);
+        free(temp);
+    }
+}
 
 static void try_refill_map(trantor_t *trantor, float delta)
 {
@@ -35,7 +53,7 @@ bool trantor_time_pass(trantor_t *trantor, float delta, bool real_time)
     if (trantor->params.spam_gui) {
         trantor->since_spam += _delta;
         if (trantor->since_spam >= SPAM_INTERVAL) {
-            execute_gcmd(trantor, "mct");
+            spam_gui(trantor);
             trantor->since_spam -= SPAM_INTERVAL;
         }
     }
@@ -78,4 +96,21 @@ void remove_player(trantor_t *trantor, player_t *player)
     talk(&player->response_buffer, "dead\n");
     player->is_dead = true;
     talkf(&trantor->log, "pdi %d\n", player->n);
+}
+
+void trantor_log_players(trantor_t *trantor)
+{
+    player_t *player;
+
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        player = VEC_AT(&trantor->players, i);
+        if (player->is_egg)
+            talkf(&trantor->log, "enw %d %d %d %d\n",
+                player->n, -1, player->coord[0], player->coord[1]);
+        else
+            talkf(&trantor->log, "pnw %d %d %d %d %d %s\n", player->n,
+                player->coord[0], player->coord[1], player->direction + 1,
+                player->elevation,
+                get_team_name(&trantor->params, player->team));
+    }
 }

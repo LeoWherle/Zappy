@@ -128,14 +128,14 @@ namespace GUI {
     }
 
 
-    void Pikmin::dropRock(Kaillou rock)
+    void Pikmin::dropRock(void)
     {
-        //_model.setAnimation(AnimType::DROP);
+        _model.setAnimation(AnimType::DROP);
     }
 
-    void Pikmin::pickRock(Kaillou rock)
+    void Pikmin::pickRock(void)
     {
-        //_model.setAnimation(AnimType::PICK);
+        _model.setAnimation(AnimType::PICK);
     }
 
     void Pikmin::die(void)
@@ -154,6 +154,7 @@ namespace GUI {
     void Pikmin::spawnAsPikmin(void)
     {
         _status = Pikmin::State::ALIVE;
+        _model.setPikminModel(ModelBank::get(ModelType::RED_PIKMIN));
         _model.setAnimation(AnimType::IDLE);
     }
 
@@ -202,7 +203,7 @@ namespace GUI {
 
     void Pikmin::look(void)
     {
-        //_model.setAnimation(AnimType::LOOK);
+        _model.setAnimation(AnimType::LOOK);
     }
 
     void Pikmin::fork(void)
