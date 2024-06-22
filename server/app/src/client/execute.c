@@ -89,9 +89,10 @@ static size_t client_get_connection(server_t *srv, client_t *cl)
     if (next_packet <= 0)
         return 0;
     data[next_packet - 1] = '\0';
-    if (strcmp(tname, "GRAPHIC") == 0)
+    if (strcmp(tname, "GRAPHIC") == 0) {
         cl->is_gui = true;
-    else
+        trantor_log_players(&srv->trantor);
+    } else
         player_get_connection(srv, cl, tname);
     return next_packet;
 }

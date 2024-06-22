@@ -29,12 +29,13 @@ namespace GUI {
             void floatingWindow(std::function<void()> &func);
 
             template<typename F, typename... Args>
-            std::function<void()> createDisplay(F &&f, Args &&...args)
+            static std::function<void()> createDisplay(F &&f, Args &&...args)
             {
                 return std::bind(std::forward<F>(f), std::forward<Args>(args)...);
             }
 
             inline raylib::Vector2 getPosition() { return _windowPosition; };
+            inline raylib::Vector2 getSize() { return _windowSize; };
 
         private:
             bool _moving;

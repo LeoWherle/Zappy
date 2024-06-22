@@ -14,6 +14,7 @@ namespace GUI {
         _prevVal = _sliderVal;
         _pause = false;
         _buttonAction = "Pause";
+        _maxMsg = 6;
     }
 
     GuiCamera::~GuiCamera() {}
@@ -28,6 +29,10 @@ namespace GUI {
         position = raylib::Vector2(10.0f, 10.0f);
         name = "Options";
         _options = FloatingWindow(name, position, size);
+        size = raylib::Vector2(400.0f, 625.0f);
+        position = raylib::Vector2(10.0f, 240.0f);
+        name = "Broadcasts";
+        _broadcast = FloatingWindow(name, position, size);
     }
 
     static const std::map<Kaillou, TextureType> kaillouTex = {
@@ -42,15 +47,14 @@ namespace GUI {
 
     void GuiCamera::drawInventory(Pikmin &pikmin)
     {
-        std::string windowName = "Inventory";
-        auto func = _inventory.createDisplay([this, &pikmin]() {
+        auto func = FloatingWindow::createDisplay([this, &pikmin]() {
             std::size_t lvl = pikmin.getData().getLevel();
             Inventory inv = pikmin.getData().getInventory();
             std::size_t offset = 1;
             GuiLabel(
                 raylib::Rectangle(
-                    this->getInventory().getPosition().x + 20,
-                    this->getInventory().getPosition().y + 50 * offset,
+                    this->_inventory.getPosition().x + 20,
+                    this->_inventory.getPosition().y + 50 * offset,
                     100, 50
                 ),
                 ("level: " + std::to_string(lvl)).c_str()
@@ -62,19 +66,19 @@ namespace GUI {
                 std::size_t nb = inv.getNbRock(val);
                 if (kaillouTex.find(val) == kaillouTex.end()) {
                     TextureBank::get(DEFAULT_TEX)->Draw(raylib::Vector2(
-                        this->getInventory().getPosition().x + 20,
-                        this->getInventory().getPosition().y + 50 * offset
+                        this->_inventory.getPosition().x + 20,
+                        this->_inventory.getPosition().y + 50 * offset
                     ), 1.0f);
                 } else {
                     TextureBank::get(kaillouTex.at(val))->Draw(raylib::Vector2(
-                        this->getInventory().getPosition().x + 20,
-                        this->getInventory().getPosition().y + 50 * offset
+                        this->_inventory.getPosition().x + 20,
+                        this->_inventory.getPosition().y + 50 * offset
                     ), 0.08f);
                 }
                 GuiLabel(
                     raylib::Rectangle(
-                        this->getInventory().getPosition().x + 80,
-                        this->getInventory().getPosition().y + 50 * offset, 100, 50
+                        this->_inventory.getPosition().x + 80,
+                        this->_inventory.getPosition().y + 50 * offset, 100, 50
                     ),
                     std::to_string(nb).c_str()
                 );
@@ -87,10 +91,9 @@ namespace GUI {
 
     void GuiCamera::handleGui(Buffer::WriteBuffer &out)
     {
-        std::string windowName = "Options";
-        auto func = _options.createDisplay([this, &out]() {
+        auto func = FloatingWindow::createDisplay([this, &out]() {
             GuiSlider(
-                (raylib::Rectangle) {this->getOptions().getPosition().x + 100, this->getOptions().getPosition().y + 150, 270, 50},
+                (raylib::Rectangle) {this->_options.getPosition().x + 100, this->_options.getPosition().y + 150, 270, 50},
                 "Tick rate", nullptr, &_sliderVal, 1, 100
             );
             if (_prevVal != _sliderVal) {
@@ -98,7 +101,7 @@ namespace GUI {
                 out.write_to_buffer("sst " + std::to_string(static_cast<int>(_sliderVal)) + "\n");
             }
             if (GuiButton(
-                    (raylib::Rectangle) {this->getOptions().getPosition().x + 20, this->getOptions().getPosition().y + 50, 80, 50}, _buttonAction.c_str()
+                    (raylib::Rectangle) {this->_options.getPosition().x + 20, this->_options.getPosition().y + 50, 80, 50}, _buttonAction.c_str()
                 )) {
                 if (_pause) {
                     _buttonAction = "Pause";
@@ -110,7 +113,7 @@ namespace GUI {
                 out.write_to_buffer("psd\n");
             }
             if (_pause) {
-                if (GuiButton((raylib::Rectangle) {this->getOptions().getPosition().x + 20, this->getOptions().getPosition().y + 100, 80, 50}, "Next")) {
+                if (GuiButton((raylib::Rectangle) {this->_options.getPosition().x + 20, this->_options.getPosition().y + 100, 80, 50}, "Next")) {
                     _next = true;
                     out.write_to_buffer("nxt\n");
                 }
@@ -118,5 +121,33 @@ namespace GUI {
         });
 
         _options.floatingWindow(func);
+    }
+
+    void GuiCamera::displayBroadcast(void)
+    {
+        auto func = FloatingWindow::createDisplay([this]() {
+            int offset = 0;
+            for (auto message : this->_messages) {
+                if (this->_maxMsg < 1)
+                    return;
+                GuiLabel(
+                    (raylib::Rectangle) {this->_broadcast.getPosition().x + 20,
+                    this->_broadcast.getPosition().y + offset * (this->_broadcast.getSize().y / this->_maxMsg ) + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT,
+                    this->_broadcast.getSize().x - (20 * 2), (this->_broadcast.getSize().y / this->_maxMsg )},
+                    message.c_str()
+                );
+                offset++;
+            }
+        });
+
+        _broadcast.floatingWindow(func);
+    }
+
+    void GuiCamera::addMessage(const std::string &message, Pikmin &speaker)
+    {
+        std::string newMsg = speaker.getData().getId() + ": " + message;
+        if (_messages.size() >= _maxMsg)
+            _messages.erase(_messages.begin());
+        _messages.push_back(newMsg);
     }
 }

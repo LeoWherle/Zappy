@@ -245,6 +245,7 @@ namespace GUI {
         for (auto &player : _pikmins) {
             if (player == id) {
                 player.broadcast();
+                _guiCam.addMessage(message, player);
             }
         }
     }

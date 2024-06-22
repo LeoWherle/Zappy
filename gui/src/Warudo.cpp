@@ -209,5 +209,6 @@ namespace GUI {
             }
         }
         _guiCam.handleGui(_out);
+        _guiCam.displayBroadcast();
     }
 };
