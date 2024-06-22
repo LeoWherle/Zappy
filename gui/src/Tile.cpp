@@ -44,7 +44,8 @@ namespace GUI {
     {
         groundedMaterial newMat;
         newMat.caillou = rock;
-        newMat.pos = raylib::Vector3(_x - 0.45f + (float)(std::rand() % 900) / 1000.0f, 0.6, _y - 0.45f + (float)(std::rand() % 900) / 1000.0f);
+        newMat.pos = raylib::Vector3(_x - 0.45f + (float)(std::rand() % 900) / 1000.0f, 0.5f, _y - 0.45f + (float)(std::rand() % 900) / 1000.0f);
+        newMat.rotation = (float)(std::rand() % 360000) / 1000.0f;
         _materials.push_back(newMat);
     }
 
@@ -72,7 +73,7 @@ namespace GUI {
     {
         for (auto &i : _materials) {
             if (_models[i.caillou] != nullptr) {
-                _models[i.caillou]->Draw(i.pos, raylib::Vector3(1, 0, 0), 0, 0.5f, raylib::Color::White());
+                _models[i.caillou]->Draw(i.pos, raylib::Vector3(0.0f, 0.0f, 1.0f), i.rotation, 0.5f, raylib::Color::White());
             } else {
                 DrawCube(i.pos, 0.1f, 0.1f, 0.1f, colorMap.at(i.caillou));
             }
