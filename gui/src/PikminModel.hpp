@@ -35,8 +35,8 @@ namespace GUI {
 
             bool getColision(raylib::Ray &) const;
 
-            inline float getX(void) { return _position.x; }
-            inline float getY(void) { return _position.z; }
+            inline float getX(void) { return _position.x + _translationVector.x; }
+            inline float getY(void) { return _position.z + _translationVector.z; }
 
             void setRotationSpeed(const float speed);
 
