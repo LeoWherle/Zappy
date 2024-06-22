@@ -21,11 +21,11 @@ namespace GUI {
             void setUpCam(void);
             void drawInventory(Pikmin &pikmin);
             void handleGui(Buffer::WriteBuffer &out);
+            void displayBroadcast(void);
 
             inline void setTime(float val) { _sliderVal = val; _prevVal = val; };
 
-            inline FloatingWindow getInventory(void) { return _inventory; };
-            inline FloatingWindow getOptions(void) { return _options; };
+            void addMessage(const std::string &message, Pikmin &speaker);
 
         private:
             std::string _buttonAction;
@@ -33,7 +33,10 @@ namespace GUI {
             float _prevVal;
             bool _pause;
             bool _next;
+            std::vector<std::string> _messages;
+            int _maxMsg;
             FloatingWindow _inventory;
             FloatingWindow _options;
+            FloatingWindow _broadcast;
     };
 }
