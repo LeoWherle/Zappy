@@ -26,7 +26,6 @@ namespace GUI {
             return;
         bool isMoving = (x != _data.getX() || y != _data.getY());
         bool isTurning = (orientation != _data.getDirection());
-        std::cout << isMoving << " " << isTurning << std::endl;
         if (isMoving) {
             std::size_t transX = _data.getX();
             std::size_t transY = _data.getY();
