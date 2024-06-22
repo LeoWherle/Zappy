@@ -62,12 +62,13 @@ namespace GUI {
             return true;
         }
         _cumulatedTime += delta;
-        if (_cumulatedTime >= _animationTime / _nbFrame) {
-            _cumulatedTime = 0.0f;
+        float goal = _animationTime / _nbFrame;
+        while (_cumulatedTime >= goal) {
+            _cumulatedTime -= goal;
             _frameCount++;
         }
         if (_frameCount >= _nbFrame) {
-            _frameCount = 0;
+            _frameCount = _frameCount % _nbFrame;
             return true;
         }
         return false;
