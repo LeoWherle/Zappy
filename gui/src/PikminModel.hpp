@@ -42,6 +42,8 @@ namespace GUI {
 
             void changeHitboxDisplay(void) {_displayHitBox = !_displayHitBox;}
 
+            inline AnimType getAnimation(void) { return _animType; }
+
         private:
             std::shared_ptr<GuiModel> _model;
             std::shared_ptr<GuiModel> _bulb;
@@ -51,6 +53,7 @@ namespace GUI {
 
             raylib::Vector3 _position;
             raylib::Vector3 _motionVector;
+            raylib::Vector3 _translationVector;
             raylib::Vector3 _rotationAxis;
             float _rotation;
             float _scale;
@@ -65,6 +68,7 @@ namespace GUI {
             raylib::Vector3 _boxOffset;
 
             float _rotationSpeed;
+            float _curRot;
 
             int _nbFrame;
 
