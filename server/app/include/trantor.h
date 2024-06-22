@@ -127,6 +127,10 @@ void reset_trantor(trantor_t *trantor);
  */
 float trantor_min_time(trantor_t *trantor);
 
+/**
+ * @brief logs the players to the GUI
+ */
+void trantor_log_players(trantor_t *trantor);
 
 // internal
 void execute_gcmd(trantor_t *trantor, const char *gcmd);
