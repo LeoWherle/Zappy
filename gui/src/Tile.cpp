@@ -29,7 +29,7 @@ namespace GUI {
         _inv.setRock(rocks);
     }
 
-    void Tile::getRockModel(ModelBank &bank)
+    void Tile::getRockModel(void)
     {
         _models[Kaillou::FOOD] = ModelBank::get(ModelType::FOOD_MOD);
         _models[Kaillou::LINEMATE] = ModelBank::get(ModelType::LINEMATE_MOD);

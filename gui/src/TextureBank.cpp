@@ -51,7 +51,7 @@ namespace GUI {
         _texture.Load(image);
     }
 
-    void GuiTexture::Draw(raylib::Vector2 pos, raylib::Vector2 axis, float rotation, float scale, raylib::Color color)
+    void GuiTexture::Draw(raylib::Vector2 pos, float scale)
     {
         _texture.Draw(pos, 0, scale, WHITE);
     }

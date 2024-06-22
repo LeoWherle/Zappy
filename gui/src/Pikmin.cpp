@@ -128,12 +128,12 @@ namespace GUI {
     }
 
 
-    void Pikmin::dropRock(Kaillou rock)
+    void Pikmin::dropRock(void)
     {
         _model.setAnimation(AnimType::DROP);
     }
 
-    void Pikmin::pickRock(Kaillou rock)
+    void Pikmin::pickRock(void)
     {
         _model.setAnimation(AnimType::PICK);
     }

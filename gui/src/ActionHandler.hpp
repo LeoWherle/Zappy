@@ -62,7 +62,6 @@ namespace GUI {
         std::size_t &_y;
         GuiCamera &_guiCam;
         std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>> _regexMap;
-        ModelBank _model;
         float &_timeMult;
         std::size_t _nbTeam;
         std::vector<ModelType> _pikminModels;

@@ -95,7 +95,7 @@ namespace GUI {
         for (std::size_t i = 0; i < _x; i++) {
             for (std::size_t j = 0; j < _y; j++) {
                 _map.push_back(Tile(i, j));
-                _map[_map.size() - 1].getRockModel(_model);
+                _map[_map.size() - 1].getRockModel();
             }
         }
     }
@@ -297,11 +297,10 @@ namespace GUI {
     void ActionHandler::pikminDropRessource(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &player : _pikmins) {
             if (player == id) {
-                player.dropRock(static_cast<Kaillou>(rock));
+                player.dropRock();
             }
         }
     }
@@ -309,11 +308,10 @@ namespace GUI {
     void ActionHandler::pikminPickRessource(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &player : _pikmins) {
             if (player == id) {
-                player.pickRock(static_cast<Kaillou>(rock));
+                player.pickRock();
             }
         }
     }
@@ -422,11 +420,10 @@ namespace GUI {
     void ActionHandler::pikminTakeObject(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                pikmin.pickRock(static_cast<Kaillou>(rock));
+                pikmin.pickRock();
             }
         }
     }
@@ -434,11 +431,10 @@ namespace GUI {
     void ActionHandler::pikminDropObject(std::smatch &arg)
     {
         std::string id = arg[1].str();
-        int rock = std::stoi(arg[2].str());
 
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
-                pikmin.dropRock(static_cast<Kaillou>(rock));
+                pikmin.dropRock();
             }
         }
     }

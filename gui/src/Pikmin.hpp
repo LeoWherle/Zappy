@@ -50,8 +50,8 @@ namespace GUI {
             void startIncant(void);
             void stopIncant(bool result);
             void LayingEgg(void);
-            void dropRock(Kaillou rock);
-            void pickRock(Kaillou rock);
+            void dropRock(void);
+            void pickRock(void);
             void die(void);
             void spawnAsEgg(void);
             void spawnAsPikmin(void);

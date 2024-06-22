@@ -19,7 +19,7 @@ namespace GUI {
             Tile(std::size_t x, std::size_t y);
             ~Tile() = default;
             void setRocks(std::map<Kaillou, std::size_t> &rocks);
-            void getRockModel(ModelBank &bank);
+            void getRockModel(void);
             void addRock(Kaillou rock);
             void removeRock(Kaillou rock);
             void drawTile(void);
