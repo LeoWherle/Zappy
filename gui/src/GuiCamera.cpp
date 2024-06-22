@@ -68,12 +68,12 @@ namespace GUI {
                     TextureBank::get(DEFAULT_TEX)->Draw(raylib::Vector2(
                         this->_inventory.getPosition().x + 20,
                         this->_inventory.getPosition().y + 50 * offset
-                    ), raylib::Vector2::Zero(), 0.0f, 1.0f, WHITE);
+                    ), 1.0f);
                 } else {
                     TextureBank::get(kaillouTex.at(val))->Draw(raylib::Vector2(
                         this->_inventory.getPosition().x + 20,
                         this->_inventory.getPosition().y + 50 * offset
-                    ), raylib::Vector2::Zero(), 0.0f, 0.08f, WHITE);
+                    ), 0.08f);
                 }
                 GuiLabel(
                     raylib::Rectangle(

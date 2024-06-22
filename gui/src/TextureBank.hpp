@@ -32,7 +32,7 @@ namespace GUI {
             ~GuiTexture();
 
             void DefaultSetup();
-            void Draw(raylib::Vector2 pos, raylib::Vector2 axis, float rotation, float scale, raylib::Color color);
+            void Draw(raylib::Vector2 pos, float scale);
         protected:
         private:
            raylib::Texture _texture;

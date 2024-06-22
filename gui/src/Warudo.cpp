@@ -17,7 +17,7 @@ namespace GUI {
         _client (connection::Client(timeout, in.getAdress(), in.getPort())),
         _worldCam (WorldCamera(_pikmins)),
         _guiCam (GuiCamera()),
-        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam))
+        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam))
     {
         InitWindow(1920, 1080, "ZapPikmin");
         _guiCam.setUpCam();
@@ -56,38 +56,11 @@ namespace GUI {
         std::cout << "Connected to the server..." << std::endl;
     }
 
-    void Warudo::setUpMap(void)
-    {
-        std::cout << "Creating the map..." << std::endl;
-        _out.write_to_buffer("msz\n");
-        bool mapReady = false;
-        while (!mapReady) {
-            _client.handleSelect(_in, _out, _stdInput, _StdOutput);
-            std::string inBuff = _in.buffer();
-            std::size_t consume = 0;
-            std::string delimiter = "\n";
-            auto end = inBuff.find(delimiter);
-            std::string tmp = inBuff.substr(0, end);
-            if (end != std::string::npos) {
-                consume = end + 1;
-                if (tmp.substr(0, 3) == "msz") {
-                    if (_handler(tmp)) {
-                        mapReady = true;
-                    }
-                }
-            }
-            _in.consume(consume);
-        }
-        _worldCam.setUpCam(_mapX, _mapY);
-        std::cout << "Map ready" << std::endl;
-    }
-
     void Warudo::setUp(void)
     {
         std::cout << "Initializing the world ..." << std::endl;
         std::srand(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
         setUpServer();
-        setUpMap();
         std::cout << "World initialized" << std::endl;
     }
 
@@ -96,8 +69,10 @@ namespace GUI {
         auto prevTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         auto curTime = prevTime;
 
+        _out.write_to_buffer("msz\n");
         _out.write_to_buffer("sgt\n");
         _out.write_to_buffer("tna\n");
+        _out.write_to_buffer("mct\n");
         while (_run && !WindowShouldClose()) {
             handleCommunication();
             handleKey();
