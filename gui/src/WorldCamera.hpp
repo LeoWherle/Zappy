@@ -26,6 +26,7 @@ namespace GUI {
             std::string getFocus(void) const;
             void unfocus(void);
             void reset();
+            void setAngle(float x, float y) { _currAngleX = x; _currAngleY = y; }
         private:
             void setCamPos(float x, float y, float z, float radius);
 

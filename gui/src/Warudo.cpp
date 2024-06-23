@@ -85,12 +85,35 @@ namespace GUI {
         }
         std::cout << _run << std::endl;
         if (!_run) {
-            while (!WindowShouldClose()) {
-                prevTime = curTime;
-                curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-                _delta = (float)(curTime - prevTime) / 1000.0f / _timeMult;
-                updateGraphic();
-            }
+            endScreenLoop();
+        }
+    }
+
+    void Warudo::endScreenLoop(void)
+    {
+        auto prevTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        auto curTime = prevTime;
+        std::string winMsg = "team " + _pikmins[0].getData().getTeam() + " has won";
+
+        _worldCam.reset();
+        while (!WindowShouldClose()) {
+            std::cout << winMsg << std::endl;
+            handleCommunication();
+            _worldCam.update();
+            prevTime = curTime;
+            curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            _delta = (float)(curTime - prevTime) / 1000.0f;
+            BeginDrawing();
+                ClearWindowState(0);
+                ClearBackground(BLACK);
+                BeginMode3D(_worldCam.getCam());
+
+                    _mapModel.draw();
+                    updatePikmin();
+
+                EndMode3D();
+                raylib::DrawText(winMsg, 460, 440, 100, YELLOW);
+            EndDrawing();
         }
     }
 
@@ -129,10 +152,10 @@ namespace GUI {
         }
         _in.consume(consume);
 
-        if (!ref && !eofd && _run && _timeMult != 0.0f) {
+        if (!ref && !eofd && _timeMult != 0.0f) {
             for (auto &player: _pikmins) {
                 Pikmin::State status = player.getStatus();
-                if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+                if (_run && status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
                     _out.write_to_buffer("ppo ");
                     _out.write_to_buffer(player.getData().getId());
                     _out.write_to_buffer("\n");

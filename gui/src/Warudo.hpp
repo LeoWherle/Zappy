@@ -38,6 +38,7 @@ namespace GUI {
             void updatePikmin(void);
             void updateTile(void);
             void updateUI(void);
+            void endScreenLoop(void);
 
             std::vector<Pikmin> _pikmins;
             std::pair<std::size_t, std::size_t> _size;

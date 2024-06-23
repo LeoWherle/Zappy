@@ -463,6 +463,7 @@ namespace GUI {
         std::string teamId = arg[1].str();
 
         _run = false;
+        _timeMult = 1.0f;
 
         bool onlyWinner = false;
 
