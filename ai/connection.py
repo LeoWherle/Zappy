@@ -2,6 +2,8 @@
 This module provides a ServerConnection class for handling socket communication with a server.
 """
 import socket
+import subprocess
+import signal
 from messages import Logger
 from ai_class import AI
 
@@ -46,6 +48,14 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
         self.nb_subprocess: int = 0
         self.subprocess_pids: list = []
 
+    class SubProcessKiller:
+        def __init__(self, args):
+            self.args: list = args
+        def __call__(self, signo, frame):
+            for pid in self.args:
+                subprocess.Popen(["kill", "-9", str(pid)])
+            exit(0)
+
     def connect(self):
         """Establishes a connection to the server."""
         self.logger.ai_log("Trying to connect to the server...\n", 0)
@@ -58,6 +68,7 @@ class ServerConnection: # pylint: disable=too-many-instance-attributes
             return False
         self.sock = sock
         self.logger.ai_log("Connected to the server\n", 0)
+        signal.signal(signal.SIGTERM, self.SubProcessKiller(self.subprocess_pids))
         return True
 
     def send_and_read(self, msg: str, ai_instance: AI|None):
