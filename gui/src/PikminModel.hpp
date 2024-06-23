@@ -14,7 +14,7 @@ namespace GUI {
     class PikminModel
     {
         public:
-            PikminModel(std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY);
+            PikminModel(std::size_t x, std::size_t y);
             ~PikminModel() = default;
 
             inline void setPikminModel(std::shared_ptr<GuiModel> model) { _model = model; }
@@ -35,12 +35,14 @@ namespace GUI {
 
             bool getColision(raylib::Ray &) const;
 
-            inline float getX(void) { return _position.x; }
-            inline float getY(void) { return _position.z; }
+            inline float getX(void) { return _position.x + _translationVector.x; }
+            inline float getY(void) { return _position.z + _translationVector.z; }
 
             void setRotationSpeed(const float speed);
 
             void changeHitboxDisplay(void) {_displayHitBox = !_displayHitBox;}
+
+            inline AnimType getAnimation(void) { return _animType; }
 
         private:
             std::shared_ptr<GuiModel> _model;
@@ -51,6 +53,7 @@ namespace GUI {
 
             raylib::Vector3 _position;
             raylib::Vector3 _motionVector;
+            raylib::Vector3 _translationVector;
             raylib::Vector3 _rotationAxis;
             float _rotation;
             float _scale;
@@ -65,11 +68,10 @@ namespace GUI {
             raylib::Vector3 _boxOffset;
 
             float _rotationSpeed;
+            float _curRot;
 
             int _nbFrame;
 
-            float _maxX;
-            float _maxY;
             bool _displayHitBox;
     };
 }

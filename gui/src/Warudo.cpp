@@ -24,7 +24,7 @@ namespace GUI {
         _run = true;
         SetTargetFPS(60);
         ref = in.getRef();
-        _frameClock = 0;
+        _frameClock = 0.0f;
         GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     }
 
@@ -110,28 +110,30 @@ namespace GUI {
         }
         _in.consume(consume);
 
-        for (auto &player: _pikmins) {
-            Pikmin::State status = player.getStatus();
-            if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-                _out.write_to_buffer("ppo ");
-                _out.write_to_buffer(player.getData().getId());
-                _out.write_to_buffer("\n");
-            }
-        }
-
-        _frameClock += _delta;
-        if (!ref && _frameClock > (1.0f / _timeMult)) {
-            _frameClock = 0;
-            _out.write_to_buffer("mct\n");
+        if (!ref) {
             for (auto &player: _pikmins) {
                 Pikmin::State status = player.getStatus();
                 if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
-                    _out.write_to_buffer("plv ");
+                    _out.write_to_buffer("ppo ");
                     _out.write_to_buffer(player.getData().getId());
                     _out.write_to_buffer("\n");
-                    _out.write_to_buffer("pin ");
-                    _out.write_to_buffer(player.getData().getId());
-                    _out.write_to_buffer("\n");
+                }
+            }
+
+            _frameClock += _delta;
+            if (_frameClock > (1.0f / _timeMult)) {
+                _frameClock = 0.0f;
+                _out.write_to_buffer("mct\n");
+                for (auto &player: _pikmins) {
+                    Pikmin::State status = player.getStatus();
+                    if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+                        _out.write_to_buffer("plv ");
+                        _out.write_to_buffer(player.getData().getId());
+                        _out.write_to_buffer("\n");
+                        _out.write_to_buffer("pin ");
+                        _out.write_to_buffer(player.getData().getId());
+                        _out.write_to_buffer("\n");
+                    }
                 }
             }
         }

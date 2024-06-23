@@ -39,6 +39,8 @@ void InputParser::parseOption(void)
 {
     if (std::find(_inputs.begin(), _inputs.end(), "--ref-serv") != _inputs.end()) {
         _ref = true;
+    } else {
+        _ref = false;
     }
 }
 

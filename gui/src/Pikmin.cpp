@@ -11,7 +11,8 @@
 #include "Color.hpp"
 
 namespace GUI {
-    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY) : _data(id, x, y), _model(x, y, maxX, maxY)
+    Pikmin::Pikmin(const std::string &id, std::size_t x, std::size_t y, std::size_t maxX, std::size_t maxY)
+        : _data(id, x, y), _model(x, y), _maxX(maxX), _maxY(maxY)
     {
     }
 
@@ -21,10 +22,18 @@ namespace GUI {
 
     void Pikmin::updatePosition(std::size_t x, std::size_t y, std::size_t orientation)
     {
+        if (_maxX == 0 || _maxY == 0)
+            return;
         bool isMoving = (x != _data.getX() || y != _data.getY());
         bool isTurning = (orientation != _data.getDirection());
         if (isMoving) {
-            if (!_movStack.empty()) {
+            std::size_t transX = _data.getX();
+            std::size_t transY = _data.getY();
+            while (!_movStack.empty() && (transX != x || transY != y)) {
+                transX += _movStack[0].x;
+                transX = transX % _maxX;
+                transY += _movStack[0].z;
+                transY = transY % _maxY;
                 _movStack.erase(_movStack.begin());
             }
             _model.setPositionVector(raylib::Vector3(x, 0.5, y));
@@ -37,7 +46,13 @@ namespace GUI {
             _data.setY(y);
         }
         if (isTurning) {
-            if (!_rotStack.empty()) {
+            int ori = _data.getDirection();
+            while (!_rotStack.empty() && ori != orientation) {
+                ori -= (int)(_rotStack[0] / 90.0f);
+                if (ori == 5)
+                    ori = 1;
+                if (ori == 0)
+                    ori = 4;
                 _rotStack.erase(_rotStack.begin());
             }
             _model.setRotation((630 - (90 * orientation)) % 361);
@@ -48,9 +63,9 @@ namespace GUI {
             }
             _data.setDirection(orientation);
         }
-        //if ((isMoving || isTurning) && _rotStack.empty() && _movStack.empty()) {
-        //    _model.setAnimation(AnimType::IDLE);
-        //}
+        if (_model.getAnimation() == AnimType::WALK && _rotStack.empty() && _movStack.empty()) {
+            _model.setAnimation(AnimType::IDLE);
+        }
     }
 
     bool Pikmin::draw(float delta)
@@ -233,6 +248,12 @@ namespace GUI {
     {
         _model.setAnimationLength(7.0f);
         _model.setAnimation(AnimType::BROADCAST);
+    }
+
+    void Pikmin::setMapSize(std::size_t x, std::size_t y)
+    {
+        _maxX = x;
+        _maxY = y;
     }
 
 }
