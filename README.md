@@ -71,8 +71,12 @@ USAGE: ./zappy_ai -p port -n name -h machine
   -n name name of the team
   -h machine name of the machine; localhost by default
 ```
+```bash
+make launch
+```
 
 ## BONUSES
 
 - .env file support
 
+## 
