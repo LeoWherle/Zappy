@@ -54,14 +54,14 @@ static void server_select(server_t *server, serv_context_t *context)
 {
     struct timespec timeout = {0};
 
-    timeout.tv_nsec = 2 * 1e7;
+    timeout.tv_nsec = (__syscall_slong_t)
+        (trantor_min_time(&server->trantor) / server->trantor.params.f);
     FD_ZERO(&context->readfds);
     FD_ZERO(&context->writefds);
     FD_SET(server->listen_sd, &context->readfds);
     FD_SET(STDIN_FILENO, &context->readfds);
-    if (server->command.write_buf.nmemb > 0) {
+    if (server->command.write_buf.nmemb > 0)
         FD_SET(STDOUT_FILENO, &context->writefds);
-    }
     context->max_sd = server->listen_sd;
     fdset_append_clients(server, context);
     context->nready = pselect(context->max_sd + 1, &context->readfds,
