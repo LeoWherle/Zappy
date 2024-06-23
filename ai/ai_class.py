@@ -373,6 +373,8 @@ class AI:
         highest: int = 0
         best_pos: int = 0
         for pos, count in found:
+            if pos not in self.look_direction:
+                break
             if count > highest:
                 highest = count
                 best_pos = pos
