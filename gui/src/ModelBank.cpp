@@ -35,7 +35,7 @@ namespace GUI {
         {MAP, {"gui/res/models/Map.glb", "", ""}},
         {WALLS, {"gui/res/models/Walls.glb", "", ""}},
         {RUG, {"gui/res/models/Rug.obj", "gui/res/textures/Rug.png", ""}},
-        {BIGSOFA, {"gui/res/models/BigSofa.obj", "gui/res/textures/Sofa.png", ""}},
+        {BIGSOFA, {"gui/res/models/BigSofa.obj", "gui/res/textures/BigSofa.png", ""}},
         {SOFA, {"gui/res/models/Sofa.obj", "gui/res/textures/Sofa.png", ""}}
     };
 
