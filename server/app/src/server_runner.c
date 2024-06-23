@@ -142,4 +142,5 @@ void server_run(server_t *server)
     init_trantor(&server->trantor);
     while (context.running)
         server_run_step(server, &now, &context);
+    server_run_step(server, &now, &context);
 }

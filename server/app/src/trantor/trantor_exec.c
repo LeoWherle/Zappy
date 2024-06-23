@@ -44,7 +44,8 @@ bool trantor_time_pass(trantor_t *trantor, float delta, bool real_time)
 {
     float _delta = real_time ? delta * trantor->params.f : delta;
 
-    if ((trantor->paused && real_time) || _delta < 0.0f)
+    if ((trantor->paused && real_time) || _delta < 0.0f
+        || trantor->winning_team != -1)
         return (trantor->winning_team == -1);
     try_refill_map(trantor, _delta);
     for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
