@@ -30,22 +30,6 @@ quant_t get_total_items(tile_t *tile)
     return total;
 }
 
-item_t rand_item(tile_t *items_left, len_t tiles_left)
-{
-    quant_t total = get_total_items(items_left);
-    float item_prob = (float) total / (float) tiles_left;
-    float rand_prob = (float) rand() / (float) RAND_MAX;
-
-    if (rand_prob > item_prob)
-        return NONE_ITEM;
-    for (unsigned int i = 0; i < ITEM_COUNT - 1; i++) {
-        if (rand_prob < (float) items_left->items[i] / (float) total)
-            return i + 1;
-        rand_prob -= (float) items_left->items[i] / (float) total;
-    }
-    return NONE_ITEM;
-}
-
 static bool tile_contains_tile(const tile_t *first, const tile_t *second)
 {
     for (unsigned int i = 0; i < ITEM_COUNT - 1; i++) {
