@@ -49,12 +49,12 @@ namespace GUI {
     {
         float move = _rotationSpeed * direction;
         _currAngleX += move;
-        //if (_currAngleX < _minAngleX) {
-        //    _currAngleX = _minAngleX;
-        //}
-        //if (_currAngleX > _maxAngleX) {
-        //    _currAngleX = _maxAngleX;
-        //}
+        if (_currAngleX < _minAngleX) {
+            _currAngleX = _minAngleX;
+        }
+        if (_currAngleX > _maxAngleX) {
+            _currAngleX = _maxAngleX;
+        }
     }
 
     void WorldCamera::rotateCamY(int direction)
