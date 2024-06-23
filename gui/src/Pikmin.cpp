@@ -36,7 +36,7 @@ namespace GUI {
                 transY = transY % _maxY;
                 _movStack.erase(_movStack.begin());
             }
-            _model.setPositionVector(raylib::Vector3(x, 0.5, y));
+            _model.setPositionVector(raylib::Vector3(x, 0.0f, y));
             if (_movStack.empty()) {
                 _model.setMotionVector(raylib::Vector3::Zero());
             } else {
