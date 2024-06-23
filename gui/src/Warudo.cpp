@@ -7,6 +7,8 @@
 
 #include <cstring>
 #include "Warudo.hpp"
+#include "KeyHandler.hpp"
+#include "raylib.h"
 #include <chrono>
 
 namespace GUI {
@@ -224,16 +226,9 @@ namespace GUI {
             ClearBackground(BLACK);
             BeginMode3D(_worldCam.getCam());
 
-                // Code for model position troubleshooting
-                // float moveSpeed = 0.1f; // Adjust this value to control the speed of movement
-                // if (IsKeyDown(KEY_A)) _mapModel._position.x += moveSpeed;
-                // if (IsKeyDown(KEY_D)) _mapModel._position.x -= moveSpeed;
-                // if (IsKeyDown(KEY_S)) _mapModel._position.z -= moveSpeed; // Assuming UP/DOWN moves the model forward/backward in 3D space
-                // if (IsKeyDown(KEY_W)) _mapModel._position.z += moveSpeed;
-                // if (IsKeyDown(KEY_Q)) _mapModel._position.y += moveSpeed; // Move the model up
-                // if (IsKeyDown(KEY_E)) _mapModel._position.y -= moveSpeed; // Move the model down
-                // std::string positionText = "X: " + std::to_string(_mapModel._position.x) + ", Y: " + std::to_string(_mapModel._position.y) + ", Z: " + std::to_string(_mapModel._position.z);
-
+                if (IsKeyPressed(KEY_SEMICOLON)) {
+                    _mapModel.changePosition();
+                }
                 _mapModel.draw(); // Assuming _modelModel is your model variable
 
                 updateTile();
@@ -242,8 +237,6 @@ namespace GUI {
             EndMode3D();
 
             updateUI();
-            // raylib::DrawText(positionText.c_str(), 200, 200, 50, RED);
-
         EndDrawing();
     }
 

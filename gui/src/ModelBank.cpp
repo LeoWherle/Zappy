@@ -34,7 +34,9 @@ namespace GUI {
         {THYSTAME_MOD, {"gui/res/models/Thystame.glb", "", ""}},
         {MAP, {"gui/res/models/Map.glb", "", ""}},
         {WALLS, {"gui/res/models/Walls.glb", "", ""}},
-        {RUG, {"gui/res/models/Rug.obj", "gui/res/textures/rug_color.png", ""}}
+        {RUG, {"gui/res/models/Rug.obj", "gui/res/textures/Rug.png", ""}},
+        {BIGSOFA, {"gui/res/models/BigSofa.obj", "gui/res/textures/Sofa.png", ""}},
+        {SOFA, {"gui/res/models/Sofa.obj", "gui/res/textures/Sofa.png", ""}}
     };
 
     std::map<std::string, std::shared_ptr<std::vector<raylib::ModelAnimation>>> ModelBank::loadedAnims;

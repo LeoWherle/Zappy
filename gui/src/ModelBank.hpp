@@ -36,7 +36,9 @@ namespace GUI {
         THYSTAME_MOD,
         MAP,
         WALLS,
-        RUG
+        RUG,
+        BIGSOFA,
+        SOFA
     };
 
     enum AnimType {
