@@ -35,7 +35,8 @@ class AI:
             self.dead = True
             return
         self.net.logger.info(f"Team {team} has {team_slots_left} slots left", self.id)
-        self.needed_food = self.net.map_x + 20
+        map_biggest = max(net.map_x, net.map_y)
+        self.needed_food = map_biggest + 20
         if self.needed_food < 30:
             self.needed_food = 30
 
