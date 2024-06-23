@@ -65,7 +65,7 @@ namespace GUI {
 
     void WorldCamera::changeDistance(int direction)
     {
-        float move = _rotationSpeed * direction;
+        float move = direction * _zoomPower;
         _radius += move / 4;
         if (_radius < _minRadius) {
             _radius = _minRadius;
@@ -79,6 +79,7 @@ namespace GUI {
             x / 2
             y / 2
         */
+        _zoomPower = std::max(x, y) / 10;
         _offsetX = x / 2.0f;
         _offsetY = y / 2.0f;
         float heightX = (tan(67.5 * M_PI / 180.0f) * (x + 1)) / 2.0f;

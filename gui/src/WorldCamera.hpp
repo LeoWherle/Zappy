@@ -43,5 +43,6 @@ namespace GUI {
             float _offsetY;
             std::vector<Pikmin> &_focus;
             std::string _focusId;
+            float _zoomPower;
     };
 }
