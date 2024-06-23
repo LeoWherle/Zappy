@@ -13,8 +13,8 @@
 namespace GUI {
 
     static const std::vector<raylib::Vector3> mapPositions = {
-        raylib::Vector3(-1.8f, -4.0f, 7.9f),
-        raylib::Vector3(11.66f, -10.0f, -31.68f),
+        raylib::Vector3(-1.1f, -2.37f, 4.75f),
+        raylib::Vector3(7.0f, -6.0f, -18.0f),
     };
 
     Map::Map()
@@ -27,6 +27,7 @@ namespace GUI {
         _rotation = 90;
         _position = mapPositions[0];
         _rotationAxis = raylib::Vector3(1.0f, 0.0f, 0.0f);
+        _scaling = 1.0f;
     }
 
     Map::~Map()
@@ -44,17 +45,17 @@ namespace GUI {
 
     void Map::draw()
     {
-        _furniture->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
-        _walls->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
-        _rug->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
-        _bigSofa->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
-        _sofa->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
+        _furniture->Draw(_position * _scaling, _rotationAxis, _rotation, _scale, raylib::Color::White());
+        _walls->Draw(_position * _scaling, _rotationAxis, _rotation, _scale, raylib::Color::White());
+        _rug->Draw(_position * _scaling, _rotationAxis, _rotation, _scale, raylib::Color::White());
+        _bigSofa->Draw(_position * _scaling, _rotationAxis, _rotation, _scale, raylib::Color::White());
+        _sofa->Draw(_position * _scaling, _rotationAxis, _rotation, _scale, raylib::Color::White());
     }
 
     void Map::setScaling(float scale)
     {
         _scale *= scale;
-        _position *= scale;
+        _scaling = scale;
     }
 
     void Map::changePosition()

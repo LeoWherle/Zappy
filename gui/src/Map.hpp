@@ -28,6 +28,7 @@ namespace GUI {
             float _scale;
             float _rotation;
             int _currentPos;
+            float _scaling;
             raylib::Vector3 _rotationAxis;
             std::shared_ptr<GuiModel> _furniture;
             std::shared_ptr<GuiModel> _walls;
