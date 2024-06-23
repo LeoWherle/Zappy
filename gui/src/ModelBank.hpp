@@ -72,8 +72,8 @@ namespace GUI {
             AnimType _animType;
             ModelType _type;
             raylib::Model _model;
-            raylib::Texture _texture;
-            raylib::Material _material;
+            //raylib::Texture _texture;
+            //raylib::Material _material;
             float _defaultRotation;
             std::shared_ptr<std::vector<raylib::ModelAnimation>> _animations;
     };
