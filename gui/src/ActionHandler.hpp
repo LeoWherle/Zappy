@@ -23,7 +23,7 @@ namespace GUI {
     public:
         ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<Team> &teams,
                       std::pair<std::size_t, std::size_t> &size, float &timeMult, GuiCamera &cam,
-                      WorldCamera &worldCam);
+                      WorldCamera &worldCam, bool &run);
         ~ActionHandler();
 
         bool operator()(std::string &action);
@@ -56,6 +56,7 @@ namespace GUI {
         void pikminTakeObject(std::smatch &arg);
         void pikminDropObject(std::smatch &arg);
         void pikminEject(std::smatch &arg);
+        void endGame(std::smatch &arg);
 
         std::vector<Pikmin> &_pikmins;
         std::vector<Tile> &_map;
@@ -66,6 +67,7 @@ namespace GUI {
         std::vector<std::pair<std::regex, void (ActionHandler::*)(std::smatch &)>> _regexMap;
         float &_timeMult;
         WorldCamera &_worldCam;
+        bool &_run;
         std::size_t _nbTeam;
         std::vector<ModelType> _pikminModels;
     };

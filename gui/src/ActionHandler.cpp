@@ -11,8 +11,9 @@
 namespace GUI {
     ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map,
         std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size,
-        float &timeMult, GuiCamera &cam, WorldCamera &worldCam):
-        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _guiCam(cam), _timeMult(timeMult), _worldCam(worldCam)
+        float &timeMult, GuiCamera &cam, WorldCamera &worldCam, bool &run):
+        _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _guiCam(cam), _timeMult(timeMult), _worldCam(worldCam),
+        _run(run)
     {
         std::srand(std::time(nullptr));
         _x = 0;
@@ -45,7 +46,8 @@ namespace GUI {
             {std::regex("^pf (\\d+)$"), &ActionHandler::pikminForking},
             {std::regex("^pto (\\d+) (\\d+)$"), &ActionHandler::pikminTakeObject},
             {std::regex("^pdo (\\d+) (\\d+)$"), &ActionHandler::pikminDropObject},
-            {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject}
+            {std::regex("^ppx (\\d+)$"), &ActionHandler::pikminEject},
+            {std::regex("^seg ([^\\n]+)$"), &ActionHandler::endGame}
         });
         _nbTeam = 0;
 
@@ -188,6 +190,8 @@ namespace GUI {
 
     void ActionHandler::setPikminPosition(std::smatch &arg)
     {
+        if (!_run)
+            return;
         std::string id = arg[1].str();
         int x = std::stoi(arg[2].str());
         int y = std::stoi(arg[3].str());
@@ -450,6 +454,43 @@ namespace GUI {
         for (auto &pikmin : _pikmins) {
             if (pikmin == id) {
                 pikmin.ejecting();
+            }
+        }
+    }
+
+    void ActionHandler::endGame(std::smatch &arg)
+    {
+        std::string teamId = arg[1].str();
+
+        _run = false;
+        _timeMult = 1.0f;
+
+        bool onlyWinner = false;
+
+        std::cout << "end game" << std::endl;
+        while (!onlyWinner) {
+            auto pikmin = _pikmins.begin();
+            while (pikmin != _pikmins.end() && pikmin->getData().getTeam() == teamId) {
+                pikmin++;
+            }
+            if (pikmin == _pikmins.end()) {
+                onlyWinner = true;
+            } else {
+                _pikmins.erase(pikmin);
+                pikmin = _pikmins.begin();
+            }
+        }
+        int oX = _x / 2;
+        int oY = _y - 1;
+        int curX = 0;
+        int curY = 0;
+        for (auto &pikmin : _pikmins) {
+            pikmin.updatePosition(oX - curX, oY - curY, 3);
+            pikmin.startIncant();
+            curX--;
+            if (curX < -curY) {
+                curY++;
+                curX = curY;
             }
         }
     }

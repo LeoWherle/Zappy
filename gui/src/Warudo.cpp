@@ -17,7 +17,7 @@ namespace GUI {
         _client (connection::Client(timeout, in.getAdress(), in.getPort())),
         _worldCam (WorldCamera(_pikmins)),
         _guiCam (GuiCamera()),
-        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam))
+        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam, _run))
     {
         InitWindow(1920, 1080, "ZapPikmin");
         _guiCam.setUpCam();
@@ -83,11 +83,53 @@ namespace GUI {
             _delta = (float)(curTime - prevTime) / 1000.0f;
             updateGraphic();
         }
+        std::cout << _run << std::endl;
+        if (!_run) {
+            endScreenLoop();
+        }
+    }
+
+    void Warudo::endScreenLoop(void)
+    {
+        auto prevTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        auto curTime = prevTime;
+        std::string winMsg = "team " + _pikmins[0].getData().getTeam() + " has won";
+
+        _worldCam.reset();
+        while (!WindowShouldClose()) {
+            std::cout << winMsg << std::endl;
+            handleCommunication();
+            _worldCam.update();
+            prevTime = curTime;
+            curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            _delta = (float)(curTime - prevTime) / 1000.0f;
+            BeginDrawing();
+                ClearWindowState(0);
+                ClearBackground(BLACK);
+                BeginMode3D(_worldCam.getCam());
+
+                    _mapModel.draw();
+                    updatePikmin();
+
+                EndMode3D();
+                raylib::DrawText(winMsg, 460, 440, 100, YELLOW);
+            EndDrawing();
+        }
     }
 
     void Warudo::handleCommunication(void)
     {
-        _client.handleSelect(_in, _out, _stdInput, _StdOutput);
+        static bool eofd = false;
+
+        try {
+            if (!eofd) {
+                _client.handleSelect(_in, _out, _stdInput, _StdOutput);
+            }
+        } catch (const std::exception &e) {
+            eofd = true;
+            std::cerr << e.what() << std::endl;
+        }
+
         std::string stdinBuff = _stdInput.buffer();
         std::string inBuff = _in.buffer();
         int consumed = 0;
@@ -110,10 +152,10 @@ namespace GUI {
         }
         _in.consume(consume);
 
-        if (!ref) {
+        if (!ref && !eofd && _timeMult != 0.0f) {
             for (auto &player: _pikmins) {
                 Pikmin::State status = player.getStatus();
-                if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
+                if (_run && status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
                     _out.write_to_buffer("ppo ");
                     _out.write_to_buffer(player.getData().getId());
                     _out.write_to_buffer("\n");
