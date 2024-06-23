@@ -109,6 +109,13 @@ namespace GUI {
         _model.Draw(pos, scale, color);
     }
 
+    int GuiModel::getNbFrame(void) const
+    {
+        if (_animations == nullptr)
+            return 1;
+        return (*_animations)[_animType].frameCount;
+    }
+
     std::shared_ptr<GuiModel> ModelBank::get(ModelType type)
     {
         if (models.find(type) == models.end()) {
