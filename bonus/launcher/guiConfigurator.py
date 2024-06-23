@@ -44,8 +44,8 @@ class GUIConfigurator:
         """
         ttk.Checkbutton(self.config_frame, text="Use Ref Server", variable=self.use_refServer_var).grid(row=1, column=0, sticky="w")
         ttk.Checkbutton(self.config_frame, text="Use Ref GUI", variable=self.use_refGui_var).grid(row=2, column=0, sticky="w")
-        self.create_slider("Width", self.width_var, 3, 10, 100)
-        self.create_slider("Height", self.height_var, 6, 10, 100)
+        self.create_slider("Width", self.width_var, 3, 10, 50)
+        self.create_slider("Height", self.height_var, 6, 10, 50)
         self.create_slider("Starting Egg", self.starting_egg_var, 9, 1, 10)
         self.create_slider("F Scale", self.f_scale_var, 12, 2, 100)
         self.create_slider("Teams", self.teams_var, 15, 1, 10)
