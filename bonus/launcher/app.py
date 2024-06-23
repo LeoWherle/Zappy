@@ -74,3 +74,13 @@ class App:
         """
         for pm in self.process_managers:
             pm.save_output()
+    
+    def stop_app(self) -> None:
+        """
+        Stops the application.
+        """
+        for pm in self.process_managers:
+            pm.stop_process()
+        self.root.quit()
+        self.root.destroy()
+        self.is_running = False
