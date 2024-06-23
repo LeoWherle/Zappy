@@ -67,6 +67,17 @@ namespace GUI {
 
     void Warudo::loop()
     {
+        InitAudioDevice();
+
+        raylib::Music music;
+        bool isMusic = false;
+
+        if (raylib::FileExists("gui/res/music/mainMusic.mp3")) {
+            music = raylib::Music("gui/res/music/mainMusic.mp3");
+            music.Play();
+            isMusic = true;
+        }
+
         auto prevTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         auto curTime = prevTime;
 
@@ -75,6 +86,9 @@ namespace GUI {
         _out.write_to_buffer("tna\n");
         _out.write_to_buffer("mct\n");
         while (_run && !WindowShouldClose()) {
+            if (isMusic) {
+                music.Update();
+            }
             handleCommunication();
             handleKey();
             _worldCam.update();
@@ -83,21 +97,35 @@ namespace GUI {
             _delta = (float)(curTime - prevTime) / 1000.0f;
             updateGraphic();
         }
-        std::cout << _run << std::endl;
+        if (isMusic) {
+            music.Stop();
+        }
         if (!_run) {
             endScreenLoop();
         }
+        CloseAudioDevice();
     }
 
     void Warudo::endScreenLoop(void)
     {
+        raylib::Music music;
+        bool isMusic = false;
+
+        if (raylib::FileExists("gui/res/music/endGame.mp3")) {
+            music = raylib::Music("gui/res/music/endGame.mp3");
+            music.Play();
+            isMusic = true;
+        }
+
         auto prevTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         auto curTime = prevTime;
         std::string winMsg = "team " + _pikmins[0].getData().getTeam() + " has won";
 
         _worldCam.reset();
         while (!WindowShouldClose()) {
-            std::cout << winMsg << std::endl;
+            if (isMusic) {
+                music.Update();
+            }
             handleCommunication();
             _worldCam.update();
             prevTime = curTime;
@@ -114,6 +142,9 @@ namespace GUI {
                 EndMode3D();
                 raylib::DrawText(winMsg, 460, 440, 100, YELLOW);
             EndDrawing();
+        }
+        if (isMusic) {
+            music.Stop();
         }
     }
 
