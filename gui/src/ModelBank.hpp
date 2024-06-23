@@ -66,7 +66,7 @@ namespace GUI {
             void UpdateAnim(int &frameCount);
             AnimType GetAnimation();
             void SetAnimation(AnimType anim);
-            inline int getNbFrame(void) const { return (*_animations)[_animType].frameCount; }
+            int getNbFrame(void) const;
         protected:
         private:
             AnimType _animType;
