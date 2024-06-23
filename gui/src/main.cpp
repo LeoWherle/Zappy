@@ -148,32 +148,32 @@ int main_grahic()
         }
 
         BeginDrawing();
+        {
+            ClearBackground(RAYWHITE);
 
-        ClearBackground(RAYWHITE);
+            BeginMode3D(camera);
+            {
+                pikmin.drawModel(0);
+                pikmin2.drawModel(0);
+                pikmin3.drawModel(0);
+                pikmin4.drawModel(0);
+                pikmin5.drawModel(0);
+                pikmin6.drawModel(0);
+                pikmin7.drawModel(0);
+                pikmin8.drawModel(0);
+                pikmin9.drawModel(0);
+                DrawModel(Map, (Vector3) {0, 0, 0}, 0.05f, WHITE);
+                DrawModel(Walls, (Vector3) {0, 0, 0}, 0.05f, WHITE);
+                DrawModel(Rug, (Vector3) {0, 0, 0}, 0.05f, WHITE);
+            }
+            EndMode3D();
 
-        BeginMode3D(camera);
+            // std::string level = "Lvl " + std::to_string(pikmin.getLevel());
+            // DrawText(level.c_str(), 400, 400, 50, DARKGRAY);
+            DrawText("P I K M I N", 10, 40, 20, DARKGRAY);
 
-        pikmin.drawModel(0);
-        pikmin2.drawModel(0);
-        pikmin3.drawModel(0);
-        pikmin4.drawModel(0);
-        pikmin5.drawModel(0);
-        pikmin6.drawModel(0);
-        pikmin7.drawModel(0);
-        pikmin8.drawModel(0);
-        pikmin9.drawModel(0);
-        DrawModel(Map, (Vector3) {0, 0, 0}, 0.05f, WHITE);
-        DrawModel(Walls, (Vector3) {0, 0, 0}, 0.05f, WHITE);
-        DrawModel(Rug, (Vector3) {0, 0, 0}, 0.05f, WHITE);
-
-        EndMode3D();
-
-        // std::string level = "Lvl " + std::to_string(pikmin.getLevel());
-        // DrawText(level.c_str(), 400, 400, 50, DARKGRAY);
-        DrawText("P I K M I N", 10, 40, 20, DARKGRAY);
-
-        DrawFPS(10, 10);
-
+            DrawFPS(10, 10);
+        }
         EndDrawing();
     }
 
