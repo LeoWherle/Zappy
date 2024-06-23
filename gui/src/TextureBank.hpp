@@ -51,5 +51,10 @@ namespace GUI {
             static std::map<TextureType, std::shared_ptr<GuiTexture>> textures;
 
             static std::shared_ptr<GuiTexture> get(TextureType type);
+
+            static void reset(void)
+            {
+                textures.clear();
+            }
     };
 }

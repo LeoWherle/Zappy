@@ -7,6 +7,21 @@
 
 #include "InputParser.hpp"
 #include "Warudo.hpp"
+#include "ModelBank.hpp"
+#include "TextureBank.hpp"
+
+int buildWorld(InputParser &in)
+{
+    GUI::Warudo warudo(100, in);
+    try {
+        warudo.setUp();
+    } catch (const std::exception &e) {
+        std::cerr << "Can't connect to server" << std::endl;
+        return 84;
+    }
+    warudo.loop();
+    return 0;
+}
 
 int main(int ac, char **av)
 {
@@ -25,13 +40,9 @@ int main(int ac, char **av)
         return 84;
     }
     input.parseOption();
-    GUI::Warudo warudo(100, input);
-    try {
-        warudo.setUp();
-    } catch (const std::exception &e) {
-        std::cerr << "Can't connect to server" << std::endl;
-        return 84;
-    }
-    warudo.loop();
-    return 0;
+    int ret = buildWorld(input);
+    GUI::ModelBank::reset();
+    GUI::TextureBank::reset();
+    CloseWindow();
+    return ret;
 }

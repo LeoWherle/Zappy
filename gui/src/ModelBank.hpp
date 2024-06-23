@@ -93,5 +93,10 @@ namespace GUI {
             static std::map<ModelType, std::shared_ptr<GuiModel>> models;
 
             static std::shared_ptr<GuiModel> get(ModelType type);
+            static void reset(void)
+            {
+                loadedAnims.clear();
+                models.clear();
+            }
     };
 }
