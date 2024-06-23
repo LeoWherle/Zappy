@@ -145,7 +145,7 @@ namespace GUI {
 
     void GuiCamera::addMessage(const std::string &message, Pikmin &speaker)
     {
-        std::string newMsg = speaker.getData().getId() + ": " + message;
+        std::string newMsg = "Team: " + speaker.getData().getTeam() + " Pikmin: " + speaker.getData().getId() + ": " + message;
         if (_messages.size() >= _maxMsg)
             _messages.erase(_messages.begin());
         _messages.push_back(newMsg);
