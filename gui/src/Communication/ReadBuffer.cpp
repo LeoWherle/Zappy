@@ -36,7 +36,7 @@ namespace Buffer {
         ssize_t read = reader(_buffer.data() + _filled, _buffer.size() - _filled);
         if (read == -1) {
             throw ReadError("Error reading");
-        } else if (read == 0 && _buffer.begin() + _filled == _buffer.end()) {
+        } else if (read == 0) {
             throw ConnectionClosed("EOF");
         }
         _filled += read;
