@@ -31,7 +31,6 @@ static void server_teardown(server_t *server)
     if (server == NULL) {
         return;
     }
-    sleep(5);
     vec_reset(&server->clients);
     str_reset(&server->command.read_buf);
     str_reset(&server->command.write_buf);
