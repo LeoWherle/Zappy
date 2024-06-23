@@ -47,12 +47,19 @@ static int winning_team(vector_t *players, unsigned int teams)
 static void handle_game_end(trantor_t *trantor)
 {
     const char *wtname = NULL;
+    player_t *p = NULL;
 
     if (trantor->winning_team == -1)
         return;
     wtname = get_team_name(&trantor->params, trantor->winning_team);
     talkf(&trantor->log, "seg %s\n", wtname);
     LOG_TRACE("Game ended, team %s won\n", wtname);
+    for (unsigned int i = 0; i < trantor->players.nmemb; i++) {
+        p = VEC_AT(&trantor->players, i);
+        if (p->is_egg || p->is_dead)
+            continue;
+        talk(&p->response_buffer, "dead\n");
+    }
 }
 
 static void execute_pcmd(trantor_t *trantor, player_t *player)
