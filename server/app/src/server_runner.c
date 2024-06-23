@@ -111,23 +111,30 @@ static int init_signal_handling(serv_context_t *context)
     return 0;
 }
 
-static void server_run_step(
-    server_t *server, struct timespec *now, serv_context_t *context)
+static void server_run_event_step(
+    server_t *server, serv_context_t *context)
 {
-    struct timespec next;
-    float delta = 0.0;
-
     server_select(server, context);
     if (global_running_state(false, 0)) {
         context->running = false;
         return;
     }
     server_handle_event(server, context);
+}
+
+static void server_run_step(
+    server_t *server, struct timespec *now, serv_context_t *context)
+{
+    struct timespec next;
+    float delta = 0.0;
+
+    server_run_event_step(server, context);
     clock_gettime(CLOCK_MONOTONIC, &next);
     delta = (next.tv_sec - now->tv_sec)
         + (next.tv_nsec - now->tv_nsec) / 1e9;
     context->running = trantor_time_pass(&server->trantor, delta, true);
     *now = next;
+    server_run_event_step(server, context);
 }
 
 void server_run(server_t *server)
@@ -142,5 +149,6 @@ void server_run(server_t *server)
     init_trantor(&server->trantor);
     while (context.running)
         server_run_step(server, &now, &context);
+    sleep(1);
     server_run_step(server, &now, &context);
 }
