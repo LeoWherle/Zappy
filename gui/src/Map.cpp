@@ -42,12 +42,7 @@ namespace GUI {
 
     void Map::setScaling(float scale)
     {
-        std::cout << scale << std::endl;
-        std::cout << _scale << std::endl;
         _scale *= scale;
-        std::cout << _scale << std::endl;
-        std::cout<< _position.x << " " << _position.y << " " <<_position.z << std::endl;
         _position *= scale;
-        std::cout<< _position.x << " " << _position.y << " " <<_position.z << std::endl;
     }
 }

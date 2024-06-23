@@ -103,10 +103,8 @@ namespace GUI {
         }
         _worldCam.setUpCam(_x, _y);
         if (_x > _y) {
-            std::cout << _x << std::endl;
             _mapModel.setScaling((float)(_x) / 6.0f);
         } else {
-            std::cout << _y << std::endl;
             _mapModel.setScaling((float)(_y) / 6.0f);
         }
         for (auto &pikmin : _pikmins) {
