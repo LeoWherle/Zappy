@@ -17,7 +17,7 @@ namespace GUI {
         _client (connection::Client(timeout, in.getAdress(), in.getPort())),
         _worldCam (WorldCamera(_pikmins)),
         _guiCam (GuiCamera()),
-        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam))
+        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam, _run))
     {
         InitWindow(1920, 1080, "ZapPikmin");
         _guiCam.setUpCam();
@@ -83,11 +83,30 @@ namespace GUI {
             _delta = (float)(curTime - prevTime) / 1000.0f;
             updateGraphic();
         }
+        std::cout << _run << std::endl;
+        if (!_run) {
+            while (!WindowShouldClose()) {
+                prevTime = curTime;
+                curTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+                _delta = (float)(curTime - prevTime) / 1000.0f / _timeMult;
+                updateGraphic();
+            }
+        }
     }
 
     void Warudo::handleCommunication(void)
     {
-        _client.handleSelect(_in, _out, _stdInput, _StdOutput);
+        static bool eofd = false;
+
+        try {
+            if (!eofd) {
+                _client.handleSelect(_in, _out, _stdInput, _StdOutput);
+            }
+        } catch (const std::exception &e) {
+            eofd = true;
+            std::cerr << e.what() << std::endl;
+        }
+
         std::string stdinBuff = _stdInput.buffer();
         std::string inBuff = _in.buffer();
         int consumed = 0;
@@ -110,7 +129,7 @@ namespace GUI {
         }
         _in.consume(consume);
 
-        if (!ref) {
+        if (!ref && !eofd && _run && _timeMult != 0.0f) {
             for (auto &player: _pikmins) {
                 Pikmin::State status = player.getStatus();
                 if (status != Pikmin::State::EGG && status != Pikmin::State::DYING) {
