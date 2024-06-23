@@ -493,6 +493,9 @@ namespace GUI {
         for (auto &pikmin : _pikmins) {
             pikmin.updatePosition(oX - curX, oY - curY, 3);
             pikmin.startIncant();
+            if (pikmin.getData().getLevel() == 7) {
+                pikmin.updateLevel(8);
+            }
             curX--;
             if (curX < -curY) {
                 curY++;
