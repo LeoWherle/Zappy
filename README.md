@@ -41,7 +41,8 @@ ls
 ```
 
 ## Documentation
-- [Protocol](./doc/Protocol.txt)
+- [AI Protocol](./doc/AI-protocol.md)
+- [GUI Protocol](./doc/Gui-protocol.md)
 
 ## Usage
 ```bash
