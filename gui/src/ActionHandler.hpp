@@ -15,6 +15,7 @@
 #include "ModelBank.hpp"
 #include "Team.hpp"
 #include "WorldCamera.hpp"
+#include "Map.hpp"
 
 namespace GUI {
 
@@ -23,7 +24,7 @@ namespace GUI {
     public:
         ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map, std::vector<Team> &teams,
                       std::pair<std::size_t, std::size_t> &size, float &timeMult, GuiCamera &cam,
-                      WorldCamera &worldCam, bool &run);
+                      WorldCamera &worldCam, bool &run, Map &mapModel);
         ~ActionHandler();
 
         bool operator()(std::string &action);
@@ -68,6 +69,7 @@ namespace GUI {
         float &_timeMult;
         WorldCamera &_worldCam;
         bool &_run;
+        Map &_mapModel;
         std::size_t _nbTeam;
         std::vector<ModelType> _pikminModels;
     };

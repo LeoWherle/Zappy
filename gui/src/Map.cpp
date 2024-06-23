@@ -7,6 +7,7 @@
 
 #include "Map.hpp"
 #include "ModelBank.hpp"
+#include <iostream>
 
 namespace GUI {
     Map::Map()
@@ -14,10 +15,11 @@ namespace GUI {
         _furniture = nullptr;
         _walls = nullptr;
         _rug = nullptr;
-        _scale = 0.08;
+        _scale = 0.05f;
         _rotation = 90;
-        _position = raylib::Vector3(-1.5, -3.3, 8.7);
-        _rotationAxis = raylib::Vector3(1, 0, 0);
+        _position = raylib::Vector3(-1.1f, -2.4f, 4.75f);
+        //_position = raylib::Vector3(0.0f, 0.0f, 0.0f);
+        _rotationAxis = raylib::Vector3(1.0f, 0.0f, 0.0f);
     }
 
     Map::~Map()
@@ -36,5 +38,16 @@ namespace GUI {
         _furniture->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
         _walls->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
         _rug->Draw(_position, _rotationAxis, _rotation, _scale, raylib::Color::White());
+    }
+
+    void Map::setScaling(float scale)
+    {
+        std::cout << scale << std::endl;
+        std::cout << _scale << std::endl;
+        _scale *= scale;
+        std::cout << _scale << std::endl;
+        std::cout<< _position.x << " " << _position.y << " " <<_position.z << std::endl;
+        _position *= scale;
+        std::cout<< _position.x << " " << _position.y << " " <<_position.z << std::endl;
     }
 }

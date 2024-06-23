@@ -17,7 +17,7 @@ namespace GUI {
         _client (connection::Client(timeout, in.getAdress(), in.getPort())),
         _worldCam (WorldCamera(_pikmins)),
         _guiCam (GuiCamera()),
-        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam, _run))
+        _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam, _run, _mapModel))
     {
         InitWindow(1920, 1080, "ZapPikmin");
         _guiCam.setUpCam();

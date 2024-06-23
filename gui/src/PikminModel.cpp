@@ -15,7 +15,7 @@ namespace GUI {
         _animType = AnimType::IDLE;
         _animCount = 0;
         _frameCount = 0;
-        _position = raylib::Vector3(x, 0.5f, y);
+        _position = raylib::Vector3(x, 0.0f, y);
         _motionVector = raylib::Vector3::Zero();
         _translationVector = raylib::Vector3::Zero();
         _rotationAxis = raylib::Vector3(0.0f, 0.0f, 1.0f);
