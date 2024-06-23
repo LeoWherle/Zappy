@@ -19,6 +19,7 @@ namespace GUI {
 
             void draw();
             void setupModels();
+            void setScaling(float scale);
 
         protected:
         private:

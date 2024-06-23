@@ -6,14 +6,15 @@
 */
 
 #include "ActionHandler.hpp"
+#include "Map.hpp"
 #include <iostream>
 
 namespace GUI {
     ActionHandler::ActionHandler(std::vector<Pikmin> &pikmins, std::vector<Tile> &map,
         std::vector<Team> &teams, std::pair<std::size_t, std::size_t> &size,
-        float &timeMult, GuiCamera &cam, WorldCamera &worldCam, bool &run):
+        float &timeMult, GuiCamera &cam, WorldCamera &worldCam, bool &run, Map &mapModel):
         _pikmins(pikmins), _map(map), _teams(teams), _x(size.first), _y(size.second), _guiCam(cam), _timeMult(timeMult), _worldCam(worldCam),
-        _run(run)
+        _run(run), _mapModel(mapModel)
     {
         std::srand(std::time(nullptr));
         _x = 0;
@@ -101,6 +102,11 @@ namespace GUI {
             }
         }
         _worldCam.setUpCam(_x, _y);
+        if (_x > _y) {
+            _mapModel.setScaling((float)(_x) / 6.0f);
+        } else {
+            _mapModel.setScaling((float)(_y) / 6.0f);
+        }
         for (auto &pikmin : _pikmins) {
             pikmin.setMapSize(_x, _y);
         }

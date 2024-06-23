@@ -44,7 +44,7 @@ namespace GUI {
     {
         groundedMaterial newMat;
         newMat.caillou = rock;
-        newMat.pos = raylib::Vector3(_x - 0.45f + (float)(std::rand() % 900) / 1000.0f, 0.5f, _y - 0.45f + (float)(std::rand() % 900) / 1000.0f);
+        newMat.pos = raylib::Vector3(_x - 0.45f + (float)(std::rand() % 900) / 1000.0f, 0.0f, _y - 0.45f + (float)(std::rand() % 900) / 1000.0f);
         newMat.rotation = (float)(std::rand() % 360000) / 1000.0f;
         _materials.push_back(newMat);
     }
