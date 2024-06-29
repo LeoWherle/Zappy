@@ -20,7 +20,7 @@ namespace GUI {
     FloatingWindow::FloatingWindow(std::string &name, raylib::Vector2 &pos, raylib::Vector2 &size) :
         _name(name),
         _windowPosition(pos),
-        _windowSize(size)
+        _windowSize(size / 1.5)
     {
         _moving = false;
         _minimized = false;

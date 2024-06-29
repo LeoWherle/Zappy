@@ -21,13 +21,13 @@ namespace GUI {
         _guiCam (GuiCamera()),
         _handler (ActionHandler(_pikmins, _map, _teams, _size, _timeMult, _guiCam, _worldCam, _run, _mapModel))
     {
-        InitWindow(1920, 1080, "ZapPikmin");
+        InitWindow(1280, 720, "ZapPikmin");
         _guiCam.setUpCam();
         _run = true;
         SetTargetFPS(60);
         ref = in.getRef();
         _frameClock = 0.0f;
-        GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
+        //GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     }
 
     Warudo::~Warudo()
@@ -123,7 +123,8 @@ namespace GUI {
         auto curTime = prevTime;
         std::string winMsg = "team " + _pikmins[0].getData().getTeam() + " has won";
 
-        _worldCam.reset();
+        _worldCam.unfocus();
+        _worldCam.setUpCam(_mapX, _mapY);
         while (!WindowShouldClose()) {
             if (isMusic) {
                 music.Update();

@@ -53,9 +53,9 @@ namespace GUI {
             std::size_t offset = 1;
             GuiLabel(
                 raylib::Rectangle(
-                    this->_inventory.getPosition().x + 20,
-                    this->_inventory.getPosition().y + 50 * offset,
-                    100, 50
+                    this->_inventory.getPosition().x + 20 / 1.5,
+                    this->_inventory.getPosition().y + 50 * offset / 1.5,
+                    100 / 1.5, 50 / 1.5
                 ),
                 ("level: " + std::to_string(lvl)).c_str()
             );
@@ -66,19 +66,19 @@ namespace GUI {
                 std::size_t nb = inv.getNbRock(val);
                 if (kaillouTex.find(val) == kaillouTex.end()) {
                     TextureBank::get(DEFAULT_TEX)->Draw(raylib::Vector2(
-                        this->_inventory.getPosition().x + 20,
-                        this->_inventory.getPosition().y + 50 * offset
-                    ), 1.0f);
+                        this->_inventory.getPosition().x + 20 / 1.5,
+                        this->_inventory.getPosition().y + 50 * offset / 1.5
+                    ), 1.0f /  1.5);
                 } else {
                     TextureBank::get(kaillouTex.at(val))->Draw(raylib::Vector2(
-                        this->_inventory.getPosition().x + 20,
-                        this->_inventory.getPosition().y + 50 * offset
-                    ), 0.08f);
+                        this->_inventory.getPosition().x + 20 / 1.5,
+                        this->_inventory.getPosition().y + 50 * offset / 1.5
+                    ), 0.08f / 1.5);
                 }
                 GuiLabel(
                     raylib::Rectangle(
-                        this->_inventory.getPosition().x + 80,
-                        this->_inventory.getPosition().y + 50 * offset, 100, 50
+                        this->_inventory.getPosition().x + 80 / 1.5,
+                        this->_inventory.getPosition().y + 50 * offset / 1.5, 100 / 1.5, 50 / 1.5
                     ),
                     std::to_string(nb).c_str()
                 );
@@ -93,7 +93,7 @@ namespace GUI {
     {
         auto func = FloatingWindow::createDisplay([this, &out]() {
             GuiSlider(
-                (raylib::Rectangle) {this->_options.getPosition().x + 100, this->_options.getPosition().y + 150, 270, 50},
+                (raylib::Rectangle) {(this->_options.getPosition().x + 100) / 1.5, (this->_options.getPosition().y + 150) / 1.5, (270 / 1.5), (50 / 1.5)},
                 "Tick rate", nullptr, &_sliderVal, 1, 100
             );
             if (_prevVal != _sliderVal) {
@@ -101,7 +101,7 @@ namespace GUI {
                 out.write_to_buffer("sst " + std::to_string(static_cast<int>(_sliderVal)) + "\n");
             }
             if (GuiButton(
-                    (raylib::Rectangle) {this->_options.getPosition().x + 20, this->_options.getPosition().y + 50, 80, 50}, _buttonAction.c_str()
+                    (raylib::Rectangle) {(this->_options.getPosition().x + 20) / 1.5, (this->_options.getPosition().y + 50) / 1.5, 80 / 1.5, 50 / 1.5}, _buttonAction.c_str()
                 )) {
                 if (_pause) {
                     _buttonAction = "Pause";
@@ -113,7 +113,7 @@ namespace GUI {
                 out.write_to_buffer("psd\n");
             }
             if (_pause) {
-                if (GuiButton((raylib::Rectangle) {this->_options.getPosition().x + 20, this->_options.getPosition().y + 100, 80, 50}, "Next")) {
+                if (GuiButton((raylib::Rectangle) {(this->_options.getPosition().x + 20) / 1.5, (this->_options.getPosition().y + 100) / 1.5, 80 / 1.5, 50 / 1.5}, "Next")) {
                     _next = true;
                     out.write_to_buffer("nxt\n");
                 }
@@ -131,9 +131,9 @@ namespace GUI {
                 if (this->_maxMsg < 1)
                     return;
                 GuiLabel(
-                    (raylib::Rectangle) {this->_broadcast.getPosition().x + 20,
-                    this->_broadcast.getPosition().y + offset * (this->_broadcast.getSize().y / this->_maxMsg ) + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT,
-                    this->_broadcast.getSize().x - (20 * 2), (this->_broadcast.getSize().y / this->_maxMsg )},
+                    (raylib::Rectangle) {this->_broadcast.getPosition().x + 20 / 1.5,
+                    this->_broadcast.getPosition().y + offset * (this->_broadcast.getSize().y / this->_maxMsg ) + RAYGUI_WINDOWBOX_STATUSBAR_HEIGHT / 1.5,
+                    this->_broadcast.getSize().x - (20 * 2) / 1.5, this->_broadcast.getSize().y / this->_maxMsg / 1.5},
                     message.c_str()
                 );
                 offset++;
