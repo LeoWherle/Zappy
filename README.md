@@ -12,7 +12,9 @@ The goal of this project is to create a network game where several teams confron
 containing resources.
 The winning team is the first one where at least 6 players who reach the maximum elevation.
 
-
+## Screenshots
+![Screenshot](./doc/zappy1.png)
+![Screenshot](./doc/zappy2.png)
 
 ## Install & Build
 
@@ -79,7 +81,3 @@ make launch
 ## BONUSES
 
 - .env file support
-
-## Screenshots
-![Screenshot](./doc/zappy1.png)
-![Screenshot](./doc/zappy2.png)
