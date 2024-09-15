@@ -80,4 +80,6 @@ make launch
 
 - .env file support
 
-## 
+## Screenshots
+![Screenshot](./doc/zappy1.png)
+![Screenshot](./doc/zappy2.png)
